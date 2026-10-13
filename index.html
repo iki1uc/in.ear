@@ -1,0 +1,43 @@
+<!doctype html><title>index.html Massenfertigung</title>
+<pre id="head"><b>nchelpu=NC help U=Schach Level 9=1-2-3-2-1</b>
+Höhe 90 Breite 90 Tiefe Mystery 729 all in all out 3x729=756 PC real Raum Lauf
+MB1 9 CENTRUM MB2 729 MAX SLI 21%+21%=42% jo1 RAID 9+729 jo2 SCSI 7 Geräte /7 jo3
+open Zaun open world = open fence = Station und Vorgang = mein ID an dein Zahlen Code rangehängt wie 13;01,01 Station 2-3-4 passiert und erfüllt mit 2 Zeugen
+ID.html veridet wenn Interaktion = immer anders weil Buchstabe minimal anders = Schach Feld Navigations Regel = wer ist am Zug
+deshalb gerne kurze Namen | open.main lol my.role | l iki l 1 l uc l</pre>
+<textarea id="inHtml" style="width:48%;height:120px;background:#111;color:#0f6">paste dein nchelpu / SF Tennis HTML hier</textarea>
+<textarea id="inJs" style="width:48%;height:120px;background:#111;color:#0f6">// JS Techniken
+let open={main:()=>({mb1:9,mb2:729,pc:756,id:'13;01,01'})};
+let my={role:(id)=>'Läufer 67 2 Zeugen'};
+</textarea>
+<button onclick="massenfertigung()">Massenfertigung 1-2-3-2-1</button>
+<button onclick="auslesen()">auslesen alle</button>
+<button onclick="openZaun()">open Zaun open world Start</button>
+<pre id="log"></pre><canvas id="c" width=720 height=360 style="background:#000;border:1px solid #222"></canvas><pre id="out"></pre>
+<script>
+let templates=[],bx=360,by=180,vx=3.5,vy=2.7,log=document.getElementById('log'),out=document.getElementById('out'),cv=document.getElementById('c'),x=cv.getContext('2d'),dots=[];
+for(let i=0;i<27;i++) dots.push({x:Math.random()*680+20,y:Math.random()*320+20,e:false});
+function massenfertigung(){
+ templates=[];
+ for(let lvl=0;lvl<9;lvl++){
+  let idNum=`13;0${Math.floor(lvl/3)+1},0${(lvl%3)+1}`; let station=`Station ${2+Math.floor(lvl/3)}-${3+lvl%2}-${4+lvl%3}`; let kurz=String.fromCharCode(97+lvl);
+  let html=`<!doctype html><title>${kurz} ${idNum} ${station}</title><pre>${idNum} ${station} 90x90 MB1 9 MB2 729 ${kurz}.html veridet 2 Zeugen</pre>`;
+  templates.push({kurz,idNum,station,html});
+ }
+ out.textContent=templates.map(t=>`${t.kurz}.html = ${t.idNum} ${t.station} = ID.html veridet = Buchstabe minimal anders`).join('\n');
+ log.textContent=`Massenfertigung fertig: 9 Files = 1-2-3-2-1 Pyramide = SLI 21%+21%=42% jo1 RAID 9+729 jo2 SCSI /7 jo3 = 810 Fake brennt 729 Echt trägt`;
+}
+function auslesen(){ out.textContent=templates.map(t=>`--- ${t.kurz}.html | ${t.idNum} ${t.station} ---\n${t.html}`).join('\n\n'); }
+function openZaun(){ loop(); }
+function loop(){
+ x.clearRect(0,0,720,360); x.strokeStyle='#222'; x.setLineDash([6,6]); x.strokeRect(0,0,720,360); x.setLineDash([]);
+ x.fillStyle='#00ff66'; x.fillRect(330,0,60,4); x.fillStyle='#ff0033'; x.fillRect(330,356,60,4);
+ [{x:180,y:90,id:'13;01,01 S2-3-4'},{x:360,y:180,id:'13;02,02 S3-4-5'},{x:540,y:270,id:'13;03,03 S4-5-6'}].forEach(s=>{
+  x.strokeRect(s.x-45,s.y-45,90,90); x.fillText(s.id,s.x-35,s.y);
+  if(Math.abs(bx-s.x)<50 && Math.abs(by-s.y)<50){ vx*=-1; log.textContent=`TREFFER ${s.id} = mein ID an dein Zahlen Code rangehängt = ID.html veridet = immer anders`; }
+ });
+ dots.forEach(d=>{ if(!d.e){ x.fillStyle='#333'; x.fillRect(d.x,d.y,4,4); } });
+ bx+=vx; by+=vy; if(by<5||by>355) vy*=-1; if(bx<0||bx>720){ bx=360; by=180; }
+ x.fillStyle='#fff'; x.fillRect(bx,by,8,8); requestAnimationFrame(loop);
+}
+</script>
