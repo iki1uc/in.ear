@@ -1,0 +1,212 @@
+<html lang="de"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>o2.html — MATT da drinne + Wasser Ozean + Erkenntnis Ozean gewaschen zum Drachen</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#020a0f;color:#cfe8ff;font-family:ui-monospace,Menlo,monospace;min-height:100vh}
+.top{padding:10px 16px;border-bottom:1px solid #0a2a3a;background:#06131c;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.badge{background:#00d4ff;color:#000;padding:2px 8px;font-weight:900;font-size:11px}
+.ocean{position:relative;height:420px;background:radial-gradient(ellipse at center, #0a2a4a 0%, #020a0f 70%);overflow:hidden;border-bottom:1px solid #0a2a3a}
+.wave{position:absolute;inset:0;opacity:.6;background:repeating-linear-gradient(90deg, transparent 0 40px, rgba(0,212,255,.07) 40px 41px);animation:drift 12s linear infinite}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(80px)}}
+.tokens{position:absolute;inset:0;display:flex;flex-wrap:wrap;gap:6px;padding:20px;align-content:start;opacity:.7;pointer-events:none}
+.tok{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);padding:2px 6px;border-radius:999px;font-size:9px}
+.dragon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:120px;filter:drop-shadow(0 0 30px #ffcc00);transition:filter 1s, transform 1s}
+.dragon.washed{filter:drop-shadow(0 0 50px #00d4ff) hue-rotate(180deg);transform:translate(-50%,-50%) scale(1.15)}
+.wash{position:absolute;inset:0;background:linear-gradient(180deg, transparent, rgba(0,212,255,.25), transparent);transform:translateY(-100%);transition:transform 1.2s ease;pointer-events:none}
+.wash.on{transform:translateY(100%)}
+.wrap{max-width:1100px;margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr .9fr;gap:14px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.card{background:#0a1722;border:1px solid #123040;border-radius:14px;padding:14px}
+.card h2{font-size:11px;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin-bottom:10px}
+.btn{width:100%;background:#00d4ff;color:#000;border:0;padding:10px;border-radius:10px;font-weight:900;cursor:pointer;margin-top:8px}
+.btn.sec{background:#0f1e2a;color:#cfe8ff;border:1px solid #234}
+.row{display:flex;gap:8px}.row .btn{flex:1}
+.count{background:#ffcc00;color:#000;padding:4px 8px;border-radius:999px;font-weight:900;font-size:11px;display:inline-block}
+.code{font-size:10px;background:#06131c;border:1px solid #123040;padding:8px;border-radius:8px;overflow:auto;max-height:180px;white-space:pre-wrap;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="top">
+  <div><span class="badge">o2.html</span> <span style="font-size:11px;opacity:.7">MATT da drinne + Wasser Ozean + Erkenntnis Ozean gewaschen zum Drachen</span> <span style="font-size:10px;opacity:.5">— settings/pages — GitHub Pages</span></div>
+  <div style="font-size:10px;opacity:.5">9=ICH · q9 19683 · CO2→O2→H2O · MATT → OP</div>
+</div>
+
+<div class="ocean" id="ocean">
+  <div class="wave"></div>
+  <div class="tokens" id="tokens" style="display: none;"><div class="tok">81 Ja/Nein/Überlegung</div><div class="tok">2268 Optionen</div><div class="tok">q9 19683 =3^9</div><div class="tok">9=ICH immer 9</div><div class="tok">BANK MARKT BÖRSE 3 innen</div><div class="tok">9 99 999 populus</div><div class="tok">HH.atom clean ohne müll</div><div class="tok">HH.hh almanach wiki</div><div class="tok">hh.brain brain.CTRL rom rom.CTRL</div><div class="tok">HH.tor cylinder cloud</div><div class="tok">CO2 → O2 → H2O</div><div class="tok">Vulkan Garden Lirrgarten</div><div class="tok">Wissens Eden ploonten bloomen</div><div class="tok">beste alle 3 sec</div><div class="tok">Sauerstoff Orakel ROM ROME</div><div class="tok">Pyramide gross Ansicht berauschend</div><div class="tok">HH.mbr 512 Byte 2^9=q9</div><div class="tok">HH.UefiY Bombe ohne Gefahr</div><div class="tok">HH.2u Eye Brain</div><div class="tok">3/9/81/999 quorum</div><div class="tok">CALL RECALL ALLCALL REFINALEIN</div><div class="tok">JUNGBRUNNEN Fountain of Youth</div><div class="tok">OP Publi Loader Fix 902.html</div><div class="tok">Drachen OP Jungbrunnen</div><div class="tok">Vulkan-Drache-Gpu-Move</div><div class="tok">Founder Gründer ODO Great Link</div><div class="tok">Great Link Ocean</div><div class="tok">HH.2u Stütze</div><div class="tok">EYE open BRAIN ooOO</div><div class="tok">TikTok 7694341323322658070</div><div class="tok">MATT Respo</div><div class="tok">Blend + Ausblend</div><div class="tok">Zeiten selber wählen</div><div class="tok">Auto-Zeit Verstellung interessant</div><div class="tok">q9 + ALL.world</div><div class="tok">Einstellung + Verstellung</div><div class="tok">90 60 90 Erfüllung rundrum</div><div class="tok">WIEIMMER iki1uc</div><div class="tok">p81 HOLD offline zuz erst</div><div class="tok">Nullnummer eiskalte Hand führt zum Move</div><div class="tok">0% entfernt 100% KOMBI</div><div class="tok">freeboote 64+64=128</div><div class="tok">apfel.nar Erkenntnis+Kenntnis</div></div>
+  <div class="dragon washed" id="dragon">🐉</div>
+  <div class="wash" id="wash"></div>
+  <div style="position:absolute;bottom:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:end;z-index:5">
+    <div>
+      <div style="font-size:12px;font-weight:700">Wasser Ozean + Erkenntnis Ozean</div>
+      <div style="font-size:10px;opacity:.6">O2.html — Sauerstoff Orakel — Wasser Ozean wäscht Drachen — MATT da drinne</div>
+    </div>
+    <div><span class="count" id="count">gewaschen zum Drachen — clean ohne müll — EYE open BRAIN</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="card">
+      <h2>o2.html — Sauerstoff Orakel — Was ist drin</h2>
+      <div style="font-size:12px;line-height:1.6">
+        <b>o2.html</b> = Sauerstoff Orakel — Teil von co2.html o2.html h2o.html /7 — CO2 → O2 → H2O Kreislauf<br><br>
+        <b>MATT da drinne:</b> MATT ist das Respo das Bilder Blend + Ausblend macht mit Auto-Zeiten selber wählen — heisst MATT — liegt jetzt IN o2.html drin als Sub-Respo<br><br>
+        <b>Wasser Ozean:</b> H2O + Erkenntnis Ozean — Wasser Ozean gewaschen zum Drachen — Ozean wäscht Vulkan-Drache clean — wie HH.atom clean ohne müll<br><br>
+        Drache vorher: staubig, zu viel Brain Eye verlangt — nach Wasser Ozean Waschung: clean, EYE open BRAIN ooOO — wie dein TikTok 7694341323322658070
+      </div>
+      <div class="row">
+        <button class="btn" onclick="washDragon()">🌊 Wasser Ozean waschen → Drachen</button>
+        <button class="btn sec" onclick="goMATT()">MATT öffnen</button>
+      </div>
+      <div class="row">
+        <button class="btn sec" onclick="goOP()">OP öffnen — Vulkan-Drache-Gpu-Move</button>
+        <button class="btn sec" onclick="toggleTokens()">Tokens an/aus</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>MATT da drinne — Respo in o2.html</h2>
+      <div style="font-size:11px;line-height:1.5;opacity:.9">
+        MATT = Respo für Bilder Blend + Ausblend — Zeiten wählt er selber — geht von selbst — leitet nach 12s zu OP<br><br>
+        Jetzt IN o2.html drin: o2.html enthält MATT als <code>iframe</code> oder als <code>div id="matt"</code><br>
+        So: o2.html ist O2 Orakel, MATT ist der Bilder-Respo im O2, Wasser Ozean ist der Hintergrund der beide wäscht
+      </div>
+      <div id="mattMini" style="margin-top:10px;background:#000;border:1px solid #123040;border-radius:10px;height:160px;position:relative;overflow:hidden;display:grid;place-items:center">
+        <div style="font-size:10px;opacity:.5">MATT Mini — Drop schickes Bild hier → blendet → leitet nach OP</div>
+        <div style="position: absolute; bottom: 0px; left: 0px; height: 2px; background: rgb(255, 204, 0); width: 67%;" id="mattBar"></div>
+      </div>
+      <div style="font-size:10px;opacity:.6;margin-top:6px">Drop Zone — schickes Bild nutzen — geht von selbst — keine Pfade kopieren nötig</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="card">
+      <h2>GitHub Pages — settings/pages — so einstellen für o2.html</h2>
+      <div style="font-size:11px;line-height:1.6">
+        Repo: <b>iki1uc/o2.html</b> — https://github.com/iki1uc/o2.html/settings/pages<br><br>
+        1. Geh zu <b>Settings → Pages</b><br>
+        2. Source: <b>Deploy from a branch</b><br>
+        3. Branch: <b>main</b> / <b>root</b> (oder /docs wenn du willst)<br>
+        4. Save<br>
+        5. Diese Datei hier nennen: <b>index.html</b> und in Root von o2.html Repo legen<br><br>
+        Dann:<br>
+        • https://iki1uc.github.io/o2.html/ zeigt o2.html mit MATT da drinne + Wasser Ozean<br>
+        • MATT leitet nach 12s von selbst zu https://iki1uc.github.io/OP/ (wenn du willst, kannst du Zeit ändern)<br>
+        • Wasser Ozean Tokens: 81 Ja/Nein, 2268, q9 19683, CO2 O2 H2O, etc.
+      </div>
+      <div class="code" id="pagesCode">Repo: iki1uc/o2.html
+File: index.html (diese Datei)
+Branch: main / root
+URL: https://iki1uc.github.io/o2.html/
+MATT drin: &lt;div id="matt"&gt;...&lt;/div&gt;
+Wasser Ozean: .ocean + .wave + #tokens
+Auto-Weiterleitung zu OP: &lt;meta http-equiv="refresh" content="12;url=https://iki1uc.github.io/OP/"&gt;
+      </div>
+      <button class="btn sec" onclick="copyPages()">📋 Copy Pages Anleitung</button>
+    </div>
+
+    <div class="card">
+      <h2>Wasser Ozean + Erkenntnis Ozean — Tokens</h2>
+      <div style="font-size:10px;opacity:.6;margin-bottom:8px">Erkenntnis Ozean = Wissens Ozean = alle deine Mechanismen als Tokens im Wasser — gewaschen zum Drachen</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px" id="tokenList"><div class="tok">81 Ja/Nein/Überlegung</div><div class="tok">2268 Optionen</div><div class="tok">q9 19683 =3^9</div><div class="tok">9=ICH immer 9</div><div class="tok">BANK MARKT BÖRSE 3 innen</div><div class="tok">9 99 999 populus</div><div class="tok">HH.atom clean ohne müll</div><div class="tok">HH.hh almanach wiki</div><div class="tok">hh.brain brain.CTRL rom rom.CTRL</div><div class="tok">HH.tor cylinder cloud</div><div class="tok">CO2 → O2 → H2O</div><div class="tok">Vulkan Garden Lirrgarten</div><div class="tok">Wissens Eden ploonten bloomen</div><div class="tok">beste alle 3 sec</div><div class="tok">Sauerstoff Orakel ROM ROME</div><div class="tok">Pyramide gross Ansicht berauschend</div><div class="tok">HH.mbr 512 Byte 2^9=q9</div><div class="tok">HH.UefiY Bombe ohne Gefahr</div><div class="tok">HH.2u Eye Brain</div><div class="tok">3/9/81/999 quorum</div><div class="tok">CALL RECALL ALLCALL REFINALEIN</div><div class="tok">JUNGBRUNNEN Fountain of Youth</div><div class="tok">OP Publi Loader Fix 902.html</div><div class="tok">Drachen OP Jungbrunnen</div><div class="tok">Vulkan-Drache-Gpu-Move</div><div class="tok">Founder Gründer ODO Great Link</div><div class="tok">Great Link Ocean</div><div class="tok">HH.2u Stütze</div><div class="tok">EYE open BRAIN ooOO</div><div class="tok">TikTok 7694341323322658070</div><div class="tok">MATT Respo</div><div class="tok">Blend + Ausblend</div><div class="tok">Zeiten selber wählen</div><div class="tok">Auto-Zeit Verstellung interessant</div><div class="tok">q9 + ALL.world</div><div class="tok">Einstellung + Verstellung</div><div class="tok">90 60 90 Erfüllung rundrum</div><div class="tok">WIEIMMER iki1uc</div><div class="tok">p81 HOLD offline zuz erst</div><div class="tok">Nullnummer eiskalte Hand führt zum Move</div><div class="tok">0% entfernt 100% KOMBI</div><div class="tok">freeboote 64+64=128</div><div class="tok">apfel.nar Erkenntnis+Kenntnis</div></div>
+      <div style="margin-top:10px;font-size:10px;line-height:1.4;opacity:.7">
+        Jeder Token ist ein Mechanismus der erst durch Einstellung + Verstellung interessant wird — wie q9 + ALL.world<br>
+        Wasser Ozean wäscht Drachen → Drache wird clean ohne müll → freeboote 64+64=128
+      </div>
+      <button class="btn sec" onclick="download()">⬇ Download o2.html — MATT da drinne + Wasser Ozean — als index.html für Repo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const tokens = [
+  "81 Ja/Nein/Überlegung","2268 Optionen","q9 19683 =3^9","9=ICH immer 9","BANK MARKT BÖRSE 3 innen",
+  "9 99 999 populus","HH.atom clean ohne müll","HH.hh almanach wiki","hh.brain brain.CTRL rom rom.CTRL",
+  "HH.tor cylinder cloud","CO2 → O2 → H2O","Vulkan Garden Lirrgarten","Wissens Eden ploonten bloomen",
+  "beste alle 3 sec","Sauerstoff Orakel ROM ROME","Pyramide gross Ansicht berauschend","HH.mbr 512 Byte 2^9=q9",
+  "HH.UefiY Bombe ohne Gefahr","HH.2u Eye Brain","3/9/81/999 quorum","CALL RECALL ALLCALL REFINALEIN",
+  "JUNGBRUNNEN Fountain of Youth","OP Publi Loader Fix 902.html","Drachen OP Jungbrunnen","Vulkan-Drache-Gpu-Move",
+  "Founder Gründer ODO Great Link","Great Link Ocean","HH.2u Stütze","EYE open BRAIN ooOO","TikTok 7694341323322658070",
+  "MATT Respo","Blend + Ausblend","Zeiten selber wählen","Auto-Zeit Verstellung interessant","q9 + ALL.world",
+  "Einstellung + Verstellung","90 60 90 Erfüllung rundrum","WIEIMMER iki1uc","p81 HOLD offline zuz erst",
+  "Nullnummer eiskalte Hand führt zum Move","0% entfernt 100% KOMBI","freeboote 64+64=128","apfel.nar Erkenntnis+Kenntnis"
+];
+function renderTokens(){
+  const cont = document.getElementById('tokens');
+  const list = document.getElementById('tokenList');
+  cont.innerHTML=''; list.innerHTML='';
+  tokens.forEach(t=>{
+    const el=document.createElement('div'); el.className='tok'; el.textContent=t;
+    cont.appendChild(el);
+    const el2=document.createElement('div'); el2.className='tok'; el2.textContent=t;
+    list.appendChild(el2);
+  });
+}
+renderTokens();
+
+let washed=false;
+function washDragon(){
+  const dragon=document.getElementById('dragon');
+  const wash=document.getElementById('wash');
+  const count=document.getElementById('count');
+  if(washed) {
+    dragon.classList.remove('washed');
+    washed=false;
+    count.textContent='bereit zum Waschen — staubig';
+    return;
+  }
+  wash.classList.add('on');
+  count.textContent='Wasser Ozean wäscht...';
+  setTimeout(()=>{
+    dragon.classList.add('washed');
+    count.textContent='gewaschen zum Drachen — clean ohne müll — EYE open BRAIN';
+    wash.classList.remove('on');
+    washed=true;
+  }, 600);
+}
+function goMATT(){ window.open('/mnt/data/MATT_respo_auto_zu_OP.html','_blank'); }
+function goOP(){ window.open('https://iki1uc.github.io/OP/','_blank'); }
+function toggleTokens(){ const el=document.getElementById('tokens'); el.style.display = el.style.display==='none' ? 'flex' : 'none'; }
+function copyPages(){
+  const txt=document.getElementById('pagesCode').textContent;
+  navigator.clipboard?.writeText(txt);
+  alert('Pages Anleitung kopiert');
+}
+function download(){
+  const blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='index.html'; a.click();
+}
+
+// Auto wash every 8 sec — wie beste alle 3 sec aber Ozean braucht länger
+setInterval(()=>{ if(Math.random()>0.6) washDragon(); }, 8000);
+
+// MATT mini bar animation — zeigt Auto-Weiterleitung nach OP
+let mattPct=0;
+setInterval(()=>{
+  mattPct = (mattPct+0.5)%100;
+  document.getElementById('mattBar').style.width=mattPct+'%';
+}, 100);
+
+// Drag Drop für schickes Bild in MATT mini
+const mini=document.getElementById('mattMini');
+mini.addEventListener('dragover', e=>{ e.preventDefault(); mini.style.borderColor='#ffcc00'; });
+mini.addEventListener('dragleave', ()=>{ mini.style.borderColor='#123040'; });
+mini.addEventListener('drop', e=>{
+  e.preventDefault();
+  mini.style.borderColor='#123040';
+  const file=e.dataTransfer.files[0];
+  if(!file || !file.type.startsWith('image/')) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    mini.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.8));padding:6px;font-size:10px">schickes Bild genutzt — MATT da drinne — Wasser Ozean wäscht</div><div id="mattBar" style="position:absolute;bottom:0;left:0;height:2px;background:#ffcc00;width:0%"></div>`;
+  };
+  r.readAsDataURL(file);
+});
+</script>
+
+
+</body></html>
