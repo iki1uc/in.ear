@@ -1,4 +1,3 @@
-// Alpha Lauf = 0.html bis 8.html = 0 = Freudenhund = Hund die 0 die 0 0 macht aber 1 erschnüffeln kann
 let alphaLauf = ['0.html','1.html','2.html','3.html','4.html','5.html','6.html','7.html','8.html'];
 // 0.html = Freudenhund = 0 = 0 0 macht aber 1 erschnüffelt = welche Daten RAM ROM GPU oder was wo und woher
 for(let file of alphaLauf){
