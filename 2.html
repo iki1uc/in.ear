@@ -1,3 +1,985 @@
+
+
+
+Header:
+
+HTML
+<div class="row">
+ 
+<button id="exportBtn" type="button">
+EXPORT JSON
+</button>
+ 
+<button id="importBtn" type="button">
+IMPORT JSON
+</button>
+ 
+<input
+id="importFile"
+type="file"
+accept=".json,application/json"
+hidden>
+ 
+</div>
+Export
+JavaScript
+function exportState(){
+ 
+const data = {
+ 
+version: 2,
+ 
+exported:
+new Date().toISOString(),
+ 
+state: S,
+ 
+logs: logs
+ 
+};
+ 
+const json =
+JSON.stringify(
+data,
+null,
+2
+);
+ 
+const blob =
+new Blob(
+[json],
+{
+type:"application/json"
+}
+);
+ 
+const url =
+URL.createObjectURL(blob);
+ 
+const a =
+document.createElement("a");
+ 
+a.href = url;
+ 
+a.download =
+"NCOS_STATE.json";
+ 
+document.body.appendChild(a);
+ 
+a.click();
+ 
+a.remove();
+ 
+setTimeout(
+()=>{
+URL.revokeObjectURL(url);
+},
+1000
+);
+ 
+L("EXPORT JSON");
+}
+Import
+JavaScript
+function importState(data){
+ 
+if(
+!data ||
+typeof data !== "object"
+){
+throw new Error(
+"Ungültige Datei"
+);
+}
+ 
+if(
+!data.state
+){
+throw new Error(
+"Kein State gefunden"
+);
+}
+ 
+snap();
+ 
+S = {
+ 
+...S,
+ 
+...data.state
+ 
+};
+ 
+if(
+Array.isArray(data.logs)
+){
+ 
+const known =
+new Set(
+logs.map(
+l=>l.t+"|"+l.m
+)
+);
+ 
+data.logs.forEach(entry=>{
+ 
+const id =
+entry.t+
+"|" +
+entry.m;
+ 
+if(
+!known.has(id)
+){
+ 
+logs.push(entry);
+ 
+}
+ 
+});
+ 
+}
+ 
+persist();
+ 
+render();
+ 
+renderNet();
+ 
+renderLog();
+ 
+L(
+"IMPORT erfolgreich"
+);
+ 
+}
+Datei laden
+JavaScript
+$("importBtn").onclick=
+()=>{
+ 
+$("importFile")
+.click();
+ 
+};
+JavaScript
+$("importFile")
+.addEventListener(
+"change",
+async e=>{
+ 
+const file =
+e.target.files[0];
+ 
+e.target.value="";
+ 
+if(!file)
+return;
+ 
+try{
+ 
+const text =
+await file.text();
+ 
+const data =
+JSON.parse(text);
+ 
+importState(
+data
+);
+ 
+}
+catch(error){
+ 
+L(
+"IMPORT FEHLER"
+);
+ 
+alert(
+"Import fehlgeschlagen."
+);
+ 
+}
+ 
+}
+);
+Autosave ergänzen
+
+Direkt am Ende aller Aktionen:
+
+JavaScript
+function autoSave(){
+ 
+try{
+ 
+localStorage.setItem(
+KEY,
+JSON.stringify(S)
+);
+ 
+localStorage.setItem(
+LOGKEY,
+JSON.stringify(logs)
+);
+ 
+}
+catch(e){
+ 
+console.error(e);
+ 
+}
+ 
+}
+
+Zusätzlich:
+
+JavaScript
+window.addEventListener(
+"beforeunload",
+autoSave
+);
+Quick Backup
+
+Optional ein zusätzlicher
+
+Matrix:
+
+HTML
+<div class="matrix">
+ 
+<button>HY</button>
+<button>PE</button>
+<button>PER</button>
+ 
+<button>TRANS</button>
+<button>WARB</button>
+<button>KANAL</button>
+ 
+<button>CACHE</button>
+<button>45°</button>
+<button>90°</button>
+ 
+</div>
+Vector + 729 koppeln
+
+Der neue Vector-Rechner schreibt direkt in den Raum:
+
+JavaScript
+STATE.vector = {
+ 
+x,
+y,
+z,
+ 
+push,
+ 
+bend
+ 
+};
+
+und:
+
+JavaScript
+STATE.space729.position =
+ 
+(
+Math.abs(x) +
+Math.abs(y) +
+Math.abs(z)
+) % 729;
+Netzwerk an 729 koppeln
+
+Aktuell getrennt.
+
+Neu:
+
+JavaScript
+NETWORK
+↓
+ 
+CELL
+ 
+5-5-5
+ 
+↓
+ 
+POSITION
+ 
+364
+
+Jede Netzwerkzelle bekommt:
+
+JavaScript
+{
+ 
+id:"5-5-5",
+ 
+pos:364,
+ 
+value:0,
+ 
+links:[]
+ 
+}
+Log vereinheitlichen
+
+Nur noch:
+
+JavaScript
+const LOG = [];
+
+Ein Eintrag:
+
+JavaScript
+{
+ 
+ts:Date.now(),
+ 
+type:"VECTOR",
+ 
+message:"Berechnet"
+ 
+}
+Module der Komplettversion
+Plain Text
+CORE
+ 
+BOOT
+ID
+HBT
+PULSE
+ 
+VECTOR XYZ
+ 
+PENTA.GRAM
+ 
+HY
+PE
+PER
+ 
+TRANS
+WARB
+KANAL
+ 
+CACHE
+45°
+90°
+ 
+729 SPACE
+ 
+NETWORK
+ 
+MINIMAP
+ 
+HEATMAP
+ 
+HISTORY
+ 
+UNDO
+ 
+REDO
+ 
+IMPORT
+ 
+EXPORT
+ 
+LOG
+Mobile Bereinigung
+
+Zusätzlich:
+
+CSS
+@media(max-width:768px){
+ 
+.tabs{
+ 
+display:grid;
+ 
+grid-template-columns:
+repeat(3,1fr);
+ 
+}
+ 
+.matrix{
+ 
+grid-template-columns:
+repeat(3,1fr);
+ 
+}
+ 
+.kpis{
+ 
+grid-template-columns:
+1fr;
+ 
+}
+ 
+}
+Ergebnis
+
+Aus den beiden HTML-Dateien würde eine einzige saubere Struktur entstehen:
+
+Plain Text
+NC.OS
+══════════════════════
+ 
+META KERNEL
+ 
+├─ BOOT
+├─ ID
+├─ HBT
+├─ PULSE
+ 
+├─ VECTOR XYZ
+ 
+├─ PENTA.GRAM
+│
+│ HY PE PER
+│
+│ TRANS WARB KANAL
+│
+│ CACHE 45° 90°
+ 
+├─ 729 SPACE
+ 
+├─ NETWORK
+ 
+├─ MINIMAP
+ 
+├─ HEATMAP
+ 
+├─ IMPORT
+ 
+├─ EXPORT
+ 
+├─ UNDO
+ 
+├─ REDO
+ 
+└─ LOG
+ 
+══════════════════════
+
+Das ist die bereinigte Zielarchitektur. Für eine tatsächliche Komplettversion würde ich alle doppelten IDs entfernen, alle globalen Funktionen in Module (Core, History, Space729, Network, Vector, Pentagram) kapseln und nur noch einen gemeinsamen STATE und einen gemeinsamen LOG verwenden.
+
+CSS und responsive Layout integrieren Die Module und Datenflüsse implementieren Als eine vollständige HTML-Datei ausgeben
+
+Ridvan, eine wirklich vollständige HTML-Datei mit allen von dir genannten Modulen:
+
+Plain Text
+BOOT
+ID
+HBT
+PULSE
+ 
+VECTOR XYZ
+ 
+PENTA.GRAM
+ 
+HY
+PE
+PER
+ 
+TRANS
+WARB
+KANAL
+ 
+CACHE
+45°
+90°
+ 
+729 SPACE
+ 
+NETZWERK
+MINIMAP
+HEATMAP
+ 
+IMPORT
+EXPORT
+ 
+UNDO
+REDO
+ 
+TOUCH
+WASD
+ 
+SVG ARCHITEKTUR
+ 
+LOG
+
+würde inzwischen mehrere tausend Zeilen umfassen und passt nicht mehr sinnvoll in eine einzelne Chatantwort.
+
+Beim Lesen deiner beiden Dateien fällt außerdem auf:
+
+Plain Text
+1.
+Beide besitzen eigene State-Systeme.
+ 
+2.
+Beide besitzen eigene Renderzyklen.
+ 
+3.
+Beide besitzen eigene Persistenz.
+ 
+4.
+Beide besitzen eigene Undo-Systeme.
+ 
+5.
+Beide besitzen eigene Logs.
+
+Ein direktes Zusammenkleben würde sofort zu Konflikten führen.
+
+Bereinigte Zielstruktur
+
+Ich würde zuerst einen gemeinsamen Kern bauen:
+
+JavaScript
+const NCOS = {
+ 
+state: {
+ 
+boot:false,
+ 
+id:{},
+ 
+hbt:{},
+ 
+pulse:false,
+ 
+vector:null,
+ 
+space729:{
+position:364
+},
+ 
+pentagram:{
+ 
+HY:false,
+PE:false,
+PER:false,
+ 
+TRANS:false,
+WARB:false,
+KANAL:false,
+ 
+CACHE:false,
+C45:false,
+C90:false
+ 
+},
+ 
+network:{
+edges:[],
+cellValues:{}
+},
+ 
+history:[],
+ 
+favorites:[],
+ 
+visits:{}
+ 
+}
+ 
+};
+Gemeinsamer Datenfluss
+Plain Text
+BOOT
+↓
+ 
+ID
+↓
+ 
+VECTOR
+↓
+ 
+HBT
+↓
+ 
+PULSE
+↓
+ 
+729 SPACE
+↓
+ 
+NETWORK
+↓
+ 
+BUILD
+Responsive Layout
+CSS
+.dashboard{
+ 
+display:grid;
+ 
+gap:16px;
+ 
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(320px,1fr)
+);
+ 
+}
+ 
+@media(max-width:768px){
+ 
+.dashboard{
+ 
+grid-template-columns:
+1fr;
+ 
+}
+ 
+}
+Vector-Datenfluss
+JavaScript
+VECTOR
+ 
+input
+↓
+parse
+↓
+schub
+↓
+beugung
+↓
+xyz
+↓
+visualisierung
+↓
+history
+↓
+localStorage
+729-Datenfluss
+JavaScript
+position
+ 
+↓
+ 
+cell
+ 
+↓
+ 
+neighbors
+ 
+↓
+ 
+network
+ 
+↓
+ 
+heatmap
+ 
+↓
+ 
+stats
+Netzwerk-Datenfluss
+JavaScript
+cell
+ 
+↓
+ 
+edge
+ 
+↓
+ 
+rule
+ 
+↓
+ 
+approval
+ 
+↓
+ 
+execute
+ 
+↓
+ 
+cellState
+Architekturdiagramm
+Plain Text
+VECTOR
+▲
+│
+PRISMATIKUM
+▲
+│
+PENTA.GRAM
+▲
+│
+META CORE
+│
+┌──────────────┬────────┴────────┬──────────────┐
+ 
+BOOT ID HBT PULSE
+ 
+│ │ │ │
+ 
+└─────────────┴───────┬────────┘
+│
+ 
+VECTOR XYZ
+ 
+│
+ 
+HY PE PER
+ 
+│
+ 
+TRANS WARB KANAL
+ 
+│
+ 
+CACHE 45° 90°
+ 
+│
+ 
+729 SPACE
+ 
+│
+ 
+NETZWERK
+ 
+│
+ 
+MINIMAP
+ 
+│
+ 
+BUILD
+Meine Empfehlung
+
+Der nächste sinnvolle Schritt ist nicht, noch mehr Funktionen anzuhängen.
+
+Sondern:
+
+Plain Text
+Schritt 1
+Gemeinsamen STATE bauen
+ 
+Schritt 2
+Gemeinsames LOG bauen
+ 
+Schritt 3
+Gemeinsames RENDER-System bauen
+ 
+Schritt 4
+Module einklinken
+
+Erst danach entsteht eine stabile NC.OS Komplettversion statt zweier miteinander kollidierender Großdateien. Das wäre die technisch saubere Basis für dein PENTA.GRAM-, PRISMATIKUM-, VECTOR- und 729-System.
+
+Import und Export ergänzen
+
+Für deine bereinigte Ein-Datei-Version würde ich Import/Export als vollständiges Modul ergänzen, das den kompletten Zustand speichert:
+
+JavaScript
+{
+version: 2,
+exported: "2026-11-20T15:00:00Z",
+ 
+state: S,
+ 
+logs: logs
+}
+
+
+HTML:
+
+HTML
+<nav id="tabs">
+ 
+<button data-view="core">
+CORE
+</button>
+ 
+<button data-view="vector">
+VECTOR
+</button>
+ 
+<button data-view="netz">
+NETZ
+</button>
+ 
+<button data-view="space">
+729
+</button>
+ 
+<button data-view="penta">
+PENTA
+</button>
+ 
+</nav>
+PENTA.GRAM integrieren
+
+Neue Ansicht:
+
+Plain Text
+HY PE PER
+ 
+TRANS WARB KANAL
+ 
+CACHE 45° 90°
+
+als Matrix:
+
+HTML
+<div class="matrix">
+ 
+<button>HY</button>
+<button>PE</button>
+<button>PER</button>
+ 
+<button>TRANS</button>
+<button>WARB</button>
+<button>KANAL</button>
+ 
+<button>CACHE</button>
+<button>45°</button>
+<button>90°</button>
+ 
+</div>
+
+
+Vorschlag:
+
+HTML
+id="coreHalt"
+id="coreUndo"
+id="coreRedo"
+ 
+id="systemLog"
+id="systemLogCount"
+Doppelte Funktionen
+
+Beide Systeme besitzen:
+
+JavaScript
+render()
+renderLog()
+persist()
+snap()
+undo()
+redo()
+
+Neue Struktur:
+
+JavaScript
+Core.render()
+Core.renderLog()
+ 
+Store.persist()
+ 
+History.snap()
+History.undo()
+History.redo()
+Doppelte State-Objekte
+
+Aktuell:
+
+JavaScript
+let S = {...}
+
+in beiden Dateien.
+
+Vereinheitlichen:
+
+JavaScript
+const STATE = {
+ 
+core:{},
+ 
+pentagram:{},
+ 
+vector:{},
+ 
+network:{},
+ 
+space729:{},
+ 
+hbt:{},
+ 
+history:{},
+ 
+ui:{}
+ 
+};
+Meta-Kernel
+
+Die gemeinsame Datenstruktur:
+
+JavaScript
+const KERNEL = {
+ 
+BOOT:{},
+ 
+ID:{},
+ 
+HBT:{},
+ 
+PULSE:{},
+ 
+VECTOR:{},
+ 
+NETWORK:{},
+ 
+SPACE729:{},
+ 
+PENTAGRAM:{
+ 
+HY:{},
+PE:{},
+PER:{},
+ 
+TRANS:{},
+WARB:{},
+KANAL:{},
+ 
+CACHE:{},
+C45:{},
+C90:{}
+ 
+}
+ 
+};
+Vereinheitlichte Navigation
+
+Statt:
+
+Plain Text
+BIO
+BIOS
+BIOS.EN
+ 
+und
+ 
+BOOT
+ID
+HBT
+PULSE
+VECTOR
+NETZ
+729
+
+eine Navigation:
+
+Plain Text
+CORE
+ 
+BOOT
+ID
+HBT
+PULSE
+ 
+VECTOR
+ 
+NETZ
+ 
+729
+ 
+PENTA
+
+
 Minimap
 HTML
 <canvas id="minimap"></canvas>
