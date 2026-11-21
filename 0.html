@@ -1,3 +1,835 @@
+3 Canvas:
+
+HTML
+<canvas id="chartX"></canvas>
+<canvas id="chartY"></canvas>
+<canvas id="chartZ"></canvas>
+
+Farben:
+
+Plain Text
+X = Cyan
+Y = Grün
+Z = Gold
+
+HTML:
+
+HTML
+<nav class="tabs">
+ 
+<button data-tab="core">
+CORE
+</button>
+ 
+<button data-tab="vector">
+VECTOR
+</button>
+ 
+<button data-tab="space">
+729
+</button>
+ 
+<button data-tab="history">
+HISTORY
+</button>
+ 
+</nav>
+SVG Architektur direkt eingebaut
+Plain Text
+VECTOR
+▲
+PRISMATIKUM
+▲
+PENTA.GRAM
+▲
+META
+▲
+BOOT ANKER HBT
+▲
+HY PE PER
+▲
+TRANS WARB KANAL
+▲
+CACHE 45° 90°
+▲
+729 SPACE
+▲
+BUILD
+
+als inline-SVG.
+
+XYZ-Diagramme
+
+Export JSON
+
+Button:
+
+HTML
+<button id="exportBtn">
+ 
+EXPORT JSON
+ 
+</button>
+
+Funktion:
+
+JavaScript
+function exportJSON(){
+ 
+const json =
+JSON.stringify(
+NC_STATE,
+null,
+2
+);
+ 
+const blob =
+new Blob(
+[json],
+{
+type:"application/json"
+}
+);
+ 
+const url =
+URL.createObjectURL(blob);
+ 
+const a =
+document.createElement("a");
+ 
+a.href=url;
+ 
+a.download=
+"NCOS_STATE.json";
+ 
+a.click();
+ 
+setTimeout(
+()=>{
+URL.revokeObjectURL(url);
+},
+1000
+);
+ 
+}
+Import JSON
+
+HTML:
+
+HTML
+<input
+type="file"
+id="importFile"
+hidden>
+HTML
+<button
+id="importBtn">
+ 
+IMPORT JSON
+ 
+</button>
+
+JS:
+
+JavaScript
+document
+.getElementById(
+"importBtn"
+)
+.onclick=
+()=>{
+ 
+document
+.getElementById(
+"importFile"
+)
+.click();
+ 
+};
+JavaScript
+document
+.getElementById(
+"importFile"
+)
+.onchange=
+e=>{
+ 
+const file =
+e.target.files[0];
+ 
+if(!file) return;
+ 
+const reader =
+new FileReader();
+ 
+reader.onload=
+()=>{
+ 
+try{
+ 
+const data =
+JSON.parse(
+reader.result
+);
+ 
+Object.assign(
+NC_STATE,
+data
+);
+ 
+saveState();
+ 
+renderHistory();
+ 
+document
+.getElementById(
+"vectorInput"
+)
+.value =
+NC_STATE.values.join(",");
+ 
+if(
+NC_STATE.values.length
+){
+ 
+runVector();
+ 
+}
+ 
+}
+catch{
+ 
+alert(
+"Import ungültig"
+);
+ 
+}
+ 
+};
+ 
+reader.readAsText(file);
+ 
+};
+Erweiterter Reset
+JavaScript
+function resetSystem(){
+ 
+if(
+!confirm(
+"NC.OS komplett zurücksetzen?"
+)
+) return;
+ 
+NC_STATE.values=[];
+ 
+NC_STATE.vector={
+x:0,
+y:0,
+z:0
+};
+ 
+NC_STATE.history=[];
+ 
+localStorage.removeItem(
+"NCOS_VECTOR"
+);
+ 
+document
+.getElementById(
+"vectorInput"
+)
+.value="";
+ 
+document
+.getElementById(
+"vectorResult"
+)
+.innerHTML=
+"Bereit";
+ 
+document
+.getElementById(
+"history"
+)
+.innerHTML=
+"Keine Einträge";
+ 
+drawChart(
+"chartX",
+"X",
+0,
+"#70d9e7"
+);
+ 
+drawChart(
+"chartY",
+"Y",
+0,
+"#83dca3"
+);
+ 
+drawChart(
+"chartZ",
+"Z",
+0,
+"#f1c76c"
+);
+ 
+}
+Bedienung
+Plain Text
+VECTOR XYZ
+ 
+Eingabe
+ 
+1,2,3,4,5,6
+ 
+↓
+ 
+X = 5
+ 
+Y = 7
+ 
+Z = 9
+ 
+↓
+ 
+Diagramme
+ 
+↓
+ 
+Historie
+ 
+↓
+ 
+Export JSON
+ 
+↓
+ 
+Import JSON
+ 
+↓
+ 
+Autosave
+ 
+↓
+ 
+Reset
+Ergebnis
+
+Die vollständige Zielversion hätte damit:
+
+Plain Text
+✓ PENTA.GRAM
+ 
+✓ PRISMATIKUM
+ 
+✓ META-KERNEL
+ 
+✓ VECTOR X
+ 
+✓ VECTOR Y
+ 
+✓ VECTOR Z
+ 
+✓ Schub
+ 
+✓ Beugung
+ 
+✓ SVG Architekturdiagramm
+ 
+✓ Diagramme
+ 
+✓ Verlaufsliste
+ 
+✓ Autosave
+ 
+✓ LocalStorage
+ 
+✓ Import JSON
+ 
+✓ Export JSON
+ 
+✓ Reset
+ 
+✓ Wiederherstellung
+ 
+✓ Erweiterbar auf 729 SPACE
+ 
+✓ Erweiterbar auf HY/PE/PER
+ 
+✓ Erweiterbar auf HBT
+ 
+✓ Erweiterbar auf Korridore
+
+Das würde ich als stabile Basis für dein NC.OS-Metakern-Dashboard ansehen.
+
+Füge alle Module in eine Datei zusammen Verbessere das Design für Mobilgeräte
+
+Ja. An diesem Punkt würde ich nicht mehr 15 einzelne HTML-Dateien bauen, sondern eine einzige index.html, die alle bisherigen Module integriert:
+
+Plain Text
+NC.OS
+═══════════════════════
+ 
+PENTA.GRAM
+ 
+PRISMATIKUM
+ 
+VECTOR XYZ
+ 
+HBT
+ 
+HY PE PER
+ 
+TRANS WARB KANAL
+ 
+CACHE 45° 90°
+ 
+729 SPACE
+ 
+NETWORK
+ 
+MINIMAP
+ 
+HISTORY
+ 
+IMPORT
+ 
+EXPORT
+ 
+AUTOSAVE
+ 
+RESET
+ 
+UNDO
+ 
+REDO
+ 
+SVG ARCHITEKTUR
+ 
+═══════════════════════
+
+Für Mobilgeräte würde ich das Layout auf ein adaptive Dashboard umstellen.
+
+Mobile Design
+
+Statt:
+
+Plain Text
+[Panel]
+[Panel]
+[Panel]
+
+verwende:
+
+CSS
+.dashboard{
+display:grid;
+gap:16px;
+ 
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(320px,1fr)
+);
+}
+Mobile Header
+CSS
+header{
+ 
+position:sticky;
+ 
+top:0;
+ 
+z-index:100;
+ 
+backdrop-filter:blur(10px);
+ 
+background:#09111bdd;
+ 
+}
+Mobile Button-Gruppe
+CSS
+.actions{
+ 
+display:grid;
+ 
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(130px,1fr)
+);
+ 
+gap:10px;
+ 
+}
+Mobile SVG
+CSS
+svg{
+ 
+width:100%;
+ 
+height:auto;
+ 
+max-height:650px;
+ 
+}
+Mobile Canvas
+CSS
+canvas{
+ 
+width:100%;
+ 
+height:auto;
+ 
+display:block;
+ 
+border-radius:12px;
+ 
+}
+Gemeinsamer State
+JavaScript
+const NC_STATE = {
+ 
+values:[],
+ 
+vector:{
+ 
+x:0,
+y:0,
+z:0,
+ 
+push:0,
+bend:0,
+ 
+magnitude:0
+ 
+},
+ 
+hbt:{
+ 
+H:100,
+B:100,
+T:729
+ 
+},
+ 
+matrix:{},
+ 
+history:[],
+ 
+favorites:[],
+ 
+position:364,
+ 
+autosave:true
+ 
+};
+Tabs statt Scroll-Wüste
+
+Auf Handy:
+
+Plain Text
+[CORE]
+[729]
+[VECTOR]
+[HBT]
+[NET]
+[HISTORY]
+
+Vector-Rechner:
+
+HTML
+<section class="panel">
+ 
+<h2>XYZ Diagramme</h2>
+ 
+<canvas id="chartX"></canvas>
+ 
+<br>
+ 
+<canvas id="chartY"></canvas>
+ 
+<br>
+ 
+<canvas id="chartZ"></canvas>
+ 
+</section>
+2. Diagramm zeichnen
+JavaScript
+function drawChart(canvasId,label,value,color){
+ 
+const canvas =
+document.getElementById(canvasId);
+ 
+const ctx =
+canvas.getContext("2d");
+ 
+const w = 400;
+const h = 120;
+ 
+canvas.width=w;
+canvas.height=h;
+ 
+ctx.clearRect(0,0,w,h);
+ 
+ctx.fillStyle="#111e2c";
+ctx.fillRect(0,0,w,h);
+ 
+ctx.fillStyle=color;
+ 
+const bw =
+Math.min(
+w-40,
+Math.abs(value)*4
+);
+ 
+ctx.fillRect(
+20,
+40,
+bw,
+40
+);
+ 
+ctx.fillStyle="#ffffff";
+ 
+ctx.fillText(
+`${label}: ${value}`,
+20,
+24
+);
+ 
+}
+3. Diagramme aktualisieren
+
+In runVector():
+
+JavaScript
+drawChart(
+"chartX",
+"X",
+r.x,
+"#70d9e7"
+);
+ 
+drawChart(
+"chartY",
+"Y",
+r.y,
+"#83dca3"
+);
+ 
+drawChart(
+"chartZ",
+"Z",
+r.z,
+"#f1c76c"
+);
+
+HTML:
+
+HTML
+<button
+id="resetBtn">
+ 
+RESET
+ 
+</button>
+
+JavaScript:
+
+JavaScript
+function resetSystem(){
+ 
+if(
+!confirm(
+"NC.OS zurücksetzen?"
+)
+) return;
+ 
+NC_STATE.values = [];
+ 
+NC_STATE.vector = {
+ 
+x:0,
+y:0,
+z:0
+ 
+};
+ 
+NC_STATE.history = [];
+ 
+localStorage.removeItem(
+"NCOS_VECTOR"
+);
+ 
+document
+.getElementById(
+"vectorInput"
+)
+.value = "";
+ 
+document
+.getElementById(
+"vectorResult"
+)
+.innerHTML =
+"Zurückgesetzt";
+ 
+renderHistory();
+ 
+}
+
+Initialisierung:
+
+JavaScript
+document
+.getElementById(
+"resetBtn"
+)
+.addEventListener(
+"click",
+resetSystem
+);
+Speichern erweitern
+JavaScript
+function saveState(){
+ 
+localStorage.setItem(
+ 
+"NCOS_VECTOR",
+ 
+JSON.stringify(
+NC_STATE
+)
+ 
+);
+ 
+}
+Laden erweitern
+JavaScript
+function loadState(){
+ 
+try{
+ 
+const saved =
+JSON.parse(
+localStorage.getItem(
+"NCOS_VECTOR"
+)
+);
+ 
+if(saved){
+ 
+Object.assign(
+NC_STATE,
+saved
+);
+ 
+}
+ 
+}catch(e){}
+ 
+}
+
+Nach dem Laden:
+
+JavaScript
+loadState();
+ 
+renderHistory();
+ 
+if(
+NC_STATE.values.length
+){
+ 
+document
+.getElementById(
+"vectorInput"
+)
+.value =
+ 
+NC_STATE.values.join(",");
+ 
+}
+Am Ende von runVector()
+JavaScript
+renderHistory();
+ 
+saveState();
+Ergebnis
+
+Das Dashboard besitzt dann:
+
+Plain Text
+NC.OS
+ 
+✓ PENTA.GRAM
+ 
+✓ PRISMATIKUM
+ 
+✓ VECTOR X Y Z
+ 
+✓ SCHUB
+ 
+✓ BEUGUNG
+ 
+✓ SVG Architektur
+ 
+✓ LocalStorage
+ 
+✓ Automatische Wiederherstellung
+ 
+✓ Verlaufsliste
+ 
+✓ Reset
+ 
+✓ Persistente Historie
+ 
+✓ Erweiterbar auf 729 SPACE
+
+und jeder Rechendurchlauf bleibt lokal gespeichert und nachvollziehbar.
+
+Füge Diagramme für X, Y und Z hinzu Ergänze Export und Import als JSON Füge den vollständigen HTML-Code zusammen
+
+Ridvan, der nächste Schritt wäre nicht einfach nur „noch mehr Code“, sondern eine Konsolidierung aller bisherigen Ideen in einem einzigen Dashboard.
+
+Für die von dir gewünschte Erweiterung würde ich die Endversion um diese Module ergänzen:
+
+Plain Text
+NC.OS
+────────────────────
+ 
+PENTA.GRAM
+ 
+PRISMATIKUM
+ 
+VECTOR XYZ
+ 
+HBT
+ 
+729 SPACE
+ 
+NETWORK
+ 
+MINIMAP
+ 
+HISTORY
+ 
+IMPORT / EXPORT
+ 
+RESET
+ 
+DIAGRAMME
+ 
+────────────────────
+Neue Komponenten
+1. X/Y/Z Diagramme
+
+Direkt unter dem
+
+
 HTML-Basis
 HTML
 <!doctype html>
