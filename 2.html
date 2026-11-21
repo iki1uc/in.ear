@@ -1,3 +1,59 @@
+Minimap
+HTML
+<canvas id="minimap"></canvas>
+
+zeigt:
+
+Plain Text
+9×9
+ 
+aktive Position
+Nachbarn
+Korridore
+Korridor-Modul
+Plain Text
+h
+ 
+b
+ 
+t
+ 
+45°
+ 
+90°
+
+Anzeige:
+
+Plain Text
+1-5-1
+↓
+ 
+9-5-1
+ 
+X-Korridor
+HBT-Modul
+Plain Text
+HALT
+ 
+BEWERTUNG
+ 
+TIEFE
+
+automatisch:
+
+JavaScript
+H = 100;
+ 
+B = GraphQualität;
+ 
+T = Objektanzahl;
+Autosave
+JavaScript
+window.addEventListener(
+"beforeunload",
+saveState
+);
+
 3 Canvas:
 
 HTML
