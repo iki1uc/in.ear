@@ -249,3 +249,357 @@ SPANNUNG
 KONFLIKT
 ↓
 VERBAUEN
+
+  Logik
+
+JavaScript
+spread = max(i,j,k) - min(i,j,k)
+
+misst nur die geometrische Entfernung der Koordinaten und nicht den tatsächlichen Konflikt.
+
+Besser:
+
+JavaScript
+function getConflictLevel(cell){
+ 
+const values = [
+cell.ij,
+cell.ik,
+cell.jk
+];
+ 
+const spread =
+Math.max(...values) -
+Math.min(...values);
+ 
+if(spread <= 8)
+return "konsens";
+ 
+if(spread <= 24)
+return "teil";
+ 
+if(spread <= 48)
+return "spannung";
+ 
+return "konflikt";
+}
+
+Dadurch basiert die Färbung auf den tatsächlichen Projektionen:
+
+Plain Text
+Oij
+Oik
+Ojk
+
+statt nur auf
+
+Plain Text
+i
+j
+k
+Legende ergänzen
+
+Direkt oberhalb des 729-Raums:
+
+HTML
+<section class="panel">
+ 
+<h2>LEGEND</h2>
+ 
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+">
+ 
+<div>
+<span class="legendBox konsens"></span>
+KONSENS
+</div>
+ 
+<div>
+<span class="legendBox teil"></span>
+TEILKONSENS
+</div>
+ 
+<div>
+<span class="legendBox spannung"></span>
+SPANNUNG
+</div>
+ 
+<div>
+<span class="legendBox konflikt"></span>
+KONFLIKT
+</div>
+ 
+<div>
+<span class="legendBox nachbar"></span>
+NACHBAR
+</div>
+ 
+<div>
+<span class="legendBox aktiv"></span>
+AKTIVE ZELLE
+</div>
+ 
+</div>
+ 
+</section>
+
+
+  )))))))))))))))))))  729-Raums:
+
+HTML
+<section class="panel">
+ 
+<h2>LEGEND</h2>
+ 
+<div style="
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+align-items:center;
+">
+ 
+<div>
+<span class="legendBox konsens"></span>
+KONSENS
+</div>
+ 
+<div>
+<span class="legendBox teil"></span>
+TEILKONSENS
+</div>
+ 
+<div>
+<span class="legendBox spannung"></span>
+SPANNUNG
+</div>
+ 
+<div>
+<span class="legendBox konflikt"></span>
+KONFLIKT
+</div>
+ 
+<div>
+<span class="legendBox nachbar"></span>
+NACHBAR
+</div>
+ 
+<div>
+<span class="legendBox aktiv"></span>
+AKTIVE ZELLE
+</div>
+ 
+</div>
+ 
+</section>
+
+CSS:
+
+CSS
+.legendBox{
+display:inline-block;
+width:18px;
+height:18px;
+margin-right:6px;
+vertical-align:middle;
+border:1px solid #555;
+}
+ 
+.legendBox.konsens{
+background:#00aa44;
+}
+ 
+.legendBox.teil{
+background:#ffd700;
+}
+ 
+.legendBox.spannung{
+background:#ff9900;
+}
+ 
+.legendBox.konflikt{
+background:#ff4444;
+}
+ 
+.legendBox.nachbar{
+background:#3399ff;
+}
+ 
+.legendBox.aktiv{
+background:#ffffff;
+}
+Komplettes CSS-Update für die Zellen
+CSS
+.cell.konsens{
+background:#0f240f;
+border-color:#00ff66;
+}
+ 
+.cell.teil{
+background:#302a00;
+border-color:#ffd700;
+}
+ 
+.cell.spannung{
+background:#3a2200;
+border-color:#ff9900;
+}
+ 
+.cell.konflikt{
+background:#320000;
+border-color:#ff4444;
+animation:pulseConflict 1.2s infinite;
+}
+ 
+.cell.neighbor{
+outline:2px solid #3399ff;
+}
+ 
+.cell.active{
+outline:3px solid #ffffff;
+z-index:2;
+}
+Nachbarschaften sichtbar markieren
+JavaScript
+function highlightNeighbors(id){
+ 
+const cell =
+CELLS.find(
+c => c.id === id
+);
+ 
+if(!cell) return;
+ 
+const near =
+new Set(
+neighbors(cell)
+);
+ 
+document
+.querySelectorAll(".cell")
+.forEach(btn=>{
+ 
+btn.classList.remove(
+"neighbor"
+);
+ 
+if(
+near.has(
+btn.dataset.id
+)
+){
+btn.classList.add(
+"neighbor"
+);
+}
+});
+ 
+}
+Tastaturnavigation
+JavaScript
+document.addEventListener(
+"keydown",
+e=>{
+ 
+if(
+e.target.matches(
+"input,textarea,select"
+)
+){
+return;
+}
+ 
+switch(e.key){
+ 
+case "ArrowRight":
+gotoPosition(
+state.position+1
+);
+break;
+ 
+case "ArrowLeft":
+gotoPosition(
+state.position-1
+);
+break;
+ 
+case "ArrowUp":
+gotoPosition(
+state.position+9
+);
+break;
+ 
+case "ArrowDown":
+gotoPosition(
+state.position-9
+);
+break;
+ 
+case "PageUp":
+gotoPosition(
+state.position+81
+);
+break;
+ 
+case "PageDown":
+gotoPosition(
+state.position-81
+);
+break;
+ 
+case "Home":
+gotoPosition(40);
+break;
+ 
+case "End":
+gotoPosition(728);
+break;
+}
+ 
+});
+Erweiterte Navigationsebenen
+Plain Text
+← →
+±1 Zelle
+ 
+↑ ↓
+±9 Zellen
+ 
+PageUp / PageDown
+±81 Zellen
+ 
+Home
+40
+ 
+End
+728
+Finale Logik
+Plain Text
+729 CORE
+↓
+POSITION
+↓
+AKTIVE ZELLE
+↓
+NACHBARN (26)
+↓
+Oij Oik Ojk
+↓
+SPREAD
+↓
+ 
+KONSENS
+TEILKONSENS
+SPANNUNG
+KONFLIKT
+ 
+↓
+ 
+FARBE
+GRÜN
+GELB
+ORANGE
+ROT (((((
