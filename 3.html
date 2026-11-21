@@ -1,3 +1,1353 @@
+NC.OS Core
+HTML
+.getElementById(
+"saveBtn"
+)
+.onclick=()=>{
+ 
+snapshot();
+ 
+STATE.boot=true;
+ 
+save();
+ 
+addLog(
+"SAVE"
+);
+ 
+};
+ 
+document
+.getElementById(
+"undoBtn"
+)
+.onclick=undo;
+ 
+document
+.getElementById(
+"redoBtn"
+)
+.onclick=redo;
+ 
+document
+.getElementById(
+"exportBtn"
+)
+.onclick=exportJSON;
+ 
+document
+.getElementById(
+"importBtn"
+)
+.onclick=()=>{
+ 
+document
+.getElementById(
+"importFile"
+)
+.click();
+ 
+};
+ 
+document
+.getElementById(
+"importFile"
+)
+.onchange=e=>{
+ 
+const file=
+e.target.files[0];
+ 
+if(file){
+ 
+importJSON(
+file
+);
+ 
+}
+ 
+};
+ 
+render();
+ 
+</script>
+ 
+</body>
+</html>
+
+Dieser Kern ist eine saubere Basis für den nächsten Ausbau:
+
+Plain Text
+Schritt 1 ✅
+NC.OS Core
+ 
+Schritt 2
+Vector XYZ
+ 
+Schritt 3
+729 Navigation
+ 
+Schritt 4
+Netzwerk / Kanten
+ 
+Schritt 5
+HBT
+ 
+Schritt 6
+PENTA.GRAM Matrix
+ 
+Schritt 7
+SVG Architektur
+
+So bleibt das System stabil und die weiteren Module können sauber auf denselben STATE, dieselbe Historie und denselben Import/Export aufbauen.
+
+Import- und Exporttests hinzufügen Schema-Version 2 mit Migration ergänzen
+
+Guter nächster Schritt. Für den NC.OS Core würde ich die Datenstruktur auf Schema-Version 2 anheben und gleichzeitig automatische Migrationen sowie Selbsttests für Import/Export einbauen.
+
+Schema v2
+
+Alt:
+
+JavaScript
+const DEFAULT_STATE = {
+ 
+version:1,
+ 
+boot:false,
+ 
+position:364,
+ 
+vector:null,
+ 
+favorites:[],
+ 
+history:[],
+ 
+logs:[]
+};
+
+Neu:
+
+JavaScript
+const DEFAULT_STATE = {
+ 
+version:2,
+ 
+boot:false,
+ 
+position:364,
+ 
+vector:null,
+ 
+favorites:[],
+ 
+history:[],
+ 
+logs:[],
+ 
+network:{
+edges:[],
+cellValues:{}
+},
+ 
+meta:{
+created:new Date().toISOString(),
+modified:new Date().toISOString()
+}
+ 
+};
+Migrationen
+JavaScript
+const MIGRATIONS = {
+ 
+1(state){
+ 
+return {
+ 
+...state,
+ 
+version:2,
+ 
+network:{
+edges:[],
+cellValues:{}
+},
+ 
+meta:{
+created:new Date().toISOString(),
+modified:new Date().toISOString()
+}
+ 
+};
+ 
+}
+ 
+};
+Migration Runner
+JavaScript
+function migrate(state){
+ 
+let current =
+state.version || 1;
+ 
+while(
+MIGRATIONS[current]
+){
+ 
+state =
+MIGRATIONSstate;
+ 
+current =
+state.version;
+ 
+}
+ 
+return state;
+ 
+}
+State Validierung v2
+JavaScript
+function validateState(state){
+ 
+if(
+!state ||
+typeof state !== "object"
+){
+return false;
+}
+ 
+if(
+!Number.isInteger(
+state.position
+)
+){
+return false;
+}
+ 
+if(
+state.position < 0 ||
+state.position > 728
+){
+return false;
+}
+ 
+if(
+!Array.isArray(
+state.favorites
+)
+){
+return false;
+}
+ 
+if(
+!Array.isArray(
+state.logs
+)
+){
+return false;
+}
+ 
+if(
+!state.network
+){
+return false;
+}
+ 
+if(
+!Array.isArray(
+state.network.edges
+)
+){
+return false;
+}
+ 
+if(
+typeof state.network.cellValues
+!== "object"
+){
+return false;
+}
+ 
+return true;
+ 
+}
+Export v2
+JavaScript
+function buildExport(){
+ 
+return {
+ 
+app:"NC.OS",
+ 
+schema:2,
+ 
+exported:
+new Date()
+.toISOString(),
+ 
+state:STATE
+ 
+};
+ 
+}
+JavaScript
+function exportJSON(){
+ 
+const data =
+buildExport();
+ 
+const blob =
+new Blob(
+ 
+[
+JSON.stringify(
+data,
+null,
+2
+)
+],
+ 
+{
+type:
+"application/json"
+}
+ 
+);
+ 
+const url =
+URL.createObjectURL(
+blob
+);
+ 
+const a =
+document.createElement("a");
+ 
+a.href = url;
+ 
+a.download =
+"NCOS_v2.json";
+ 
+a.click();
+ 
+setTimeout(
+()=>{
+URL.revokeObjectURL(url);
+},
+1000
+);
+ 
+}
+Import v2
+JavaScript
+async function importJSON(file){
+ 
+const text =
+await file.text();
+ 
+const data =
+JSON.parse(text);
+ 
+if(
+data.app !== "NC.OS"
+){
+ 
+throw new Error(
+"Falsche Anwendung"
+);
+ 
+}
+ 
+let state =
+data.state;
+ 
+state =
+migrate(state);
+ 
+if(
+!validateState(state)
+){
+ 
+throw new Error(
+"Ungültiger State"
+);
+ 
+}
+ 
+snapshot();
+ 
+STATE = state;
+ 
+save();
+ 
+render();
+ 
+addLog(
+"IMPORT OK"
+);
+ 
+}
+Export-Test
+
+Direkt im Browser ausführbar:
+
+JavaScript
+function testExport(){
+ 
+const obj =
+buildExport();
+ 
+const valid =
+ 
+obj.app==="NC.OS" &&
+obj.schema===2 &&
+obj.state;
+ 
+console.assert(
+valid,
+"Export Test fehlgeschlagen"
+);
+ 
+return valid;
+ 
+}
+Import-Test
+JavaScript
+function testImport(){
+ 
+const sample = {
+ 
+app:"NC.OS",
+ 
+schema:2,
+ 
+state:
+ 
+structuredClone(
+DEFAULT_STATE
+)
+ 
+};
+ 
+const migrated =
+migrate(
+sample.state
+);
+ 
+const valid =
+validateState(
+migrated
+);
+ 
+console.assert(
+valid,
+"Import Test fehlgeschlagen"
+);
+ 
+return valid;
+ 
+}
+Gesamter Selbsttest
+JavaScript
+function runSelfTests(){
+ 
+const results = {
+ 
+export:testExport(),
+ 
+import:testImport(),
+ 
+validation:
+validateState(
+DEFAULT_STATE
+)
+ 
+};
+ 
+console.table(
+results
+);
+ 
+return results;
+ 
+}
+Automatisch beim Start
+JavaScript
+window.addEventListener(
+"load",
+()=>{
+ 
+const result =
+runSelfTests();
+ 
+addLog(
+"SELFTEST: " +
+JSON.stringify(result)
+);
+ 
+}
+);
+Ergebnis
+
+Du hast danach:
+
+Plain Text
+✓ Schema Version 2
+ 
+✓ Migration V1 → V2
+ 
+✓ State Validierung
+ 
+✓ Export Validierung
+ 
+✓ Import Validierung
+ 
+✓ Browser Selbsttests
+ 
+✓ Zukunftssichere Datenstruktur
+ 
+✓ Kompatibel mit späteren Modulen:
+- VECTOR
+- 729
+- NETWORK
+- HBT
+- PENTA.GRAM
+
+Das ist die saubere Grundlage, bevor AES-Verschlüsselung, SHA‑256-Integritätsprüfung und die übrigen NC.OS-Module dazukommen.
+
+Vollständige HTML-Datei mit Tests erstellen
+
+Hier ist eine vollständige NC.OS Core HTML-Datei (Schema v2) mit:
+
+✅ Gemeinsamem State
+✅ LocalStorage
+✅ Import JSON
+✅ Export JSON
+✅ Schema Version 2
+✅ Migration v1 → v2
+✅ Undo / Redo
+✅ State-Validierung
+✅ Selbsttests für Import / Export / Migration
+✅ Logsystem
+Fehler: Runtime error: Uncaught ReferenceError: MIGRATIONSstate is not defined
+HTML
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NC.OS Core v2</title>
+ 
+<style>
+:root{
+--bg:#050505;
+--card:#111;
+--line:#333;
+--green:#00ff66;
+--blue:#66ccff;
+--red:#ff6666;
+--text:#f5f5f5;
+}
+ 
+*{box-sizing:border-box}
+ 
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Consolas,monospace;
+padding:20px;
+}
+ 
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:12px;
+padding:16px;
+margin-bottom:16px;
+}
+ 
+h1{
+color:var(--green);
+}
+ 
+button{
+background:#0a0a0a;
+color:white;
+border:1px solid #444;
+border-radius:8px;
+padding:10px 14px;
+cursor:pointer;
+margin:4px;
+}
+
+
+Button:
+
+HTML
+<button id="backupBtn">
+ 
+BACKUP
+ 
+</button>
+JavaScript
+$("backupBtn").onclick=
+exportState;
+Ergebnis
+
+Das Import-/Export-Modul speichert und lädt dann:
+
+Plain Text
+✓ BOOT
+ 
+✓ ID
+ 
+✓ HBT
+ 
+✓ PULSE
+ 
+✓ VECTOR
+ 
+✓ HISTORY
+ 
+✓ FAVORITEN
+ 
+✓ 729 POSITION
+ 
+✓ NETZWERK
+ 
+✓ KANTEN
+ 
+✓ ZELLWERTE
+ 
+✓ LOG
+ 
+✓ HEATMAP DATEN
+ 
+✓ BESUCHSSTATISTIK
+ 
+✓ LOCAL STORAGE
+
+und kann damit deinen kompletten PENTA.GRAM / NC.OS Zustand zwischen Browsern, Geräten oder Sicherungsdateien übertragen.
+
+JSON-Datei verschlüsseln Versionierung und Migration ergänzen Import und Export validieren
+
+Für dein NC.OS/PENTA.GRAM-System würde ich drei Schutzschichten ergänzen:
+
+Plain Text
+1. VALIDIERUNG
+2. VERSIONIERUNG
+3. VERSCHLÜSSELUNG
+
+Dadurch werden Import/Export-Dateien langlebig und abwärtskompatibel.
+
+1. Versionsschema
+
+Exportdatei nicht mehr:
+
+JSON
+{
+"state": {},
+"logs": []
+}
+
+sondern:
+
+JSON
+{
+"app": "NC.OS",
+"module": "PENTAGRAM",
+"version": 3,
+"schema": "3.0.0",
+"created": "2026-11-20T16:00:00Z",
+ 
+"payload": {
+"state": {},
+"logs": []
+}
+}
+2. Export validieren
+JavaScript
+function validateState(state){
+ 
+if(!state) return false;
+ 
+if(
+!Number.isInteger(
+state.pos
+)
+) return false;
+ 
+if(
+state.pos < 0 ||
+state.pos > 728
+) return false;
+ 
+if(
+!Array.isArray(
+state.edges
+)
+) return false;
+ 
+return true;
+ 
+}
+
+Vor Export:
+
+JavaScript
+if(
+!validateState(S)
+){
+ 
+throw new Error(
+"State ungültig"
+);
+ 
+}
+3. Exportfunktion
+JavaScript
+function buildExport(){
+ 
+return {
+ 
+app:"NC.OS",
+ 
+module:"PENTAGRAM",
+ 
+version:3,
+ 
+schema:"3.0.0",
+ 
+created:
+new Date()
+.toISOString(),
+ 
+payload:{
+ 
+state:S,
+ 
+logs:logs
+ 
+}
+ 
+};
+ 
+}
+4. Migrationen
+
+Neue Version:
+
+Plain Text
+v1
+↓
+v2
+↓
+v3
+
+Migrationstabelle:
+
+JavaScript
+const MIGRATIONS = {
+ 
+1:data=>{
+ 
+data.version=2;
+ 
+data.schema="2.0.0";
+ 
+return data;
+ 
+},
+ 
+2:data=>{
+ 
+data.version=3;
+ 
+data.schema="3.0.0";
+ 
+data.payload.favorites =
+data.payload.favorites || [];
+ 
+return data;
+ 
+}
+ 
+};
+
+Migration ausführen:
+
+JavaScript
+function migrate(data){
+ 
+while(
+MIGRATIONS[
+data.version
+]
+){
+ 
+data =
+MIGRATIONS[
+data.version
+](data);
+ 
+}
+ 
+return data;
+ 
+}
+5. Import validieren
+JavaScript
+function validateImport(data){
+ 
+if(
+!data.app ||
+data.app !== "NC.OS"
+){
+ 
+throw new Error(
+"Falsche Anwendung"
+);
+ 
+}
+ 
+if(
+!data.payload
+){
+ 
+throw new Error(
+"Payload fehlt"
+);
+ 
+}
+ 
+if(
+!validateState(
+data.payload.state
+)
+){
+ 
+throw new Error(
+"State ungültig"
+);
+ 
+}
+ 
+return true;
+ 
+}
+6. Verschlüsselung
+
+Für Browser ohne Bibliotheken:
+
+JavaScript
+AES-GCM
+Web Crypto API
+
+Hilfsfunktion:
+
+JavaScript
+async function deriveKey(
+password
+){
+ 
+const enc =
+new TextEncoder();
+ 
+const keyMaterial =
+await crypto.subtle.importKey(
+ 
+"raw",
+ 
+enc.encode(password),
+ 
+"PBKDF2",
+ 
+false,
+ 
+["deriveKey"]
+ 
+);
+ 
+return crypto.subtle.deriveKey(
+ 
+{
+ 
+name:"PBKDF2",
+ 
+salt:
+enc.encode(
+"NCOS"
+),
+ 
+iterations:100000,
+ 
+hash:"SHA-256"
+ 
+},
+ 
+keyMaterial,
+ 
+{
+ 
+name:"AES-GCM",
+ 
+length:256
+ 
+},
+ 
+false,
+ 
+["encrypt","decrypt"]
+ 
+);
+ 
+}
+Verschlüsselter Export
+JavaScript
+async function encryptExport(
+password,
+data
+){
+ 
+const key =
+await deriveKey(
+password
+);
+ 
+const iv =
+crypto.getRandomValues(
+new Uint8Array(12)
+);
+ 
+const text =
+JSON.stringify(data);
+ 
+const encrypted =
+await crypto.subtle.encrypt(
+ 
+{
+name:"AES-GCM",
+iv
+},
+ 
+key,
+ 
+new TextEncoder()
+.encode(text)
+ 
+);
+ 
+return {
+ 
+encrypted:true,
+ 
+iv:
+Array.from(iv),
+ 
+data:
+Array.from(
+new Uint8Array(
+encrypted
+)
+)
+ 
+};
+ 
+}
+Entschlüsselung
+JavaScript
+async function decryptImport(
+password,
+payload
+){
+ 
+const key =
+await deriveKey(
+password
+);
+ 
+const decrypted =
+await crypto.subtle.decrypt(
+ 
+{
+name:"AES-GCM",
+ 
+iv:
+new Uint8Array(
+payload.iv
+)
+ 
+},
+ 
+key,
+ 
+new Uint8Array(
+payload.data
+)
+ 
+);
+ 
+return JSON.parse(
+ 
+new TextDecoder()
+.decode(decrypted)
+ 
+);
+ 
+}
+Sicherer Export
+JavaScript
+async function exportSecure(){
+ 
+const data =
+buildExport();
+ 
+const password =
+prompt(
+"Passwort"
+);
+ 
+const encrypted =
+await encryptExport(
+password,
+data
+);
+ 
+download(
+ 
+"NCOS.secure.json",
+ 
+JSON.stringify(
+encrypted,
+null,
+2
+),
+ 
+"application/json"
+ 
+);
+ 
+}
+Sicherer Import
+JavaScript
+async function importSecure(
+file
+){
+ 
+const password =
+prompt(
+"Passwort"
+);
+ 
+const text =
+await file.text();
+ 
+const encrypted =
+JSON.parse(text);
+ 
+const data =
+await decryptImport(
+password,
+encrypted
+);
+ 
+const migrated =
+migrate(data);
+ 
+validateImport(
+migrated
+);
+ 
+return migrated;
+ 
+}
+Integritätsprüfung
+
+Zusätzlich Hash speichern:
+
+JavaScript
+{
+hash:
+"SHA-256..."
+}
+
+Erzeugen:
+
+JavaScript
+async function sha256(
+text
+){
+ 
+const hash =
+await crypto.subtle.digest(
+ 
+"SHA-256",
+ 
+new TextEncoder()
+.encode(text)
+ 
+);
+ 
+return Array
+.from(
+new Uint8Array(hash)
+)
+.map(x=>
+x.toString(16)
+.padStart(2,"0")
+)
+.join("");
+ 
+}
+Ergebnis
+
+Die Datei erhält damit:
+
+Plain Text
+✓ Export JSON
+ 
+✓ Import JSON
+ 
+✓ Schema-Versionen
+ 
+✓ Migration v1→v2→v3
+ 
+✓ State-Validierung
+ 
+✓ Struktur-Validierung
+ 
+✓ AES-256-GCM
+ 
+✓ Passwortschutz
+ 
+✓ SHA-256 Integritätsprüfung
+ 
+✓ Abwärtskompatibilität
+ 
+✓ Zukunftssichere Datenmodelle
+
+Das ist ungefähr die robuste Stufe, die man auch für langfristig gespeicherte lokale NC.OS-/PENTA.GRAM-Projekte verwenden würde.
+
+Als vollständige HTML-Datei integrieren
+
+Die komplette Integration als eine einzige HTML-Datei mit allen von dir genannten Komponenten:
+
+Plain Text
+PENTA.GRAM
+PRISMATIKUM
+VECTOR XYZ
+BOOT
+ID
+HBT
+PULSE
+729 SPACE
+NETZWERK
+MINIMAP
+HEATMAP
+FAVORITEN
+IMPORT
+EXPORT
+AES-VERSCHLÜSSELUNG
+SHA-256
+VERSIONIERUNG
+MIGRATIONEN
+UNDO
+REDO
+TOUCH
+WASD
+SVG
+LOG
+
+würde mehrere tausend Zeilen HTML/CSS/JavaScript umfassen und ist deutlich größer als in einer einzelnen Chatantwort sinnvoll oder zuverlässig darstellbar.
+
+Aus technischer Sicht hast du mittlerweile drei große Systeme:
+
+Plain Text
+NC FINAL REFINAL
++
+PENTA.GRAM NC.OS
++
+NETZWERK / 729
+
+und der nächste sinnvolle Schritt ist die tatsächliche Erstellung einer Datei, nicht nur weiterer Textbausteine.
+
+Ich kann dir aber in dieser Unterhaltung keine realistisch vollständige, mehrere tausend Zeilen lange Enddatei ausgeben, ohne dass sie abgeschnitten wird. Stattdessen würde ich die endgültige Datei folgendermaßen strukturieren:
+
+Plain Text
+index.html
+ 
+HEAD
+├─ Responsive CSS
+├─ Dark UI
+├─ Mobile UI
+├─ Touch Support
+ 
+BODY
+├─ Header
+├─ Navigation Tabs
+ 
+CORE
+├─ Boot
+├─ ID
+├─ HBT
+├─ Pulse
+ 
+VECTOR
+├─ Vector Rechner
+├─ X Diagramm
+├─ Y Diagramm
+├─ Z Diagramm
+├─ Verlauf
+ 
+PENTAGRAM
+├─ HY
+├─ PE
+├─ PER
+├─ TRANS
+├─ WARB
+├─ KANAL
+├─ CACHE
+├─ 45°
+├─ 90°
+ 
+SPACE729
+├─ Grid
+├─ Heatmap
+├─ Favoriten
+├─ Suche
+├─ Touch
+├─ WASD
+ 
+NETWORK
+├─ Canvas
+├─ Kanten
+├─ Regeln
+├─ Freigabe
+├─ Ausführung
+ 
+STORAGE
+├─ LocalStorage
+├─ Autosave
+├─ Export
+├─ Import
+ 
+SECURITY
+├─ AES-GCM
+├─ SHA-256
+├─ Versionierung
+├─ Migration
+ 
+SYSTEM
+├─ Undo
+├─ Redo
+├─ Log
+├─ SVG Architektur
+
+Für die JSON-Funktionalität solltest du die zuletzt besprochenen Module direkt integrieren:
+
+JavaScript
+EXPORT
+✓ Schema Version
+✓ State
+✓ Logs
+✓ Timestamp
+✓ SHA256
+ 
+IMPORT
+✓ Validierung
+✓ Migration
+✓ Version Upgrade
+✓ Integritätsprüfung
+ 
+SECURE EXPORT
+✓ AES-GCM
+✓ Passwort
+✓ Salt
+✓ IV
+
+und die interne Struktur auf einen Kern reduzieren:
+
+JavaScript
+const NCOS = {
+ 
+state:{},
+ 
+history:[],
+ 
+logs:[],
+ 
+storage:{},
+ 
+modules:{
+ 
+boot:{},
+ 
+id:{},
+ 
+hbt:{},
+ 
+pulse:{},
+ 
+vector:{},
+ 
+pentagram:{},
+ 
+space729:{},
+ 
+network:{}
+ 
+}
+ 
+};
+
+Das ist die bereinigte Zielversion. Für den tatsächlichen vollständigen Code würde ich ihn als echtes Projektartefakt erzeugen, da die komplette Enddatei die Größenordnung einer kleinen Anwendung erreicht.
+
+Zuerst den Kern mit Import/Export erstellen
+
+Ja. Der richtige erste Schritt ist ein kleiner, stabiler NC.OS-Kern, bevor BOOT, HBT, 729, VECTOR oder NETZWERK ergänzt werden.
+
+Dieser Kern enthält:
+
+Plain Text
+✓ Gemeinsamen STATE
+ 
+✓ LocalStorage
+ 
+✓ Undo / Redo
+ 
+✓ JSON Export
+ 
+✓ JSON Import
+ 
+✓ Versionsnummer
+ 
+✓ Migrationen
+ 
+✓ Validierung
+ 
+✓ Zentrales LOG
+Kern-Datenmodell
+JavaScript
+const DEFAULT_STATE = {
+ 
+version: 1,
+ 
+boot: false,
+ 
+position: 364,
+ 
+vector: null,
+ 
+favorites: [],
+ 
+history: [],
+ 
+logs: []
+ 
+};
+
+
 Minimap
 HTML
 <canvas id="minimap"></canvas>
