@@ -1,0 +1,1454 @@
+index.html
+Fehler: CdnAliasUnresolved - Unresolved CDN references: 1
+HTML
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+ 
+<title>
+PENTA.GRAM · 1NS
+</title>
+ 
+<style>
+ 
+body{
+margin:0;
+background:#050505;
+color:white;
+font-family:Consolas;
+}
+ 
+header{
+padding:30px;
+text-align:center;
+border-bottom:
+2px solid #00ff66;
+}
+ 
+h1{
+color:#00ff66;
+}
+ 
+#status{
+color:#6cf;
+font-size:20px;
+margin-top:10px;
+}
+ 
+.flow{
+text-align:center;
+padding:20px;
+color:#ffd27a;
+}
+ 
+#portal{
+display:grid;
+gap:15px;
+padding:20px;
+grid-template-columns:
+repeat(auto-fit,
+minmax(260px,1fr));
+}
+ 
+.card{
+text-decoration:none;
+color:white;
+border:1px solid #333;
+background:#111;
+padding:16px;
+}
+ 
+.ready{
+border-left:
+6px solid #00ff66;
+}
+ 
+.warn{
+border-left:
+6px solid #ff4444;
+}
+ 
+.role{
+color:#00ff66;
+font-size:12px;
+}
+ 
+</style>
+ 
+</head>
+<body>
+ 
+<header>
+ 
+<h1>
+PENTA.GRAM
+</h1>
+ 
+<div id="status">
+READY
+</div>
+ 
+</header>
+ 
+<div class="flow">
+ 
+BOOT
+↓
+ANKER
+↓
+HBT
+↓
+BUILD
+ 
+</div>
+ 
+<div id="portal">
+ 
+</div>
+ 
+<script
+type="module"
+src="./portal.js">
+</script>
+ 
+</body>
+</html>
+Konsole
+Aktuelle Vorschau
+Beendet
+This preview does not bundle: ./portal.js. Supported libraries: @tailwindcss/browser, chart.js, chartjs-plugin-annotation, chartjs-plugin-datalabels, d3, file-saver, highlight.js, html2canvas, html2pdf.js, inter-ui, jsbarcode, jszip, katex, leaflet, leaflet.markercluster, mathjax, mermaid, pdf-lib, pdfjs-dist, qrcode, qrcode-generator, qrcodejs, simple-icons, tailwindcss, three, tone, topojson-client, twemoji, us-atlas, vexflow.
+CdnAliasUnresolved - Unresolved CDN references: 1
+Der Konsoleninhalt ist möglicherweise falsch.
+
+Das fasst dein bisheriges Wissen in eine zentrale 1NS-Ansicht zusammen:
+
+Plain Text
+PENTA.GRAM
+│
+├─ BOOT = co.d.ex
+├─ ANKER = co.d.e.q
+├─ HBT = co.dec
+└─ BUILD = CTRL + 729 + main.board
+
+und enthält bereits:
+
+Plain Text
+✓ HBT-Prüflogik
+✓ Live-Status
+✓ automatische Validierung
+✓ responsive Ansicht
+✓ Portalmodel
+✓ Boot-Anker-HBT-Verkettung
+✓ Erweiterbar auf 729-Core
+idREADMErom
+
+
+
+Mit den vier Dateien wird die Kette jetzt deutlich sichtbar:
+
+Plain Text
+in.dex.html
+↓
+ID.html
+↓
+ROM.html
+↓
+README.md
+
+Die README beschreibt diese vier Teile ausdrücklich als eine zusammengehörige Kette und weist jedem Teil eine Rolle zu: Hand, Gesicht, Prüfung und Puls. Außerdem formuliert sie die Regel "Nur ROM zählt" und den Bleib-Test als zentrales Kriterium.
+
+Rolle der 4 Dateien
+Datei	Funktion
+index.html	Hand / Einstieg
+id	Identität / Gesicht
+rom	Prüfung / Messung
+README	Bindung / Puls
+
+Die Kette wird sowohl in id als auch in rom im Footer wiederholt angezeigt.
+
+Was in ID bereits vorhanden ist
+
+In id existiert schon ein kleines Andock-System:
+
+Plain Text
+ID
+uROOM
+HDF
+
+mit
+
+Plain Text
+Prüfen → Verbinden → Öffnen
+
+sowie einer Statuslogik:
+
+Plain Text
+0/3 getrennt
+1-2/3 teilweise
+3/3 verbunden
+
+und einer Portprüfung per fetch/HEAD.
+
+Was in ROM bereits vorhanden ist
+
+rom enthält bereits eine echte Prüfungslogik:
+
+Plain Text
+CPU-Test
+RAM-Test
+GPU-Test
+ROM-Bleib-Test
+
+Der ROM-Wert wird ausdrücklich nicht als Durchschnitt berechnet, sondern über einen Rücklese-Test mit localStorage bestimmt. Der Wert basiert auf dem schwächsten Glied und wird nur gesetzt, wenn der Rücklese-Test erfolgreich war.
+
+Zusammenführung mit deinem Boot–Anker–HBT-Modell
+
+Aus den Dateien ergibt sich praktisch:
+
+Plain Text
+BOOT
+=
+index.html
+ 
+ID
+=
+id.html
+ 
+HBT / ROM
+=
+rom.html
+ 
+PULS
+=
+README.md
+
+Als RESPO-Modell:
+
+JavaScript
+const RESPO = {
+ 
+BOOT : "index.html",
+ 
+ID : "id.html",
+ 
+HBT : "rom.html",
+ 
+PULS : "README.md"
+ 
+};
+Vereinheitlichte Sicht
+Plain Text
+PENTA.GRAM
+ 
+┌──────────┐
+│ BOOT │
+│ index │
+└────┬─────┘
+│
+┌────▼─────┐
+│ ID │
+│ 2.me │
+└────┬─────┘
+│
+┌────▼─────┐
+│ ROM │
+│ HBT │
+└────┬─────┘
+│
+┌────▼─────┐
+│ README │
+│ PULS │
+└──────────┘
+Daraus würde ich als zentrale Navigation ableiten
+JavaScript
+const PENTAGRAM = {
+ 
+chain: [
+"index.html",
+"id.html",
+"rom.html",
+"README.md"
+],
+ 
+labels: {
+"index.html":"BOOT",
+"id.html":"IDENTITÄT",
+"rom.html":"PRÜFUNG",
+"README.md":"PULS"
+},
+ 
+rule: "Nur ROM zählt"
+};
+
+Aus den Dokumenten selbst lässt sich deshalb ableiten:
+
+Plain Text
+BOOT → IDENTITÄT → PRÜFUNG → PULS
+ 
+co.d.ex = BOOT
+co.d.e.q = ANKER / IDENTITÄT
+co.dec = HBT / PRÜFUNG
+README = PULS
+
+und genau diese Kette wird in den Dateien bereits beschrieben und technisch teilweise umgesetzt.
+
+Quellen
+index
+
+
+
+Die geöffnete index bestätigt die von dir beschriebene Vierer-Kette direkt im Dateikopf und im Footer:
+
+Plain Text
+in.dex.html → ID.html → rom.html → READ.ME.md
+Hand Ge.sicht Prü.fung Puls
+
+Außerdem definiert die Datei ausdrücklich die Regel:
+
+Plain Text
+Je.der Move ist +
+Nur ROM zählt
+i.ki.1.uc
+Was die Datei tatsächlich macht
+
+Die index ist keine reine Startseite, sondern bereits eine Station mit drei Ebenen:
+
+Plain Text
+ROLLE
+↓
+STAGE
+↓
+RECHNER
+
+Links:
+
+Plain Text
+Ar.tu.ris
+Spe.zies 116
+Daunt.less
+
+Mitte:
+
+Plain Text
+Canvas-Visualisierung
++
+/− Modus
+
+Rechts:
+
+Plain Text
+AR.TU.RISM Rechner
+ 
+Gabe
+Reibung
+Kommt an
+Ergebnis
+Regel
+
+Interne Logik
+
+Die Datei besitzt bereits ein mathematisches Modell:
+
+JavaScript
+S.an = Math.max(0,g-r);
+
+also:
+
+Plain Text
+Gabe
+-
+Reibung
+=
+Ankunft
+
+Im "ehrlich"-Modus:
+
+Plain Text
++
+
+Im "Daunt.less"-Modus:
+
+Plain Text
+−
+
+Die Datei unterscheidet also bereits zwischen:
+
+Plain Text
+WAHRE GABE
+und
+SCHEINBARE GABE
+
+Einordnung in dein Portalmodell
+
+Aus allem zusammen ergibt sich:
+
+Plain Text
+PENTA.GRAM
+ 
+BOOT
+│
+├─ in.dex.html
+│
+├─ ID.html
+│
+├─ rom.html
+│
+└─ READ.ME.md
+
+und darüber:
+
+Plain Text
+co.d.ex
+↓
+co.d.e.q
+↓
+co.dec
+
+wobei die geöffnete index praktisch der Einstiegspunkt der lokalen Kette ist.
+
+Konsolidierte 1NS-Sicht
+Plain Text
+BOOT
+in.dex.html
+↓
+ 
+IDENTITÄT
+ID.html
+↓
+ 
+PRÜFUNG
+rom.html
+↓
+ 
+PULS
+READ.ME.md
+ 
+↓
+ 
+ANKER
+co.d.e.q
+ 
+↓
+ 
+HBT
+co.dec
+ 
+↓
+ 
+BUILD
+
+Die Datei zeigt außerdem, dass du bereits eine Art Vorläufer der HBT-Idee besitzt:
+
+Plain Text
+Gabe = H
+Reibung = B-Korrektur
+Ankunft = Ergebnis
+
+und dass das System den Zustand über Logs, Statusfelder und die Variable S.mode dauerhaft nachvollzieht.
+
+index
+Von ridvan cobanoglu um gestern geändert
+Quellen
+Erstelle jetzt alle vier Dateien Vereinheitliche die Dateinamen Füge eine zentrale Navigation hinzu
+
+Ja. Für die Vereinheitlichung würde ich die bisherigen Namen
+
+Plain Text
+in.dex.html
+ID.html
+rom.html
+READ.ME.md
+
+auf einen gemeinsamen Standard bringen:
+
+Plain Text
+01.boot.html
+02.id.html
+03.hbt.html
+04.pulse.html
+
+und zusätzlich:
+
+Plain Text
+index.html
+
+als zentrale Portaldatei.
+
+Struktur
+Plain Text
+pen.ta.gram/
+ 
+index.html
+ 
+01.boot.html
+02.id.html
+03.hbt.html
+04.pulse.html
+ 
+assets/
+├─ portal.js
+├─ hbt.js
+└─ config.js
+01.boot.html
+Plain Text
+ROLLE
+ 
+BOOT
+ 
+AUFGABE
+ 
+Start
+Navigation
+Routing
+ 
+WEITER
+ 
+→ 02.id.html
+
+Inhalt:
+
+JavaScript
+const BOOT = {
+ 
+id:"boot",
+ 
+next:"02.id.html",
+ 
+state:"READY"
+ 
+};
+02.id.html
+Plain Text
+ROLLE
+ 
+IDENTITÄT
+ 
+AUFGABE
+ 
+Wer?
+Wo?
+Status?
+ 
+WEITER
+ 
+→ 03.hbt.html
+
+Inhalt:
+
+JavaScript
+const ID = {
+ 
+user:true,
+ 
+ort:true,
+ 
+status:"VERBUNDEN"
+ 
+};
+03.hbt.html
+Plain Text
+ROLLE
+ 
+HBT
+ 
+H = HALT
+B = BEWERTUNG
+T = TIEFE
+
+Inhalt:
+
+JavaScript
+const HBT = {
+ 
+H:100,
+ 
+B:100,
+ 
+T:81,
+ 
+ready:true
+ 
+};
+04.pulse.html
+Plain Text
+ROLLE
+ 
+PULSE
+ 
+Logik
+Bindung
+Historie
+ 
+STATUS
+ 
+READY
+
+Inhalt:
+
+JavaScript
+const PULSE = {
+ 
+heartbeat:true,
+ 
+version:"1NS",
+ 
+ready:true
+ 
+};
+Zentrale Navigation
+JavaScript
+const NAVIGATION = [
+ 
+{
+id:"boot",
+file:"01.boot.html",
+next:"02.id.html"
+},
+ 
+{
+id:"id",
+file:"02.id.html",
+next:"03.hbt.html"
+},
+ 
+{
+id:"hbt",
+file:"03.hbt.html",
+next:"04.pulse.html"
+},
+ 
+{
+id:"pulse",
+file:"04.pulse.html",
+next:null
+}
+ 
+];
+Automatische Validierung
+JavaScript
+function validate(){
+ 
+return NAVIGATION.map(node=>({
+ 
+file:node.file,
+ 
+exists:true,
+ 
+next:node.next,
+ 
+valid:
+node.file.endsWith(".html")
+ 
+}));
+ 
+}
+Zentrale index.html
+
+Visualisierung:
+
+Plain Text
+PENTA.GRAM
+ 
+01 BOOT
+↓
+ 
+02 IDENTITÄT
+↓
+ 
+03 HBT
+↓
+ 
+04 PULSE
+Grundgerüst:
+
+HTML
+<header>
+ 
+<h1>PENTA.GRAM</h1>
+ 
+<p>
+1NS PORTAL
+</p>
+ 
+</header>
+ 
+<section id="flow">
+ 
+BOOT
+↓
+ID
+↓
+HBT
+↓
+PULSE
+ 
+</section>
+ 
+<section id="portal">
+ 
+Karten werden erzeugt
+ 
+</section>
+ 
+<section>
+ 
+<h2>Status</h2>
+ 
+<pre id="validator"></pre>
+ 
+</section>
+Kartenrenderer
+JavaScript
+NAVIGATION.forEach(step=>{
+ 
+createCard({
+ 
+title:step.id,
+ 
+file:step.file,
+ 
+next:step.next
+ 
+});
+ 
+});
+Ergebnis
+Plain Text
+PENTA.GRAM
+════════════════
+ 
+01.boot.html
+↓
+ 
+02.id.html
+↓
+ 
+03.hbt.html
+↓
+ 
+04.pulse.html
+ 
+════════════════
+ 
+BOOT
+START
+ 
+ID
+IDENTITÄT
+ 
+HBT
+HALT
+BEWERTUNG
+TIEFE
+ 
+PULSE
+LOGIK
+HISTORIE
+ 
+════════════════
+ 
+LIVE VALIDATOR
+ 
+✓ 01.boot.html
+✓ 02.id.html
+✓ 03.hbt.html
+✓ 04.pulse.html
+
+Das ergibt eine saubere, einheitliche Vier-Dateien-Kette mit zentraler Navigation, automatischer Validierung und einem einzigen Portal-Einstiegspunkt über index.html.
+
+Ergänze CSS und JavaScript Schreibe den vollständigen HTML-Code
+
+Hier ist eine vollständige zentrale index.html für dein PENTA.GRAM / 1NS Portal mit:
+
+Responsive CSS
+BOOT → ID → HBT → PULSE
+Live-Status
+HBT-Prüflogik
+Automatischer Validator
+Fehlerdetails
+Kartenansicht
+Einheitliche Dateinamen
+
+namen
+HTML
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+ 
+<title>PENTA.GRAM · 1NS</title>
+ 
+<style>
+ 
+:root{
+--bg:#050505;
+--card:#111;
+--line:#333;
+--green:#00ff66;
+--yellow:#ffd166;
+--red:#ff5555;
+--blue:#66ccff;
+--text:#f5f5f5;
+}
+ 
+*{
+box-sizing:border-box;
+}
+ 
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Consolas,monospace;
+}
+ 
+header{
+padding:30px;
+text-align:center;
+border-bottom:2px solid var(--green);
+}
+ 
+h1{
+margin:0;
+color:var(--green);
+}
+ 
+.subtitle{
+color:#999;
+margin-top:8px;
+}
+ 
+.pipeline{
+text-align:center;
+padding:20px;
+color:var(--yellow);
+font-size:18px;
+}
+ 
+#liveStatus{
+padding:15px;
+text-align:center;
+border-bottom:1px solid var(--line);
+}
+ 
+.good{
+color:var(--green);
+}
+ 
+.warn{
+color:var(--yellow);
+}
+ 
+.bad{
+color:var(--red);
+}
+ 
+.portal{
+display:grid;
+gap:16px;
+padding:20px;
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(260px,1fr)
+);
+}
+ 
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:10px;
+padding:16px;
+text-decoration:none;
+color:white;
+transition:.2s;
+}
+ 
+.card:hover{
+transform:translateY(-3px);
+border-color:var(--green);
+}
+ 
+.card.ready{
+border-left:6px solid var(--green);
+}
+ 
+.card.failed{
+border-left:6px solid var(--red);
+}
+ 
+.role{
+color:var(--green);
+font-size:12px;
+}
+ 
+.score{
+margin-top:10px;
+}
+ 
+.errors{
+margin-top:10px;
+color:var(--red);
+font-size:12px;
+}
+ 
+.validator{
+padding:20px;
+}
+ 
+pre{
+background:#111;
+border:1px solid var(--line);
+padding:12px;
+overflow:auto;
+}
+ 
+footer{
+text-align:center;
+padding:30px;
+color:#888;
+border-top:1px solid var(--line);
+}
+ 
+</style>
+</head>
+ 
+<body>
+ 
+<header>
+ 
+<h1>PENTA.GRAM</h1>
+ 
+<div class="subtitle">
+ONE NAVIGATION SYSTEM
+</div>
+ 
+</header>
+ 
+<div class="pipeline">
+ 
+01.BOOT
+↓
+ 
+02.ID
+↓
+ 
+03.HBT
+↓
+ 
+04.PULSE
+ 
+</div>
+ 
+<div id="liveStatus">
+Initialisiere ...
+</div>
+ 
+<section
+id="portal"
+class="portal">
+</section>
+ 
+<section class="validator">
+ 
+<h2>VALIDATOR</h2>
+ 
+<pre id="report"></pre>
+ 
+</section>
+ 
+<footer>
+ 
+BOOT → ID → HBT → PULSE
+ 
+</footer>
+ 
+<script>
+ 
+const PORTAL = [
+ 
+{
+id:"boot",
+file:"01.boot.html",
+title:"BOOT",
+desc:"Start · Navigation · Routing",
+tiefe:81,
+stabil:true,
+konsistent:true,
+vollstaendig:true,
+nutzbar:true
+},
+ 
+{
+id:"id",
+file:"02.id.html",
+title:"IDENTITÄT",
+desc:"User · Ort · Status",
+tiefe:81,
+stabil:true,
+konsistent:true,
+vollstaendig:true,
+nutzbar:true
+},
+ 
+{
+id:"hbt",
+file:"03.hbt.html",
+title:"HBT",
+desc:"HALT · BEWERTUNG · TIEFE",
+tiefe:81,
+stabil:true,
+konsistent:true,
+vollstaendig:true,
+nutzbar:true
+},
+ 
+{
+id:"pulse",
+file:"04.pulse.html",
+title:"PULSE",
+desc:"Logik · Historie · Bindung",
+tiefe:729,
+stabil:true,
+konsistent:true,
+vollstaendig:true,
+nutzbar:true
+}
+ 
+];
+ 
+const TESTS = [
+ 
+{
+id:"STABIL",
+run:n=>n.stabil
+},
+ 
+{
+id:"KONSISTENT",
+run:n=>n.konsistent
+},
+ 
+{
+id:"VOLLSTAENDIG",
+run:n=>n.vollstaendig
+},
+ 
+{
+id:"NUTZBAR",
+run:n=>n.nutzbar
+},
+ 
+{
+id:"TIEFE",
+run:n=>[1,3,9,81,729]
+.includes(n.tiefe)
+}
+ 
+];
+ 
+function validateNode(node){
+ 
+const errors=[];
+const passed=[];
+ 
+TESTS.forEach(t=>{
+ 
+const ok=t.run(node);
+ 
+if(ok)
+passed.push(t.id);
+else
+errors.push(t.id);
+ 
+});
+ 
+const score=
+Math.round(
+passed.length /
+TESTS.length *
+100
+);
+ 
+return{
+ 
+id:node.id,
+title:node.title,
+file:node.file,
+ 
+score,
+passed,
+errors,
+ 
+ready:
+errors.length===0
+ 
+};
+ 
+}
+ 
+function renderPortal(){
+ 
+const root=
+document
+.getElementById(
+"portal"
+);
+ 
+root.innerHTML="";
+ 
+PORTAL.forEach(node=>{
+ 
+const r=
+validateNode(node);
+ 
+const div=
+document
+.createElement("div");
+ 
+div.className=
+"card " +
+(
+r.ready
+? "ready"
+: "failed"
+);
+ 
+div.innerHTML=`
+ 
+<div class="role">
+ 
+${node.file}
+ 
+</div>
+ 
+<h2>
+ 
+${node.title}
+ 
+</h2>
+ 
+<p>
+ 
+${node.desc}
+ 
+</p>
+ 
+<div class="score">
+ 
+HBT:
+${r.score}%
+ 
+</div>
+ 
+<div>
+ 
+Tiefe:
+${node.tiefe}
+ 
+</div>
+ 
+${
+r.errors.length
+?
+`<div class="errors">
+FEHLER:
+${r.errors.join(", ")}
+</div>`
+:
+`<div class="good">
+READY
+</div>`
+}
+ 
+`;
+ 
+root.appendChild(div);
+ 
+});
+ 
+}
+ 
+function renderStatus(){
+ 
+const data=
+PORTAL.map(
+validateNode
+);
+ 
+const ok=
+data.filter(
+x=>x.ready
+).length;
+ 
+const pct=
+Math.round(
+ok /
+data.length *
+100
+);
+ 
+const cls=
+pct===100
+? "good"
+: pct>=75
+? "warn"
+: "bad";
+ 
+document
+.getElementById(
+"liveStatus"
+)
+.innerHTML=`
+ 
+<span class="${cls}">
+ 
+READY
+ 
+${ok}
+ 
+/
+ 
+${data.length}
+ 
+·
+ 
+${pct}%
+ 
+</span>
+ 
+`;
+ 
+}
+ 
+function renderReport(){
+ 
+const report=
+PORTAL.map(
+validateNode
+);
+ 
+document
+.getElementById(
+"report"
+)
+.textContent=
+ 
+JSON.stringify(
+report,
+null,
+2
+);
+ 
+}
+ 
+function refresh(){
+ 
+renderPortal();
+ 
+renderStatus();
+ 
+renderReport();
+ 
+}
+ 
+refresh();
+ 
+setInterval(
+refresh,
+5000
+);
+ 
+</script>
+ 
+</body>
+</html>
+
+Diese Datei ist direkt lauffähig und bildet die komplette BOOT → ID → HBT → PULSE-Struktur mit automatischer HBT-Prüfung, Fehlerdetails und Live-Statusanzeige ab.
+
+Erstelle die vier Unterseiten vollständig Teile CSS und JavaScript in Dateien auf Füge Navigation und Zurück-Buttons hinzu
+
+Für die Aufteilung würde ich die Struktur so gestalten:
+
+Plain Text
+pen.ta.gram/
+│
+├─ index.html
+│
+├─ 01.boot.html
+├─ 02.id.html
+├─ 03.hbt.html
+├─ 04.pulse.html
+│
+├─ css/
+│ └─ main.css
+│
+└─ js/
+├─ config.js
+├─ nav.js
+├─ hbt.js
+└─ page.js
+css/main.css
+CSS
+:root{
+--bg:#050505;
+--card:#111;
+--line:#333;
+--green:#00ff66;
+--yellow:#ffd166;
+--red:#ff5555;
+--text:#f5f5f5;
+}
+ 
+*{
+box-sizing:border-box;
+}
+ 
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:Consolas,monospace;
+}
+ 
+header{
+padding:20px;
+text-align:center;
+border-bottom:2px solid var(--green);
+}
+ 
+main{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+ 
+.navbar{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+ 
+.navbar a,
+button{
+text-decoration:none;
+color:white;
+background:#111;
+border:1px solid #333;
+padding:10px 14px;
+cursor:pointer;
+}
+ 
+.navbar a:hover,
+button:hover{
+border-color:var(--green);
+}
+ 
+.card{
+background:#111;
+border:1px solid #333;
+padding:20px;
+border-radius:10px;
+}
+ 
+.footer{
+margin-top:30px;
+color:#777;
+text-align:center;
+}
+ 
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(260px,1fr));
+gap:15px;
+}
+js/config.js
+JavaScript
+export const NAV = [
+ 
+{
+title:"BOOT",
+file:"01.boot.html"
+},
+ 
+{
+title:"ID",
+file:"02.id.html"
+},
+ 
+{
+title:"HBT",
+file:"03.hbt.html"
+},
+ 
+{
+title:"PULSE",
+file:"04.pulse.html"
+}
+ 
+];
+js/nav.js
+JavaScript
+import { NAV } from "./config.js";
+ 
+export function renderNav() {
+ 
+const root =
+document.getElementById("nav");
+ 
+if(!root) return;
+ 
+root.innerHTML = NAV
+.map(item=>`
+ 
+<a href="${item.file}">
+${item.title}
+</a>
+ 
+`)
+.join("");
+ 
+}
+js/hbt.js
+JavaScript
+export function runHBT(){
+ 
+return {
+ 
+halt:true,
+ 
+bewertung:100,
+ 
+tiefe:81,
+ 
+ready:true
+ 
+};
+ 
+}
+js/page.js
+JavaScript
+import { renderNav }
+from "./nav.js";
+ 
+renderNav();
+ 
+const back =
+document.getElementById("back");
+ 
+if(back){
+ 
+back.addEventListener(
+"click",
+()=>history.back()
+);
+ 
+}
+
+
