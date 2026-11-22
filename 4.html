@@ -1,104 +1,469 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>NC_ROOT_JA_mobile_canvas — 729</title><style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b0e14;color:#eef2ff}
-header{padding:12px 14px 8px;position:sticky;top:0;background:#0b0e14;z-index:2}h1{font-size:19px;margin:0}h1 small{color:#9aa7c7;font-size:12px;display:block;margin-top:2px}
-.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 14px} .tabs button{white-space:nowrap;border:1px solid #2a3350;background:#141a2c;color:#eef2ff;border-radius:999px;padding:8px 12px;font-size:13px} .tabs button.on{background:#ffd23f;color:#111;border-color:#ffd23f;font-weight:700}
-main{padding:0 12px 90px} section{display:none} section.on{display:block} .card{background:#141a2c;border:1px solid #26304d;border-radius:16px;padding:12px;margin:10px 0}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center} select,button,input{font:inherit} select,button{border-radius:10px;border:1px solid #2a3350;background:#1c2440;color:#fff;padding:9px 10px} button.primary{background:#ffd23f;color:#111;font-weight:800;border-color:#ffd23f} .seg{display:flex;border:1px solid #2a3350;border-radius:10px;overflow:hidden} .seg button{border:0;border-radius:0} .seg button.on{background:#ffd23f;color:#111;font-weight:800}
-#stage{position:relative;background:#0a0d16;border:1px solid #26304d;border-radius:14px;overflow:hidden;touch-action:none;aspect-ratio:1/1;width:100%}
-canvas,#svgLayer{position:absolute;inset:0;width:100%;height:100%;display:block} #svgLayer{display:none}
-.meta{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:#c6d0ea;margin-top:8px;flex-wrap:wrap} .meta b{color:#fff}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px} .mini{font-size:13px;line-height:1.5} code{background:#0a0d16;padding:2px 6px;border-radius:6px}
-input[type=text]{width:100%;background:#0a0d16;border:1px solid #2a3350;color:#fff;border-radius:10px;padding:10px}
-label{font-size:12px;color:#9aa7c7;display:block;margin:8px 0 4px}
-</style></head><body>
-<header><h1>NC_ROOT_JA_mobile_canvas <small>729 Zellen • 27 × 27 • ROOT • TOOLOMAT • PQ • PIPELINE • VER • DOMINO</small></h1></header>
-<nav class="tabs" id="tabs">
-<button data-t="canvas" class="on">Canvas 729</button><button data-t="root">ROOT</button><button data-t="toolomat">TOOLOMAT</button><button data-t="pq">PQ</button><button data-t="pipeline">PIPELINE</button><button data-t="ver">VER</button><button data-t="domino">DOMINO</button><button data-t="readme">README</button>
-</nav>
-<main>
-<section id="s-canvas" class="on">
-<div class="card"><div class="toolbar">
-<div class="seg" id="engineSeg"><button data-e="auto" class="on">AUTO</button><button data-e="canvas">Canvas 2D</button><button data-e="svg">SVG</button></div>
-<div class="seg" id="modeSeg"><button data-m="toggle" class="on">Umschalten</button><button data-m="on">Aktivieren</button><button data-m="off">Deaktivieren</button></div>
-<button id="clearBtn">Alle aus</button><button id="fillBtn">Alle an</button><button id="randBtn">Zufall</button><button id="saveBtn" class="primary">Speichern</button>
-</div>
-<label>Engine-Status</label><div id="engineInfo" class="mini">AUTO → Canvas 2D</div>
-<div id="stage"><canvas id="cv"></canvas><svg id="svgLayer" viewBox="0 0 270 270" preserveAspectRatio="none" aria-label="729 SVG Zellen"></svg></div>
-<div class="meta"><span>Aktiv: <b id="activeCount">0</b> / 729</span><span>Position: <b id="selPos">—</b></span><span>Index: <b id="selIdx">—</b></span><span>Engine: <b id="engineNow">Canvas</b></span></div>
-<label>Direkt: Zeile 0–26, Spalte 0–26</label><div class="grid2"><input id="inRow" type="text" inputmode="numeric" placeholder="Zeile"><input id="inCol" type="text" inputmode="numeric" placeholder="Spalte"></div>
-<button id="goBtn" style="margin-top:8px;width:100%">Zelle wählen / umschalten</button>
-<div class="mini" id="pipeOut" style="margin-top:10px"></div>
-</div>
-<div class="card mini"><b>Bedienung:</b> Tippen = eine Zelle. Ziehen = mehrere Zellen bearbeiten. Drehen / Fenster ändern = Canvas passt sich an. Alles bleibt lokal auf dem Gerät.</div>
-</section>
-<section id="s-root"><div class="card"><h2>ROOT</h2><p class="mini">Startpunkt. 27×27 = 729. 729 = 9×81 = 3×243. pipe(a,b) = a+b, korrigiert — kein Verkettungsfehler.</p><p class="mini">ROOT-Zelle: <b id="rootCell">0,0</b> • <button onclick="selectCell(0,0)">ROOT wählen</button></p><div class="mini" id="rootCalc"></div></div></section>
-<section id="s-toolomat"><div class="card"><h2>TOOLOMAT</h2><p class="mini">Werkzeuge auf dem Raster. Aktive Zellen sind Werkzeuge / gesetzte Punkte.</p><button onclick="patternToolomat()">TOOLOMAT-Muster laden</button> <button onclick="clearAll()">Leeren</button><p class="mini" id="toolomatOut"></p></div></section>
-<section id="s-pq"><div class="card"><h2>PQ</h2><p class="mini">P = Position, Q = Wert. pipe(P,Q) rechnet sauber numerisch.</p><label>P</label><input id="pIn" type="text" value="27"><label>Q</label><input id="qIn" type="text" value="27"><button onclick="calcPQ()" style="margin-top:8px">pipe(P,Q) rechnen</button><p class="mini" id="pqOut"></p></div></section>
-<section id="s-pipeline"><div class="card"><h2>PIPELINE</h2><ol class="mini"><li>Eingabe → Pointer</li><li>Zelle → 27×27-Index</li><li>pipe() → Summe / Zustand</li><li>Render → Canvas oder SVG</li><li>Speichern → localStorage</li></ol><button onclick="runPipeline()">Pipeline-Test laufen lassen</button><p class="mini" id="pipeLineOut"></p></div></section>
-<section id="s-ver"><div class="card"><h2>VER</h2><p class="mini">Version: <b>NC_ROOT_JA_mobile_canvas v1 — 729 Canvas-Engine</b><br>Syntax geprüft. Kein Cloud-Aufruf. Lokale Speicherung.</p></div></section>
-<section id="s-domino"><div class="card"><h2>DOMINO</h2><p class="mini">Kette: eine Zelle kippt die nächste.</p><button onclick="domino()">DOMINO abspielen (Zeile 13)</button><p class="mini" id="dominoOut"></p></div></section>
-<section id="s-readme"><div class="card"><h2>README</h2><div class="mini">
-<b>Canvas 2D – Hauptengine:</b> 729 Zellen als 27×27 Raster, hochauflösend mit Geräte-Pixelverhältnis (DPR).<br><br>
-<b>SVG – alternative Engine:</b> Eigenständiger Renderer mit direkt anwählbaren Zellen.<br><br>
-<b>Mobile-Eingabe:</b> Touch, Maus und Stift über Pointer Events; Größenanpassung bei Drehung und Fensteränderung.<br><br>
-<b>Zusätzlich:</b><br>• AUTO wählt Canvas oder SVG.<br>• Zellen aktivieren, deaktivieren oder umschalten.<br>• Ziehen zum Bearbeiten mehrerer Zellen.<br>• Lokale Speicherung auf dem Gerät, kein Cloud-Aufruf.<br>• Anzeige der aktiven Zellen und ausgewählten Position.<br>• Die korrigierte pipe()-Addition bleibt erhalten.<br><br>
-<b>Dateien:</b> NC_ROOT_JA_mobile_canvas.html (diese Datei) + readme.md (dieser Tab).
-</div></div></section>
-</main>
-<script>
-// Korrigierte pipe()-Addition: numerisch, kein String-Concat
-function pipe(a,b){ return Number(a)+Number(b); }
-const N=27, TOTAL=729, KEY='nc_root_ja_729_v1';
-let cells=new Uint8Array(TOTAL), mode='toggle', engine='auto', sel=-1, dragging=false, dragVal=1;
-let cv=document.getElementById('cv'), ctx=cv.getContext('2d'), svg=document.getElementById('svgLayer');
-function idx(r,c){return r*N+c}
-function load(){ try{let s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&s.length===TOTAL) cells=Uint8Array.from(s);}catch(e){} }
-function save(){ try{localStorage.setItem(KEY, JSON.stringify(Array.from(cells)));}catch(e){} document.getElementById('pipeOut').textContent='Gespeichert lokal • pipe(729,0) = '+pipe(729,0); }
-function resize(){
-  let stage=document.getElementById('stage'), w=stage.clientWidth||300, dpr=Math.min(window.devicePixelRatio||1,3);
-  cv.width=Math.round(w*dpr); cv.height=Math.round(w*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); draw();
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#03050c">
+  <title>NC INDEX · mobile</title>
+  <style>
+    :root { color-scheme: dark; --bg: #03050c; --green: #4ade80; --text: #e8ecf1; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--bg); color: var(--text); font: 14px/1.5 Consolas, "Courier New", monospace; -webkit-text-size-adjust: 100%; }
+    body { display: flex; flex-direction: column; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+    header { flex: 0 0 auto; padding: 10px 12px; background: #03050c; border-bottom: 2px solid var(--green); }
+    h1 { margin: 0 0 8px; color: var(--green); font-size: 16px; letter-spacing: 2px; }
+    nav { display: flex; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    nav::-webkit-scrollbar { display: none; }
+    nav button { flex: 0 0 auto; min-height: 44px; padding: 10px 14px; border: 1px solid var(--green); border-radius: 8px; background: #0b0b0b; color: var(--green); font: inherit; font-weight: 700; white-space: nowrap; touch-action: manipulation; }
+    nav button.on { background: var(--green); color: #000; }
+    main { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+    iframe { position: absolute; inset: 0; display: none; width: 100%; height: 100%; border: 0; background: var(--bg); }
+    iframe.on { display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NC INDEX · mobile</h1>
+    <nav id="tabs" aria-label="Tool-Auswahl">
+      <button type="button" data-tool="root">ROOT · JA</button>
+      <button type="button" data-tool="zeug">ZEUGUNG · 3 FENSTER</button>
+      <button type="button" data-tool="matrix">MATRIX · 3×3</button>
+    </nav>
+  </header>
+  <main>
+    <iframe data-tool="root" title="ROOT · JA"></iframe>
+    <iframe data-tool="zeug" title="ZEUGUNG · 3 FENSTER"></iframe>
+    <iframe data-tool="matrix" title="MATRIX · 3×3"></iframe>
+  </main>
+  <template id="tpl-root"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NC ROOT · JA — mobil · 729 Canvas</title><style>body{margin:0;background:#03050c;color:#e8ecf1;font-family:"Courier New",monospace;padding:16px}h1{font-size:20px;margin:0}h2{font-size:15px;color:#ffd700;margin:18px 0 6px}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}button{background:#111;color:#4ade80;border:1px solid #4ade80;padding:9px 12px;border-radius:6px;cursor:pointer;font-weight:bold}button.on{background:#4ade80;color:#000}.card{background:#05070d;border:1px solid #223;padding:12px;border-radius:8px;margin:10px 0}.view{display:none}.view.on{display:block}label{display:block;margin:8px 0}input{width:90px;background:#111;color:#4ade80;border:1px solid #333;padding:6px}pre{white-space:pre-wrap;background:#05070d;padding:10px;border-radius:6px;border:1px solid #1a2233}.muted{color:#8a95ab;font-size:12px}.gold{color:#ffd700}.cyan{color:#00e5ff}.pink{color:#ff00ff}
+
+/* Mobile-Optimierung */
+* {
+  box-sizing: border-box;
 }
-function activeEngine(){ if(engine==='auto') return (window.matchMedia&&matchMedia('(max-width: 420px)').matches)?'canvas':'canvas'; return engine; }
-function draw(){
-  let eng=activeEngine(); document.getElementById('engineNow').textContent=eng==='svg'?'SVG':'Canvas 2D';
-  document.getElementById('engineInfo').textContent='AUTO → '+(eng==='svg'?'SVG':'Canvas 2D')+' • Engine-Einstellung: '+engine.toUpperCase();
-  let w=document.getElementById('stage').clientWidth||300, cell=w/N;
-  if(eng==='canvas'){ cv.style.display='block'; svg.style.display='none'; ctx.clearRect(0,0,w,w);
-    for(let i=0;i<TOTAL;i++){let r=Math.floor(i/N),c=i%N; ctx.fillStyle=cells[i]?'#ffd23f':'#1a2240'; ctx.fillRect(c*cell+0.5,r*cell+0.5,cell-1,cell-1); if(i===sel){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(c*cell+1,r*cell+1,cell-2,cell-2);} }
-  } else { cv.style.display='none'; svg.style.display='block'; if(!svg.children.length){ for(let i=0;i<TOTAL;i++){let r=Math.floor(i/N),c=i%N; let rect=document.createElementNS('http://www.w3.org/2000/svg','rect'); rect.setAttribute('x',c*10);rect.setAttribute('y',r*10);rect.setAttribute('width',9.2);rect.setAttribute('height',9.2);rect.setAttribute('rx',1.5);rect.dataset.i=i; rect.addEventListener('pointerdown',e=>{e.preventDefault(); applyCell(i);}); svg.appendChild(rect);} }
-    [...svg.children].forEach((rect,i)=>{ rect.setAttribute('fill', cells[i]?'#ffd23f':'#1a2240'); rect.setAttribute('stroke', i===sel?'#fff':'none'); });
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  padding:
+    max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
+}
+
+.tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 6px;
+}
+
+.tabs button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+button {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+label {
+  line-height: 1.6;
+}
+
+input {
+  max-width: 100%;
+  min-height: 42px;
+  font: inherit;
+  font-size: 16px;
+  border-radius: 6px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding-left: 10px;
+    padding-right: 10px;
   }
-  let cnt=[...cells].reduce((a,b)=>a+b,0); document.getElementById('activeCount').textContent=cnt;
-  if(sel>=0){document.getElementById('selPos').textContent=Math.floor(sel/N)+','+(sel%N); document.getElementById('selIdx').textContent=sel; document.getElementById('rootCell').textContent='0,0';}
-  document.getElementById('rootCalc').textContent='pipe(27,27) = '+pipe(27,27)+' • pipe(729,0) = '+pipe(729,0);
-  document.getElementById('pipeOut').textContent='pipe(27,27) = '+pipe(27,27)+' • Aktiv: '+cnt;
+
+  h1 {
+    font-size: 18px;
+  }
+
+  .tabs {
+    margin: 10px -2px;
+  }
+
+  .tabs button {
+    padding: 10px 12px;
+  }
+
+  .card {
+    padding: 10px;
+    margin: 8px 0;
+  }
+
+  #v-tool label,
+  #v-pipe label {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  #v-tool input,
+  #v-pipe input {
+    width: 100%;
+  }
+
+  #pqRows label {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #223;
+  }
+
+  #pqRows input {
+    width: 100%;
+  }
+
+  #pqRows button {
+    min-height: 44px;
+  }
+
+  .card > button {
+    margin: 3px 2px 3px 0;
+  }
+
+  pre {
+    font-size: 13px;
+    line-height: 1.45;
+  }
 }
-function applyCell(i, val){
-  sel=i;
-  if(val!==undefined) cells[i]=val;
-  else if(mode==='on') cells[i]=1; else if(mode==='off') cells[i]=0; else cells[i]=cells[i]?0:1;
-  draw();
+
+@media (max-width: 360px) {
+  body {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .tabs button {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  #pqRows label {
+    grid-template-columns: 1fr;
+  }
 }
-function selectCell(r,c){ if(r>=0&&r<N&&c>=0&&c<N) applyCell(idx(r,c)); }
-function clearAll(){cells.fill(0); draw();}
-function posFromEvent(e){ let rect=document.getElementById('stage').getBoundingClientRect(); let x=(e.clientX-rect.left)/rect.width, y=(e.clientY-rect.top)/rect.height; let c=Math.floor(x*N), r=Math.floor(y*N); if(r<0||c<0||r>=N||c>=N) return -1; return idx(r,c); }
-let stage=document.getElementById('stage');
-stage.addEventListener('pointerdown',e=>{ stage.setPointerCapture(e.pointerId); dragging=true; let i=posFromEvent(e); if(i>=0){ dragVal = mode==='toggle' ? (cells[i]?0:1) : (mode==='on'?1:0); applyCell(i,dragVal);} });
-stage.addEventListener('pointermove',e=>{ if(!dragging) return; let i=posFromEvent(e); if(i>=0&&i!==sel) applyCell(i,dragVal); });
-addEventListener('pointerup',()=>dragging=false);
-addEventListener('resize',resize); addEventListener('orientationchange',()=>setTimeout(resize,80));
-document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); document.querySelectorAll('main section').forEach(s=>s.classList.remove('on')); document.getElementById('s-'+b.dataset.t).classList.add('on'); if(b.dataset.t==='canvas') setTimeout(resize,30); });
-document.querySelectorAll('#engineSeg button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('#engineSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); engine=b.dataset.e; if(engine!=='svg') svg.innerHTML=''; draw(); });
-document.querySelectorAll('#modeSeg button').forEach(b=>b.onclick=()=>{ document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); mode=b.dataset.m; });
-document.getElementById('clearBtn').onclick=clearAll;
-document.getElementById('fillBtn').onclick=()=>{cells.fill(1);draw();};
-document.getElementById('randBtn').onclick=()=>{for(let i=0;i<TOTAL;i++) cells[i]=Math.random()<0.25?1:0; draw();};
-document.getElementById('saveBtn').onclick=save;
-document.getElementById('goBtn').onclick=()=>{ let r=Number(document.getElementById('inRow').value), c=Number(document.getElementById('inCol').value); selectCell(r,c); };
-function patternToolomat(){ clearAll(); for(let i=0;i<N;i++){cells[idx(i,i)]=1; cells[idx(i,N-1-i)]=1; cells[idx(13,i)]=1;} draw(); document.getElementById('toolomatOut').textContent='TOOLOMAT-Muster gesetzt: Diagonale + Mittellinie. Aktiv: '+[...cells].reduce((a,b)=>a+b,0); }
-function calcPQ(){ let p=document.getElementById('pIn').value, q=document.getElementById('qIn').value; document.getElementById('pqOut').textContent='pipe('+p+','+q+') = '+pipe(p,q); }
-function runPipeline(){ document.getElementById('pipeLineOut').textContent='Pipeline OK: Pointer → Index → pipe(27,27)='+pipe(27,27)+' → Render → localStorage'; }
-let dominoTimer=null;
-function domino(){ clearAll(); let c=0; clearInterval(dominoTimer); dominoTimer=setInterval(()=>{ if(c>=N){clearInterval(dominoTimer); document.getElementById('dominoOut').textContent='DOMINO fertig: 27 Zellen gekippt.'; return;} cells[idx(13,c)]=1; c++; draw(); },90); }
-load(); resize(); draw();
-</script></body></html>
+
+
+/* 729 Canvas-Raster */
+.grid-wrap{width:100%;max-width:520px;margin:12px auto;touch-action:none}
+#gridCanvas{display:block;width:100%;height:auto;aspect-ratio:1;background:#000;border:1px solid var(--line,#223);border-radius:10px}
+</style>
+<h1>NC ROOT · JA</h1><p class="muted">Eingelesen: Pipeline · ver js · Observer DOMINO · TOOLOMAT · PQ 3x · NC Observer v32 — nur je 1 Bereich als ADD-IN, buchbar. ALT bleibt. NEU erweitert. HALT = ZIEL.</p>
+<div class="tabs" id="tabs"><button data-v="root" class="on">ROOT</button><button data-v="tool">TOOLOMAT · NEU</button><button data-v="pq">PQ 3x · NEUER</button><button data-v="pipe">PIPELINE · 1x</button><button data-v="ver">VER · 3 FENSTER</button><button data-v="dom">OBSERVER · DOMINO</button><button data-v="grid729">729 · CANVAS</button></div>
+
+<section class="view on" id="v-root"><div class="card"><h2>01 H · 02 B · 03 T / 04 Q · 05 D · 06 F — 180° gedreht</h2><pre id="rootOut">—</pre><button onclick="rootCalc()">ROOT RECHNEN</button><p class="muted">6 = Man.n · 9 = Mann · 6+9 = Man.n · 6 Buchstaben → 3 Zahlen = 9 · 3e = 3×3 · 9e = 3e gepackt · 81 → 9 · 720° beweglich.</p></div>
+<div class="card"><h2>SEEK · lesen, ordnen, anhängen — nie löschen</h2><pre id="log">SEEK gestartet. HALT = AUS.</pre><button onclick="seek('ROOT gelesen')">SEEK protokollieren</button> <button onclick="haltToggle()">HALT umschalten</button></div></section>
+
+<section class="view" id="v-tool"><div class="card"><h2>81.3.9 TOOLOMAT — LAUF + CYC.L + WETTER</h2>
+<label>81 RAUM <input id="raum" type="number" value="81"></label><label>3 LINIE <input id="linie" type="number" value="3"></label><label>9 RICHTUNG <input id="richtung" type="number" value="9"></label><button onclick="lauf()">LAUF</button><pre id="o1">—</pre>
+<label>M <input id="m" type="number" value="1.2984" step="0.0001"></label><button onclick="cycl()">CYC.L</button><pre id="o2">—</pre>
+<label>ATOM <input id="atom" type="number" value="0.5" step="0.01"></label><label>WASSER <input id="wasser" type="number" value="0.7" step="0.01"></label><label>CO2 <input id="co2" type="number" value="0.42" step="0.01"></label><label>SAUERSTOFF <input id="sauer" type="number" value="0.8" step="0.01"></label><label>BLITZ <input id="blitz" type="number" value="0.3" step="0.01"></label><label>DONNER <input id="donner" type="number" value="0.3" step="0.01"></label><label>WOLKE <input id="wolke" type="number" value="0.5" step="0.01"></label><label>ATMOSPHAERE <input id="atmo" type="number" value="0.6" step="0.01"></label><label>GATE <input id="gate" type="number" value="0.85" step="0.01"></label><button onclick="wetter()">WETTER</button><pre id="o3">—</pre></div></section>
+
+<section class="view" id="v-pq"><div class="card"><h2>PQ 3x LIVE — Median + Fairness, kein Wert bestraft</h2><p class="muted">PQ = H × (B/9) × (T/100) · CLOSE = 0.5 gewichtet · OPEN = 1.0 · ROOT JA nur wenn Fairness &gt; 60 + LVL &gt; 10</p>
+<div id="pqRows"></div><button onclick="pqCalc()">PQ RECHNEN</button><pre id="pqOut">—</pre></div></section>
+
+<section class="view" id="v-pipe"><div class="card"><h2>PIPELINE · reFINAL — 1x, nicht 2x</h2><p>ADD ON = Ebene +1 · MORE = mehr · WUNDER = HOME 40, Ebene bleibt · B = (DER+DIE+DAS)/3 · Wenn B=1, L=0, HALT=ZIEL · f(x)=min(x,40)</p>
+<label>DER <input id="der" type="number" value="1" step="0.01"></label><label>DIE <input id="die" type="number" value="1" step="0.01"></label><label>DAS <input id="das" type="number" value="1" step="0.01"></label><label>EBENE <input id="ebene" type="number" value="0"></label>
+<button onclick="pipe('add')">ADD ON</button><button onclick="pipe('more')">MORE</button><button onclick="pipe('wunder')">WUNDER → HOME 40</button><pre id="pipeOut">—</pre></div></section>
+
+<section class="view" id="v-ver"><div class="card"><h2>VER · 3 Bilder = 3 Fenster = 3e</h2><div id="verOut"></div><button onclick="verShow()">VER ZEIGEN</button><p class="muted">FENSTER 1 Regel + FENSTER 2 HTML + FENSTER 3 JS = KIND · 9 · 18 · 27 · 3×729=756 · NANO-WÜRFEL 0.777</p></div></section>
+
+<section class="view" id="v-dom"><div class="card"><h2>OBSERVER · DOMINO + 81er + SEEK</h2><p>81er: 3/81 aktiv · Seed 1·3·6 · DOMINO: Doppel-Sechs, lokal · BAUER+GATE: Bauer rückt nur vor, wenn Schrittzeit abgelaufen + Gate PASS.</p>
+<button onclick="domino()">DOMINO ZIEHEN</button><button onclick="bauer()">BAUER SCHRITT</button><pre id="domOut">Noch kein Stein.</pre><p class="muted">CHESS Ghost Board + BRAIN Pipeline + TT TURBO sind in der Observer-Datei — hier nicht mitgenommen, nur DOMINO als 1 ADD-IN.</p></div></section>
+
+
+<section class="view" id="v-grid729"><div class="card"><h2>729 · CANVAS-RASTER — 9 × 9 · Ebene k · HOME 40</h2>
+<p class="muted" id="grid729Info">—</p>
+<div class="grid-wrap"><canvas id="gridCanvas" aria-label="729-Zellen-Raster"></canvas></div>
+<p class="muted">Weiß = du · Farbe = schon besucht (Heat) · Tippen = Sprung in dieselbe Ebene k · HOME = 1-5-5 = Position 40</p>
+<button onclick="go(40,'HOME 40')">⌂ HOME 40</button> <button onclick="go(Math.max(0,S.pos-1),'Canvas −1')">◀ −1</button> <button onclick="go(Math.min(728,S.pos+1),'Canvas +1')">+1 ▶</button>
+<pre id="grid729Out">—</pre></div></section>
+
+<script>
+let HALT=false, LOG=[];
+const $=id=>document.getElementById(id);
+function seek(m){LOG.push(new Date().toLocaleTimeString()+" | "+m);$("log").textContent=LOG.join("\n")+"\nHALT = "+(HALT?"ZIEL · blockiert":"AUS");}
+function haltToggle(){HALT=!HALT;seek("HALT = "+(HALT?"ZIEL":"AUS"));}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+b.dataset.v).classList.add("on");seek("ADD-IN geöffnet: "+b.textContent);});
+function rootCalc(){$("rootOut").textContent=`ROOT JA\n01 H · 02 B · 03 T\n04 Q · 05 D · 06 F — 180° gedreht, pentagrammiert, prismatisch\n6 = Man.n · 9 = Mann · 6+9 = Man.n\n3e = 3x3 · 9e = 3e gepackt · 81 -> 9 -> 3\n720° = Z iki2li · in ni · nu ni\n° $ % in einer Datei · 999 99 9 99 999\nHALT = ZIEL`;seek("ROOT gerechnet");}
+const cache=m=>m<99?{c:27,n:"GATE"}:m<243?{c:243,n:"ANALYSE"}:m<729?{c:729,n:"MEMORY"}:{c:999,n:"DU"};
+function lauf(){const a=+$("raum").value,b=+$("linie").value,c=+$("richtung").value,s=a+b+c,k=cache(s);$("o1").textContent=`LAUF\n81=${a} 3=${b} 9=${c}\n81 -> 27 -> 3 -> 0\nSUMME=${s} CACHE=${k.c} ${k.n}\nEYE=sehen BRAIN=halten CORE=pruefen CROWN=vereinigen\nHALT=ZIEL`;seek("TOOLOMAT LAUF");}
+function cycl(){const M=+$("m").value;$("o2").textContent=`CYC.L\nM=${M}\nLIEBE=+${M} HASS=-${M} BETRAG=${Math.abs(M)}`;seek("TOOLOMAT CYC.L");}
+function wetter(){const v=[+$("atom").value,+$("wasser").value,+$("co2").value,+$("sauer").value,+$("blitz").value,+$("donner").value,+$("wolke").value,+$("atmo").value],g=+$("gate").value,sum=v.reduce((x,y)=>x+y,0),o=sum*g;$("o3").textContent=`WETTER\nSUMME=${sum.toFixed(4)} GATE=${g}\nOMEGA=SUMME x GATE=${o.toFixed(4)}\nWERT=OMEGA x 19683=${(o*19683).toFixed(2)}`;seek("TOOLOMAT WETTER");}
+let PQ=[{H:34,B:4,T:62,eye:1},{H:41,B:6,T:55,eye:1},{H:38,B:5,T:71,eye:0}];
+function pqRender(){$("pqRows").innerHTML=PQ.map((p,i)=>`<label>LIVE ${i+1} H <input type="number" value="${p.H}" onchange="PQ[${i}].H=+this.value"> B <input type="number" value="${p.B}" onchange="PQ[${i}].B=+this.value"> T <input type="number" value="${p.T}" onchange="PQ[${i}].T=+this.value"> EYE <button onclick="PQ[${i}].eye=PQ[${i}].eye?0:1;pqRender()">${p.eye?"OPEN":"CLOSE"}</button></label>`).join("");}
+function med(a){return [...a].sort((x,y)=>x-y)[1]}
+function pqCalc(){const Hs=PQ.map(p=>p.H),Bs=PQ.map(p=>p.B),Ts=PQ.map(p=>p.T);const mH=med(Hs),mB=med(Bs),mT=med(Ts);const vars=PQ.map(p=>{const h=p.H/81,b=p.B/9,t=p.T/100;return ((h-mH/81)**2+(b-mB/9)**2+(t-mT/100)**2)/3});const tot=vars.reduce((a,b)=>a+b,0)/3;const fair=Math.max(0,Math.round(100-tot*420));const open=PQ.filter(p=>p.eye).length;const bonus=open===3?1:open===2?0.8:open===1?0.5:0.2;const lvl=Math.floor(mH/81*50+mB/9*30+mT/100*20+fair/100*10);const sp=Math.floor(lvl*(fair/100)*bonus*2.5+lvl*0.3);$("pqOut").textContent=`PQ 3x\nMEDIAN H=${mH} B=${mB} T=${mT}\nFAIRNESS=${fair}% · OPEN=${open}/3 · BONUS=${bonus}\nLVL=${lvl} · SKILL=${sp}\nROOT ${fair>60&&lvl>10?"JA · FREIGABE":"NEIN · wartet"}\nPQ je LIVE: ${PQ.map(p=>(p.H*(p.B/9)*(p.T/100)).toFixed(2)).join(" · ")}`;seek("PQ 3x gerechnet");}
+pqRender();
+function pipe(act){let e=+$("ebene").value;const B = (
+  Number($("der").value) +
+  Number($("die").value) +
+  Number($("das").value)
+) / 3;if(act==="add")e+=1;if(act==="more")e+=1;if(act==="wunder"){$("der").value=40;e=e;}e=Math.min(e,40);$("ebene").value=e;$("pipeOut").textContent=`PIPELINE 1x\nAktion: ${act.toUpperCase()}\nB=(DER+DIE+DAS)/3 = ${B.toFixed(3)}\nL=${B===1?0:1}\nEbene=${e} · HOME 40\n${B===1?"HALT=ZIEL":"HALT=OFFEN"}`;seek("PIPELINE "+act);}
+const MAT=[{b:1,n:"INDEX.HTML TRÄUMT CO2 O2 H2O + NC.OSS Mainboard 729",w:"14 von 15",k:"Diamant + CO2 + H2O + Mainboard 729"},{b:2,n:"HTML IESIEREN · ZEUGUNG · 3 FENSTER",w:"9 · 18 · 27 · 3×729=756",k:"FENSTER 1 Regel + FENSTER 2 HTML + FENSTER 3 JS = KIND"},{b:3,n:"NANO-WÜRFEL · RUHE · Station NC Q1",w:"HÄ 0.50 · ÄH 0.50 · X-HYPE Y-CALC Z-iki2li",k:"Q1 Q2 Q3 Q4 · AH HA HÄ ÄH NC · Würfel fertig · 0,777"}];
+function verShow(){$("verOut").innerHTML=MAT.map(m=>`<pre>Bild ${m.b} · ${m.n}\nWert: ${m.w}\nKern: ${m.k}</pre>`).join("");seek("VER 3 Fenster gezeigt");}
+let domCount=0;function domino(){domCount++;const stones=[[6,6],[5,3],[4,4],[2,6],[1,5],[0,3]];const s=stones[domCount%stones.length];$("domOut").textContent=`DOMINO · Zug ${domCount}\nStein: [${s[0]}|${s[1]}] · Doppel-Sechs Tisch\n81er: 3/81 aktiv · Seed 1·3·6\nSEEK: Stein angelegt, nichts gelöscht.`;seek("DOMINO Stein "+s.join("|"));}
+let bauerPos=0;function bauer(){if(HALT){$("domOut").textContent="BAUER blockiert — HALT = ZIEL";return;}bauerPos++;$("domOut").textContent=`BAUER + GATE\nSchritt ${bauerPos} · Gate PASS · Bauer rückt vor.\nSEEK: Schritt protokolliert.`;seek("BAUER Schritt "+bauerPos);}
+
+/* --- 729-Canvas: State + Helpers, damit das Snippet läuft --- */
+/* KANON: pos = (i-1)*81 + (j-1)*9 + (k-1) · i = außen (81er-Block), j = Zeile, k = Spalte */
+const S = { pos: 40, visits: {} };
+const cellOf = (pos) => ({ i: Math.floor(pos / 81) + 1, j: Math.floor((pos % 81) / 9) + 1, k: (pos % 9) + 1 });
+const posOf = (i, j, k) => (i - 1) * 81 + (j - 1) * 9 + (k - 1);
+const HEAT = true;
+function heatColor(v){ const a = Math.min(1, v / 6); return `rgba(255,${Math.round(180 - a * 140)},40,${0.25 + a * 0.65})`; }
+function go(pos, src){
+  if(!Number.isInteger(pos) || pos < 0 || pos > 728) return false;
+  S.pos = pos; S.visits[pos] = (S.visits[pos] || 0) + 1; drawGrid(); renderGridInfo(src); return true;
+}
+function renderGridInfo(src){
+  const c = cellOf(S.pos);
+  $("grid729Info").textContent = `Pos ${S.pos} · ${c.i}-${c.j}-${c.k} · Besuche hier: ${S.visits[S.pos]||0}` + (src ? ` · ${src}` : "");
+  $("grid729Out").textContent = `729 CANVAS\nPos=${S.pos} · i-j-k=${c.i}-${c.j}-${c.k}\nHOME 40 = 1-5-5 · 360 = 5-5-1 · 364 = 5-5-5 · 728 = 9-9-9\nTippen = Sprung, k bleibt.`;
+}
+/* --- Dein Canvas-Snippet (unverändert, nur $ ist schon definiert) --- */
+const gridCanvas = $("gridCanvas");
+const gridCtx = gridCanvas.getContext("2d");
+function drawGrid() {
+  const dpr = window.devicePixelRatio || 1;
+  const size = gridCanvas.clientWidth;
+  if (!size) return;
+  gridCanvas.width = Math.round(size * dpr);
+  gridCanvas.height = Math.round(size * dpr);
+  const g = gridCtx;
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, size, size);
+  const gap = Math.max(2, size * 0.012);
+  const cell = (size - gap * 10) / 9;
+  const current = cellOf(S.pos);
+  for (let n = 0; n < 81; n++) {
+    const i = Math.floor(n / 9) + 1;
+    const j = n % 9 + 1;
+    const x = gap + (j - 1) * (cell + gap);
+    const y = gap + (i - 1) * (cell + gap);
+    const pos = posOf(i, j, current.k);
+    const visits = S.visits[pos] || 0;
+    const selected = i === current.i && j === current.j;
+    g.fillStyle = selected ? "#fff" : HEAT && visits ? heatColor(visits) : "#101010";
+    g.fillRect(x, y, cell, cell);
+    g.strokeStyle = selected ? "#fff" : "#333";
+    g.lineWidth = 1;
+    g.strokeRect(x, y, cell, cell);
+    g.fillStyle = selected ? "#000" : "#f5f5f5";
+    g.font = `${Math.max(8, Math.min(13, cell * 0.24))}px Consolas, monospace`;
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText(`${i}-${j}`, x + cell / 2, y + cell / 2);
+  }
+}
+function canvasCellFromEvent(e) {
+  const rect = gridCanvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * gridCanvas.width / rect.width;
+  const y = (e.clientY - rect.top) * gridCanvas.height / rect.height;
+  const gap = Math.max(2, gridCanvas.clientWidth * 0.012);
+  const cell = (gridCanvas.clientWidth - gap * 10) / 9;
+  const scale = gridCanvas.width / gridCanvas.clientWidth;
+  const col = Math.floor((x / scale - gap) / (cell + gap));
+  const row = Math.floor((y / scale - gap) / (cell + gap));
+  if (row < 0 || row > 8 || col < 0 || col > 8) return;
+  const c = cellOf(S.pos);
+  go(posOf(row + 1, col + 1, c.k), "Canvas-Zelle");
+}
+gridCanvas.addEventListener("click", canvasCellFromEvent);
+new ResizeObserver(drawGrid).observe(gridCanvas);
+window.addEventListener("resize", drawGrid);
+/* Init 729: Start auf HOME 40, ohne doppeltes Zählen über go() */
+S.visits[40] = 1; renderGridInfo("HOME 40"); drawGrid();
+
+rootCalc();seek("ROOT eingelesen — nur Notwendiges genommen.");
+</script><script>
+let HALT=false, LOG=[];
+const $=id=>document.getElementById(id);
+function seek(m){LOG.push(new Date().toLocaleTimeString()+" | "+m);$("log").textContent=LOG.join("\n")+"\nHALT = "+(HALT?"ZIEL · blockiert":"AUS");}
+function haltToggle(){HALT=!HALT;seek("HALT = "+(HALT?"ZIEL":"AUS"));}
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on");document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+b.dataset.v).classList.add("on");seek("ADD-IN geöffnet: "+b.textContent);});
+function rootCalc(){$("rootOut").textContent=`ROOT JA\n01 H · 02 B · 03 T\n04 Q · 05 D · 06 F — 180° gedreht, pentagrammiert, prismatisch\n6 = Man.n · 9 = Mann · 6+9 = Man.n\n3e = 3x3 · 9e = 3e gepackt · 81 -> 9 -> 3\n720° = Z iki2li · in ni · nu ni\n° $ % in einer Datei · 999 99 9 99 999\nHALT = ZIEL`;seek("ROOT gerechnet");}
+const cache=m=>m<99?{c:27,n:"GATE"}:m<243?{c:243,n:"ANALYSE"}:m<729?{c:729,n:"MEMORY"}:{c:999,n:"DU"};
+function lauf(){const a=+$("raum").value,b=+$("linie").value,c=+$("richtung").value,s=a+b+c,k=cache(s);$("o1").textContent=`LAUF\n81=${a} 3=${b} 9=${c}\n81 -> 27 -> 3 -> 0\nSUMME=${s} CACHE=${k.c} ${k.n}\nEYE=sehen BRAIN=halten CORE=pruefen CROWN=vereinigen\nHALT=ZIEL`;seek("TOOLOMAT LAUF");}
+function cycl(){const M=+$("m").value;$("o2").textContent=`CYC.L\nM=${M}\nLIEBE=+${M} HASS=-${M} BETRAG=${Math.abs(M)}`;seek("TOOLOMAT CYC.L");}
+function wetter(){const v=[+$("atom").value,+$("wasser").value,+$("co2").value,+$("sauer").value,+$("blitz").value,+$("donner").value,+$("wolke").value,+$("atmo").value],g=+$("gate").value,sum=v.reduce((x,y)=>x+y,0),o=sum*g;$("o3").textContent=`WETTER\nSUMME=${sum.toFixed(4)} GATE=${g}\nOMEGA=SUMME x GATE=${o.toFixed(4)}\nWERT=OMEGA x 19683=${(o*19683).toFixed(2)}`;seek("TOOLOMAT WETTER");}
+let PQ=[{H:34,B:4,T:62,eye:1},{H:41,B:6,T:55,eye:1},{H:38,B:5,T:71,eye:0}];
+function pqRender(){$("pqRows").innerHTML=PQ.map((p,i)=>`<label>LIVE ${i+1} H <input type="number" value="${p.H}" onchange="PQ[${i}].H=+this.value"> B <input type="number" value="${p.B}" onchange="PQ[${i}].B=+this.value"> T <input type="number" value="${p.T}" onchange="PQ[${i}].T=+this.value"> EYE <button onclick="PQ[${i}].eye=PQ[${i}].eye?0:1;pqRender()">${p.eye?"OPEN":"CLOSE"}</button></label>`).join("");}
+function med(a){return [...a].sort((x,y)=>x-y)[1]}
+function pqCalc(){const Hs=PQ.map(p=>p.H),Bs=PQ.map(p=>p.B),Ts=PQ.map(p=>p.T);const mH=med(Hs),mB=med(Bs),mT=med(Ts);const vars=PQ.map(p=>{const h=p.H/81,b=p.B/9,t=p.T/100;return ((h-mH/81)**2+(b-mB/9)**2+(t-mT/100)**2)/3});const tot=vars.reduce((a,b)=>a+b,0)/3;const fair=Math.max(0,Math.round(100-tot*420));const open=PQ.filter(p=>p.eye).length;const bonus=open===3?1:open===2?0.8:open===1?0.5:0.2;const lvl=Math.floor(mH/81*50+mB/9*30+mT/100*20+fair/100*10);const sp=Math.floor(lvl*(fair/100)*bonus*2.5+lvl*0.3);$("pqOut").textContent=`PQ 3x\nMEDIAN H=${mH} B=${mB} T=${mT}\nFAIRNESS=${fair}% · OPEN=${open}/3 · BONUS=${bonus}\nLVL=${lvl} · SKILL=${sp}\nROOT ${fair>60&&lvl>10?"JA · FREIGABE":"NEIN · wartet"}\nPQ je LIVE: ${PQ.map(p=>(p.H*(p.B/9)*(p.T/100)).toFixed(2)).join(" · ")}`;seek("PQ 3x gerechnet");}
+pqRender();
+function pipe(act){let e=+$("ebene").value;const B = (
+  Number($("der").value) +
+  Number($("die").value) +
+  Number($("das").value)
+) / 3;if(act==="add")e+=1;if(act==="more")e+=1;if(act==="wunder"){$("der").value=40;e=e;}e=Math.min(e,40);$("ebene").value=e;$("pipeOut").textContent=`PIPELINE 1x\nAktion: ${act.toUpperCase()}\nB=(DER+DIE+DAS)/3 = ${B.toFixed(3)}\nL=${B===1?0:1}\nEbene=${e} · HOME 40\n${B===1?"HALT=ZIEL":"HALT=OFFEN"}`;seek("PIPELINE "+act);}
+const MAT=[{b:1,n:"INDEX.HTML TRÄUMT CO2 O2 H2O + NC.OSS Mainboard 729",w:"14 von 15",k:"Diamant + CO2 + H2O + Mainboard 729"},{b:2,n:"HTML IESIEREN · ZEUGUNG · 3 FENSTER",w:"9 · 18 · 27 · 3×729=756",k:"FENSTER 1 Regel + FENSTER 2 HTML + FENSTER 3 JS = KIND"},{b:3,n:"NANO-WÜRFEL · RUHE · Station NC Q1",w:"HÄ 0.50 · ÄH 0.50 · X-HYPE Y-CALC Z-iki2li",k:"Q1 Q2 Q3 Q4 · AH HA HÄ ÄH NC · Würfel fertig · 0,777"}];
+function verShow(){$("verOut").innerHTML=MAT.map(m=>`<pre>Bild ${m.b} · ${m.n}\nWert: ${m.w}\nKern: ${m.k}</pre>`).join("");seek("VER 3 Fenster gezeigt");}
+let domCount=0;function domino(){domCount++;const stones=[[6,6],[5,3],[4,4],[2,6],[1,5],[0,3]];const s=stones[domCount%stones.length];$("domOut").textContent=`DOMINO · Zug ${domCount}\nStein: [${s[0]}|${s[1]}] · Doppel-Sechs Tisch\n81er: 3/81 aktiv · Seed 1·3·6\nSEEK: Stein angelegt, nichts gelöscht.`;seek("DOMINO Stein "+s.join("|"));}
+let bauerPos=0;function bauer(){if(HALT){$("domOut").textContent="BAUER blockiert — HALT = ZIEL";return;}bauerPos++;$("domOut").textContent=`BAUER + GATE\nSchritt ${bauerPos} · Gate PASS · Bauer rückt vor.\nSEEK: Schritt protokolliert.`;seek("BAUER Schritt "+bauerPos);}
+
+/* --- 729-Canvas: State + Helpers, damit das Snippet läuft --- */
+/* KANON: pos = (i-1)*81 + (j-1)*9 + (k-1) · i = außen (81er-Block), j = Zeile, k = Spalte */
+const S = { pos: 40, visits: {} };
+const cellOf = (pos) => ({ i: Math.floor(pos / 81) + 1, j: Math.floor((pos % 81) / 9) + 1, k: (pos % 9) + 1 });
+const posOf = (i, j, k) => (i - 1) * 81 + (j - 1) * 9 + (k - 1);
+const HEAT = true;
+function heatColor(v){ const a = Math.min(1, v / 6); return `rgba(255,${Math.round(180 - a * 140)},40,${0.25 + a * 0.65})`; }
+function go(pos, src){
+  if(!Number.isInteger(pos) || pos < 0 || pos > 728) return false;
+  S.pos = pos; S.visits[pos] = (S.visits[pos] || 0) + 1; drawGrid(); renderGridInfo(src); return true;
+}
+function renderGridInfo(src){
+  const c = cellOf(S.pos);
+  $("grid729Info").textContent = `Pos ${S.pos} · ${c.i}-${c.j}-${c.k} · Besuche hier: ${S.visits[S.pos]||0}` + (src ? ` · ${src}` : "");
+  $("grid729Out").textContent = `729 CANVAS\nPos=${S.pos} · i-j-k=${c.i}-${c.j}-${c.k}\nHOME 40 = 1-5-5 · 360 = 5-5-1 · 364 = 5-5-5 · 728 = 9-9-9\nTippen = Sprung, k bleibt.`;
+}
+/* --- Dein Canvas-Snippet (unverändert, nur $ ist schon definiert) --- */
+const gridCanvas = $("gridCanvas");
+const gridCtx = gridCanvas.getContext("2d");
+function drawGrid() {
+  const dpr = window.devicePixelRatio || 1;
+  const size = gridCanvas.clientWidth;
+  if (!size) return;
+  gridCanvas.width = Math.round(size * dpr);
+  gridCanvas.height = Math.round(size * dpr);
+  const g = gridCtx;
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, size, size);
+  const gap = Math.max(2, size * 0.012);
+  const cell = (size - gap * 10) / 9;
+  const current = cellOf(S.pos);
+  for (let n = 0; n < 81; n++) {
+    const i = Math.floor(n / 9) + 1;
+    const j = n % 9 + 1;
+    const x = gap + (j - 1) * (cell + gap);
+    const y = gap + (i - 1) * (cell + gap);
+    const pos = posOf(i, j, current.k);
+    const visits = S.visits[pos] || 0;
+    const selected = i === current.i && j === current.j;
+    g.fillStyle = selected ? "#fff" : HEAT && visits ? heatColor(visits) : "#101010";
+    g.fillRect(x, y, cell, cell);
+    g.strokeStyle = selected ? "#fff" : "#333";
+    g.lineWidth = 1;
+    g.strokeRect(x, y, cell, cell);
+    g.fillStyle = selected ? "#000" : "#f5f5f5";
+    g.font = `${Math.max(8, Math.min(13, cell * 0.24))}px Consolas, monospace`;
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    g.fillText(`${i}-${j}`, x + cell / 2, y + cell / 2);
+  }
+}
+function canvasCellFromEvent(e) {
+  const rect = gridCanvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * gridCanvas.width / rect.width;
+  const y = (e.clientY - rect.top) * gridCanvas.height / rect.height;
+  const gap = Math.max(2, gridCanvas.clientWidth * 0.012);
+  const cell = (gridCanvas.clientWidth - gap * 10) / 9;
+  const scale = gridCanvas.width / gridCanvas.clientWidth;
+  const col = Math.floor((x / scale - gap) / (cell + gap));
+  const row = Math.floor((y / scale - gap) / (cell + gap));
+  if (row < 0 || row > 8 || col < 0 || col > 8) return;
+  const c = cellOf(S.pos);
+  go(posOf(row + 1, col + 1, c.k), "Canvas-Zelle");
+}
+gridCanvas.addEventListener("click", canvasCellFromEvent);
+new ResizeObserver(drawGrid).observe(gridCanvas);
+window.addEventListener("resize", drawGrid);
+/* Init 729: Start auf HOME 40, ohne doppeltes Zählen über go() */
+S.visits[40] = 1; renderGridInfo("HOME 40"); drawGrid();
+
+rootCalc();seek("ROOT eingelesen — nur Notwendiges genommen.");
+</script></template>
+  <template id="tpl-zeug"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZEUGUNG · 3 FENSTER</title>
+<style>body{margin:0;background:#03050c;color:#e8ecf1;font-family:"Courier New",monospace;padding:12px}button{min-height:44px;background:#111;color:#4ade80;border:1px solid #4ade80;padding:9px 12px;border-radius:6px;font-weight:bold}pre{white-space:pre-wrap;background:#05070d;padding:10px;border-radius:6px;border:1px solid #1a2233}.card{background:#05070d;border:1px solid #223;padding:12px;border-radius:8px;margin:10px 0}.muted{color:#8a95ab;font-size:12px}</style>
+<h1>VER · 3 Bilder = 3 Fenster = 3e</h1><p class="muted">FENSTER 1 Regel + FENSTER 2 HTML + FENSTER 3 JS = KIND · 9 · 18 · 27 · 3×729=756 · NANO-WÜRFEL 0.777</p>
+<div id="verOut"></div><button onclick="verShow()">VER ZEIGEN</button>
+<script>const MAT=[{b:1,n:"INDEX.HTML TRÄUMT CO2 O2 H2O + NC.OSS Mainboard 729",w:"14 von 15",k:"Diamant + CO2 + H2O + Mainboard 729"},{b:2,n:"HTML IESIEREN · ZEUGUNG · 3 FENSTER",w:"9 · 18 · 27 · 3×729=756",k:"FENSTER 1 Regel + FENSTER 2 HTML + FENSTER 3 JS = KIND"},{b:3,n:"NANO-WÜRFEL · RUHE · Station NC Q1",w:"HÄ 0.50 · ÄH 0.50 · X-HYPE Y-CALC Z-iki2li",k:"Q1 Q2 Q3 Q4 · AH HA HÄ ÄH NC · Würfel fertig · 0,777"}];
+function verShow(){document.getElementById("verOut").innerHTML=MAT.map(m=>`<pre>Bild ${m.b} · ${m.n}\nWert: ${m.w}\nKern: ${m.k}</pre>`).join("");}
+verShow();
+</script></template>
+  <template id="tpl-matrix"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MATRIX · 3×3</title>
+<style>body{margin:0;background:#03050c;color:#e8ecf1;font-family:"Courier New",monospace;padding:12px}button{min-height:44px;background:#111;color:#4ade80;border:1px solid #4ade80;padding:9px 12px;border-radius:6px;font-weight:bold;margin:3px}.grid-wrap{width:100%;max-width:520px;margin:12px auto;touch-action:none}#gridCanvas{display:block;width:100%;height:auto;aspect-ratio:1;background:#000;border:1px solid #223;border-radius:10px}pre{white-space:pre-wrap;background:#05070d;padding:10px;border-radius:6px;border:1px solid #1a2233}.muted{color:#8a95ab;font-size:12px}</style>
+<h1>MATRIX · 3×3</h1><p class="muted">9 Blöcke à 3×3 · Block = 81er-Ausschnitt · Tippen = Sprung · k bleibt</p>
+<div id="blocks"></div>
+<div class="grid-wrap"><canvas id="gridCanvas" aria-label="729-Zellen-Raster"></canvas></div>
+<p class="muted" id="info">—</p>
+<button onclick="go(40,'HOME 40')">⌂ HOME 40</button>
+<pre id="out">—</pre>
+<script>
+const $=id=>document.getElementById(id);
+const S={pos:40,visits:{}};
+const cellOf=pos=>({i:Math.floor(pos/81)+1,j:Math.floor((pos%81)/9)+1,k:(pos%9)+1});
+const posOf=(i,j,k)=>(i-1)*81+(j-1)*9+(k-1);
+const HEAT=true;
+function heatColor(v){const a=Math.min(1,v/6);return `rgba(255,${Math.round(180-a*140)},40,${0.25+a*0.65})`;}
+function go(pos,src){if(!Number.isInteger(pos)||pos<0||pos>728)return false;S.pos=pos;S.visits[pos]=(S.visits[pos]||0)+1;drawGrid();renderInfo(src);return true;}
+function renderInfo(src){const c=cellOf(S.pos);$("info").textContent=`Pos ${S.pos} · ${c.i}-${c.j}-${c.k} · Block ${Math.floor((c.i-1)/3)*3+Math.floor((c.j-1)/3)+1}`+(src?` · ${src}`:"");$("out").textContent=`MATRIX 3x3\nPos=${S.pos} · i-j-k=${c.i}-${c.j}-${c.k}\nBlock-Zentrum = Zeile (BlockZeile*3-1), Spalte (BlockSpalte*3-1), k bleibt.`;}
+const gridCanvas=$("gridCanvas");const gridCtx=gridCanvas.getContext("2d");
+function drawGrid(){const dpr=window.devicePixelRatio||1;const size=gridCanvas.clientWidth;if(!size)return;gridCanvas.width=Math.round(size*dpr);gridCanvas.height=Math.round(size*dpr);const g=gridCtx;g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,size,size);const gap=Math.max(2,size*0.012);const cell=(size-gap*10)/9;const current=cellOf(S.pos);for(let n=0;n<81;n++){const i=Math.floor(n/9)+1,j=n%9+1,x=gap+(j-1)*(cell+gap),y=gap+(i-1)*(cell+gap),pos=posOf(i,j,current.k),visits=S.visits[pos]||0,selected=i===current.i&&j===current.j;g.fillStyle=selected?"#fff":HEAT&&visits?heatColor(visits):"#101010";g.fillRect(x,y,cell,cell);g.strokeStyle=selected?"#fff":"#333";g.lineWidth=1;g.strokeRect(x,y,cell,cell);g.fillStyle=selected?"#000":"#f5f5f5";g.font=`${Math.max(8,Math.min(13,cell*0.24))}px Consolas, monospace`;g.textAlign="center";g.textBaseline="middle";g.fillText(`${i}-${j}`,x+cell/2,y+cell/2);}}
+function canvasCellFromEvent(e){const rect=gridCanvas.getBoundingClientRect();const x=(e.clientX-rect.left)*gridCanvas.width/rect.width;const y=(e.clientY-rect.top)*gridCanvas.height/rect.height;const gap=Math.max(2,gridCanvas.clientWidth*0.012);const cell=(gridCanvas.clientWidth-gap*10)/9;const scale=gridCanvas.width/gridCanvas.clientWidth;const col=Math.floor((x/scale-gap)/(cell+gap));const row=Math.floor((y/scale-gap)/(cell+gap));if(row<0||row>8||col<0||col>8)return;const c=cellOf(S.pos);go(posOf(row+1,col+1,c.k),"Canvas-Zelle");}
+gridCanvas.addEventListener("click",canvasCellFromEvent);
+new ResizeObserver(drawGrid).observe(gridCanvas);
+window.addEventListener("resize",drawGrid);
+for(let n=1;n<=9;n++){const b=document.createElement("button");b.textContent="Block "+n;b.onclick=()=>{const row=Math.floor((n-1)/3)+1,col=((n-1)%3)+1,c=cellOf(S.pos);go(posOf((row-1)*3+2,(col-1)*3+2,c.k,"Block "+n));};$("blocks").appendChild(b);}
+S.visits[40]=1;renderInfo("HOME 40");drawGrid();
+</script></template>
+  <script>
+    "use strict";
+    const tabs = document.getElementById("tabs");
+    const frames = [...document.querySelectorAll("iframe[data-tool]")];
+    const loaded = new Set();
+    function activate(name) {
+      const template = document.getElementById("tpl-" + name);
+      if (!template) name = "root";
+      frames.forEach(frame => {
+        const active = frame.dataset.tool === name;
+        frame.classList.toggle("on", active);
+        if (active && !loaded.has(name)) { frame.srcdoc = "<!doctype html>" + template.innerHTML; loaded.add(name); }
+      });
+      tabs.querySelectorAll("button[data-tool]").forEach(button => {
+        const active = button.dataset.tool === name;
+        button.classList.toggle("on", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+      if (location.hash !== "#" + name) { history.replaceState(null, "", "#" + name); }
+    }
+    tabs.addEventListener("click", event => { const button = event.target.closest("button[data-tool]"); if (button) activate(button.dataset.tool); });
+    window.addEventListener("hashchange", () => { activate(location.hash.slice(1) || "root"); });
+    activate(location.hash.slice(1) || "root");
+  </script>
+</body>
+</html>
