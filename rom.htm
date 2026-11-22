@@ -1,1 +1,143 @@
-<html><head><meta charset="utf-8" /><meta name="referrer" content="origin" /></head><body><script type="text/javascript" nonce="rYEkUbTU">document.location.replace("https:\/\/cdn.fbsbx.com\/v\/t65.102178-21\/846797472_1732192607870316_3983180437814582795_n.jpg\/nchelpu_schach_level_raum.html?_nc_ht=cdn.fbsbx.com&_nc_ohc=ZoROwmPsBaAQ7kNvwGIIPyw&sdl=0&ccb=14-4&oh=00_AQPmpczVsx7oM877-SX7WRBLzN6--AtqURi9ps31UZ0wvg&oe=6AF5B2D0&_nc_sid=4ee932");</script></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050805">
+  <title>NC.OS · ROM-Station</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050805;
+      --panel: #0b110c;
+      --line: #294632;
+      --green: #4ade80;
+      --gold: #ffd700;
+      --text: #dce8de;
+      --muted: #94a397;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      background: radial-gradient(ellipse at top, #102016, var(--bg) 65%);
+      color: var(--text);
+      font: 15px/1.6 Consolas, Monaco, monospace;
+    }
+
+    main {
+      width: min(720px, 100%);
+      margin: 6vh auto;
+      padding: clamp(20px, 5vw, 38px);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #080c09ee;
+      box-shadow: 0 20px 70px #0009;
+    }
+
+    .tag {
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: .12em;
+    }
+
+    h1 {
+      margin: 8px 0;
+      color: var(--green);
+      font-size: clamp(26px, 7vw, 42px);
+    }
+
+    h2 { color: var(--gold); font-size: 16px; }
+
+    p, li { color: var(--muted); }
+
+    .status {
+      margin: 24px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    .status strong { color: var(--green); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 11px 15px;
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      color: var(--green);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a.button.primary {
+      background: var(--green);
+      color: #061008;
+    }
+
+    a.button:hover { filter: brightness(1.15); }
+
+    .warning { font-size: 12px; }
+    footer {
+      margin-top: 28px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    code { color: var(--gold); overflow-wrap: anywhere; }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="tag">NC.OS · STATION ROM</div>
+    <h1>ROM-Station</h1>
+    <p>Übersicht und Einstiegspunkt für die ROM-Station.</p>
+
+    <section class="status" aria-label="Stationsstatus">
+      <strong>STATUS: BEREIT</strong><br>
+      ROOT → ROM · Eigenadmin im eigenen Terrain
+    </section>
+
+    <h2>Station öffnen</h2>
+    <p>
+      Der bisherige ROM-Link verweist auf eine externe Facebook-CDN-Adresse.
+      Externe Inhalte werden nicht automatisch geladen. Öffne den Link nur,
+      wenn du der Quelle vertraust.
+    </p>
+
+    <div class="actions">
+      <a class="button primary"
+         href="https://cdn.fbsbx.com/v/t65.102178-21/846797472_1732192607870316_3983180437814582795_n.jpg/nchelpu_schach_level_raum.html?_nc_ht=cdn.fbsbx.com&amp;_nc_ohc=ZoROwmPsBaAQ7kNvwGIIPyw&amp;sdl=0&amp;ccb=14-4&amp;oh=00_AQPmpczVsx7oM877-SX7WRBLzN6--AtqURi9ps31UZ0wvg&amp;oe=6AF5B2D0&amp;_nc_sid=4ee932"
+         target="_blank"
+         rel="noopener noreferrer">
+        Externe ROM-Seite öffnen ↗
+      </a>
+      <a class="button" href="index.html">Zurück zu NC.OS</a>
+    </div>
+
+    <p class="warning">
+      Hinweis: Der externe Link ist zeitlich begrenzt und kann ablaufen.
+      Für eine dauerhafte Station sollte die HTML-Datei im eigenen Repository liegen.
+    </p>
+
+    <footer>
+      NC.OS · ROM-Station · Keine automatische Weiterleitung
+    </footer>
+  </main>
+</body>
+</html>
