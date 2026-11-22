@@ -2,739 +2,259 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#000000">
-  <title>NC.OS Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050805">
+  <title>NC.OS · Mobile</title>
 
   <style>
     :root {
       color-scheme: dark;
-      --bg: #000;
-      --panel: #090d0a;
-      --line: #24452d;
+      --bg: #050805;
+      --panel: #0b120d;
+      --line: #294832;
       --green: #4ade80;
       --gold: #ffd700;
-      --text: #d7e2d9;
-      --muted: #849589;
+      --text: #e1ebe3;
+      --muted: #9aaa9e;
     }
 
     * { box-sizing: border-box; }
 
-    html, body {
+    body {
       margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
       background: var(--bg);
       color: var(--text);
-      font-family: Consolas, Monaco, monospace;
+      font: 15px/1.5 system-ui, sans-serif;
     }
 
-    button {
-      min-height: 40px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #050805;
-      color: var(--green);
-      font: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 8px 11px;
-      touch-action: manipulation;
-    }
-
-    button:active { background: #102016; }
-    button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
-    #hud {
-      position: fixed;
-      z-index: 5;
-      inset: 0 0 auto;
-      padding: 9px max(10px, env(safe-area-inset-right))
-               9px max(10px, env(safe-area-inset-left));
-      background: #050706ed;
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: max(14px, env(safe-area-inset-top)) 16px 12px;
+      background: #050805ed;
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
     }
 
-    .topline, .toolbar, .crumbs {
+    .top {
       display: flex;
       align-items: center;
-      gap: 7px;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .topline { justify-content: space-between; }
-    .brand { color: var(--green); font-size: 15px; font-weight: 900; }
-    .readout { color: var(--muted); font-size: 11px; white-space: nowrap; }
-    .toolbar { margin-top: 8px; flex-wrap: wrap; }
-    .toolbar button { min-height: 34px; padding: 6px 9px; }
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-size: 18px;
+      letter-spacing: .04em;
+    }
 
-    .crumbs {
-      margin-top: 8px;
-      min-height: 25px;
-      overflow-x: auto;
+    .count {
+      color: var(--muted);
+      font-size: 13px;
       white-space: nowrap;
-      scrollbar-width: thin;
     }
 
-    .crumb {
-      min-height: 27px;
-      padding: 4px 8px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .crumb.current { color: var(--gold); border-color: var(--gold); }
-
-    #cv {
-      position: fixed;
-      inset: 0;
-      display: block;
+    #search {
       width: 100%;
-      height: 100%;
-      touch-action: none;
-      cursor: crosshair;
-    }
-
-    #help {
-      position: fixed;
-      z-index: 4;
-      left: max(10px, env(safe-area-inset-left));
-      bottom: max(10px, env(safe-area-inset-bottom));
-      max-width: min(310px, calc(100vw - 155px));
-      padding: 8px 10px;
-      border: 1px solid #26372b;
-      border-radius: 8px;
-      background: #050706e8;
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.5;
-      pointer-events: none;
-    }
-
-    #minimap {
-      position: fixed;
-      z-index: 4;
-      right: max(10px, env(safe-area-inset-right));
-      bottom: max(10px, env(safe-area-inset-bottom));
-      width: 126px;
-      height: 126px;
-      padding: 0;
-      border: 1px solid var(--green);
-      border-radius: 7px;
-      background: #050805ed;
-      touch-action: manipulation;
-    }
-
-    #status {
-      position: fixed;
-      z-index: 6;
-      left: 50%;
-      bottom: max(12px, env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      max-width: calc(100vw - 24px);
-      padding: 7px 10px;
+      min-height: 44px;
+      margin-top: 12px;
+      padding: 10px 12px;
       border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #050706f2;
+      border-radius: 10px;
+      background: var(--panel);
       color: var(--text);
-      font-size: 11px;
-      text-align: center;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .18s;
+      font: inherit;
+      font-size: 16px;
     }
 
-    #status.show { opacity: 1; }
+    #search:focus { outline: 2px solid var(--green); }
 
-    @media (max-width: 520px) {
-      .brand { font-size: 13px; }
-      .readout { font-size: 10px; }
-      button { font-size: 11px; }
-      #minimap { width: 104px; height: 104px; }
-      #help { max-width: calc(100vw - 130px); font-size: 9px; }
+    main {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: 16px 14px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .intro {
+      margin: 0 2px 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 88px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      color: inherit;
+      text-decoration: none;
+      transition: border-color .15s, background .15s;
+    }
+
+    .card:hover, .card:focus-visible {
+      border-color: var(--green);
+      background: #102016;
+      outline: none;
+    }
+
+    .number {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .name {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .details {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .role {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .arrow {
+      color: var(--green);
+      font-size: 22px;
+    }
+
+    #empty {
+      display: none;
+      padding: 24px 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (min-width: 600px) {
+      .list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card { grid-template-columns: 42px 1fr; }
+      .arrow { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
 </head>
 
 <body>
-  <header id="hud">
-    <div class="topline">
-      <div class="brand">NC.OS MOBILE <span style="color:#849589">· ANCHOR</span></div>
-      <div class="readout">
-        ZOOM <span id="zoom">1.00</span>
-        · AUSWAHL <span id="selected">—</span>
-      </div>
+  <header>
+    <div class="top">
+      <h1>NC.OS <span style="color:var(--muted)">· MOBILE</span></h1>
+      <div class="count"><span id="shown">9</span> Bereiche</div>
     </div>
-
-    <div class="toolbar">
-      <button id="backBtn" type="button" title="Eine Ebene zurück">← ZURÜCK</button>
-      <button id="saveBtn" type="button">SAVE JSON</button>
-      <button id="loadBtn" type="button">LOAD JSON</button>
-      <button id="homeBtn" type="button">⌂ ROOT</button>
-      <input id="fileInput" type="file" accept="application/json,.json" hidden>
-    </div>
-
-    <nav id="crumbs" class="crumbs" aria-label="Breadcrumb"></nav>
+    <input id="search" type="search" placeholder="Bereich suchen …" aria-label="Bereiche durchsuchen">
   </header>
 
-  <canvas id="cv" aria-label="NC.OS 729-Feld-Canvas"></canvas>
+  <main>
+    <p class="intro">Tippe auf einen Bereich, um die zugehörige Seite zu öffnen.</p>
 
-  <div id="help">
-    TIP: Tippen = wählen · Doppeltipp = öffnen<br>
-    Wischen/Drag = bewegen · Pinch = Zoom<br>
-    ← → ↑ ↓ bewegen · +/− Zoom · Home = ROOT
-  </div>
+    <section class="list" id="list" aria-label="NC.OS Bereiche">
+      <a class="card" href="0.html" data-search="freudenhund erkennung scanner eingang">
+        <span class="number">0</span>
+        <span><h2 class="name">Freudenhund</h2><p class="details"><span class="role">Erkennung</span> · Scanner-Eingang</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
 
-  <canvas id="minimap" aria-label="MiniMap: antippen, um die Position zu wechseln"></canvas>
-  <div id="status" role="status" aria-live="polite"></div>
+      <a class="card" href="1.html" data-search="ram brain ramdisk 4168 mb/s">
+        <span class="number">1</span>
+        <span><h2 class="name">RAM</h2><p class="details"><span class="role">Brain</span> · ramdisk · 4168 MB/s</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="2.html" data-search="steckkarten noise sli 42%">
+        <span class="number">2</span>
+        <span><h2 class="name">Steckkarten</h2><p class="details"><span class="role">Noise</span> · SLI · 42%</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="3.html" data-search="kernel centrum mb1 9 centrum">
+        <span class="number">3</span>
+        <span><h2 class="name">Kernel</h2><p class="details"><span class="role">Centrum</span> · MB1 · 9 CENTRUM</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="4.html" data-search="industry verified mouth abmachung">
+        <span class="number">4</span>
+        <span><h2 class="name">Industry Verified</h2><p class="details"><span class="role">Mouth</span> · Abmachung</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="5.html" data-search="in-ear loader orakel in-ear">
+        <span class="number">5</span>
+        <span><h2 class="name">In-Ear Loader</h2><p class="details"><span class="role">Orakel</span> · In-Ear</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="6.html" data-search="letzter tech alt w3">
+        <span class="number">6</span>
+        <span><h2 class="name">Letzter Tech</h2><p class="details"><span class="role">Alt</span> · W3</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="7.html" data-search="11 zu 7 scsi 7 geräte">
+        <span class="number">7</span>
+        <span><h2 class="name">11 zu 7</h2><p class="details"><span class="role">SCSI</span> · 7 Geräte</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="card" href="8.html" data-search="scanner eye 1:1 scan">
+        <span class="number">8</span>
+        <span><h2 class="name">Scanner</h2><p class="details"><span class="role">Eye</span> · 1:1-Scan</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+    </section>
+
+    <div id="empty">Keine passenden Bereiche gefunden.</div>
+  </main>
 
   <script>
-    (() => {
-      "use strict";
+    const search = document.getElementById("search");
+    const cards = [...document.querySelectorAll(".card")];
+    const shown = document.getElementById("shown");
+    const empty = document.getElementById("empty");
 
-      const canvas = document.getElementById("cv");
-      const ctx = canvas.getContext("2d");
-      const mini = document.getElementById("minimap");
-      const mctx = mini.getContext("2d");
+    search.addEventListener("input", () => {
+      const query = search.value.trim().toLocaleLowerCase("de");
+      let visible = 0;
 
-      const state = {
-        zoom: 1,
-        x: 0,
-        y: 0,
-        path: [],
-        selected: null,
-        data: {},
-        velocityX: 0,
-        velocityY: 0,
-        lastTap: 0,
-        lastTapCell: null,
-        pointers: new Map(),
-        gesture: null,
-        longPressTimer: null,
-        moved: false
-      };
-
-      const MIN_ZOOM = 0.35;
-      const MAX_ZOOM = 5;
-      const GRID_COUNT = 9;
-      const BASE_CELL = 42;
-      const BASE_GAP = 5;
-      const LONG_PRESS_MS = 520;
-      let dpr = 1;
-      let statusTimer;
-
-      const zoomOut = document.getElementById("zoom");
-      const selectedOut = document.getElementById("selected");
-      const crumbs = document.getElementById("crumbs");
-      const status = document.getElementById("status");
-
-      function notify(text) {
-        status.textContent = text;
-        status.classList.add("show");
-        clearTimeout(statusTimer);
-        statusTimer = setTimeout(() => status.classList.remove("show"), 1700);
+      for (const card of cards) {
+        const matches = card.dataset.search.includes(query);
+        card.hidden = !matches;
+        if (matches) visible++;
       }
 
-      function currentPath() {
-        return state.path.length ? "ROOT / " + state.path.join(" / ") : "ROOT";
-      }
-
-      function updateHud() {
-        zoomOut.textContent = state.zoom.toFixed(2);
-        selectedOut.textContent = state.selected === null ? "—" : state.selected.join(".");
-        crumbs.replaceChildren();
-
-        const rootButton = document.createElement("button");
-        rootButton.type = "button";
-        rootButton.className = "crumb" + (state.path.length === 0 ? " current" : "");
-        rootButton.textContent = "ROOT";
-        rootButton.onclick = goRoot;
-        crumbs.appendChild(rootButton);
-
-        state.path.forEach((part, index) => {
-          const sep = document.createElement("span");
-          sep.textContent = "›";
-          sep.style.color = "#526455";
-          crumbs.appendChild(sep);
-
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = "crumb" + (index === state.path.length - 1 ? " current" : "");
-          button.textContent = String(part);
-          button.onclick = () => {
-            state.path = state.path.slice(0, index + 1);
-            state.selected = null;
-            resetView();
-            updateHud();
-            draw();
-          };
-          crumbs.appendChild(button);
-        });
-
-        crumbs.scrollLeft = crumbs.scrollWidth;
-      }
-
-      function resize() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-        for (const c of [canvas, mini]) {
-          const rect = c.getBoundingClientRect();
-          c.width = Math.round(rect.width * dpr);
-          c.height = Math.round(rect.height * dpr);
-          const context = c === canvas ? ctx : mctx;
-          context.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-        draw();
-      }
-
-      function gridGeometry() {
-        const cell = BASE_CELL * state.zoom;
-        const gap = BASE_GAP * state.zoom;
-        const step = cell + gap;
-        const total = GRID_COUNT * cell + (GRID_COUNT - 1) * gap;
-        const originX = (innerWidth - total) / 2 + state.x;
-        const originY = (innerHeight - total) / 2 + state.y;
-        return { cell, gap, step, total, originX, originY };
-      }
-
-      function cellLabel(row, col) {
-        return row * 9 + col + 1;
-      }
-
-      function cellValue(row, col) {
-        const key = [...state.path, cellLabel(row, col)].join("/");
-        return state.data[key] || "";
-      }
-
-      function draw() {
-        ctx.clearRect(0, 0, innerWidth, innerHeight);
-        ctx.fillStyle = "#000";
-        ctx.fillRect(0, 0, innerWidth, innerHeight);
-
-        const g = gridGeometry();
-        const fontSize = Math.max(8, Math.min(14, 11 * state.zoom));
-
-        for (let row = 0; row < GRID_COUNT; row++) {
-          for (let col = 0; col < GRID_COUNT; col++) {
-            const x = g.originX + col * g.step;
-            const y = g.originY + row * g.step;
-            const n = cellLabel(row, col);
-            const selected = state.selected &&
-              state.selected[0] === row && state.selected[1] === col;
-            const home = n === 40;
-            const center = n === 41;
-
-            ctx.fillStyle = selected ? "#10251a" : "#050805";
-            ctx.fillRect(x, y, g.cell, g.cell);
-
-            ctx.lineWidth = selected ? 2 : 1;
-            ctx.strokeStyle = selected ? "#4ade80" :
-              home ? "#ffd700" :
-              center ? "#d7e2d9" : "#24452d";
-            ctx.strokeRect(x + .5, y + .5, g.cell - 1, g.cell - 1);
-
-            if (g.cell >= 15) {
-              ctx.fillStyle = home ? "#ffd700" : center ? "#fff" : "#a7b8aa";
-              ctx.font = `${selected ? "bold " : ""}${fontSize}px Consolas, monospace`;
-              ctx.textAlign = "center";
-              ctx.textBaseline = "middle";
-              ctx.fillText(String(n), x + g.cell / 2, y + g.cell / 2);
-            }
-
-            const value = cellValue(row, col);
-            if (value && g.cell > 22) {
-              ctx.fillStyle = "#4ade80";
-              ctx.beginPath();
-              ctx.arc(x + g.cell - 5, y + 5, 2.3, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-
-        ctx.fillStyle = "#849589";
-        ctx.font = "11px Consolas, monospace";
-        ctx.textAlign = "left";
-        ctx.textBaseline = "bottom";
-        ctx.fillText(currentPath() + " · 729 FELDER", 12, innerHeight - 8);
-
-        drawMiniMap();
-      }
-
-      function drawMiniMap() {
-        const rect = mini.getBoundingClientRect();
-        const w = rect.width;
-        const h = rect.height;
-        mctx.clearRect(0, 0, w, h);
-        mctx.fillStyle = "#050805";
-        mctx.fillRect(0, 0, w, h);
-
-        const pad = 8;
-        const size = Math.min(w, h) - pad * 2;
-        const step = size / 9;
-        mctx.lineWidth = 1;
-
-        for (let i = 0; i < 81; i++) {
-          const row = Math.floor(i / 9);
-          const col = i % 9;
-          const n = i + 1;
-          mctx.strokeStyle = n === 40 ? "#ffd700" : n === 41 ? "#fff" : "#31563a";
-          mctx.strokeRect(pad + col * step, pad + row * step, step - 1, step - 1);
-        }
-
-        const viewW = Math.min(size, size / state.zoom);
-        const viewH = Math.min(size, size / state.zoom);
-        const maxPan = Math.max(1, BASE_CELL * 9);
-        const vx = pad + (size - viewW) / 2 - state.x / maxPan * (size - viewW);
-        const vy = pad + (size - viewH) / 2 - state.y / maxPan * (size - viewH);
-
-        mctx.strokeStyle = "#ffd700";
-        mctx.lineWidth = 2;
-        mctx.strokeRect(
-          Math.max(pad, Math.min(pad + size - viewW, vx)),
-          Math.max(pad, Math.min(pad + size - viewH, vy)),
-          viewW,
-          viewH
-        );
-      }
-
-      function resetView() {
-        state.zoom = 1;
-        state.x = 0;
-        state.y = 0;
-        state.velocityX = 0;
-        state.velocityY = 0;
-      }
-
-      function goRoot() {
-        state.path = [];
-        state.selected = null;
-        resetView();
-        updateHud();
-        draw();
-        notify("ROOT");
-      }
-
-      function zoomAt(factor, px = innerWidth / 2, py = innerHeight / 2) {
-        const oldZoom = state.zoom;
-        const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, oldZoom * factor));
-        const scale = newZoom / oldZoom;
-
-        state.x = px - (px - state.x) * scale;
-        state.y = py - (py - state.y) * scale;
-        state.zoom = newZoom;
-        state.velocityX = 0;
-        state.velocityY = 0;
-        draw();
-        updateHud();
-      }
-
-      function pan(dx, dy) {
-        state.x += dx;
-        state.y += dy;
-        state.velocityX = dx;
-        state.velocityY = dy;
-        draw();
-      }
-
-      function cellAt(x, y) {
-        const g = gridGeometry();
-        const col = Math.floor((x - g.originX) / g.step);
-        const row = Math.floor((y - g.originY) / g.step);
-
-        if (row < 0 || row >= 9 || col < 0 || col >= 9) return null;
-        const localX = (x - g.originX) - col * g.step;
-        const localY = (y - g.originY) - row * g.step;
-        if (localX > g.cell || localY > g.cell) return null;
-        return { row, col };
-      }
-
-      function selectCell(cell) {
-        if (!cell) return;
-        state.selected = [cell.row, cell.col];
-        updateHud();
-        draw();
-      }
-
-      function drillDown() {
-        if (!state.selected) {
-          notify("Zuerst ein Feld auswählen.");
-          return;
-        }
-        const n = cellLabel(state.selected[0], state.selected[1]);
-        state.path.push(n);
-        state.selected = null;
-        resetView();
-        updateHud();
-        draw();
-        notify(`Drill-down: ${currentPath()}`);
-      }
-
-      function contextAction() {
-        if (!state.selected) {
-          notify("Gedrückt halten: erst ein Feld auswählen.");
-          return;
-        }
-        const n = cellLabel(state.selected[0], state.selected[1]);
-        const key = [...state.path, n].join("/");
-        const old = state.data[key] || "";
-        const value = prompt(`Kontextaktion für Feld ${n}\nNotiz eingeben (leer = löschen):`, old);
-        if (value === null) return;
-        if (value.trim()) state.data[key] = value.trim();
-        else delete state.data[key];
-        draw();
-        notify(value.trim() ? "Notiz am Feld gespeichert." : "Feldnotiz gelöscht.");
-      }
-
-      function saveJSON() {
-        const payload = {
-          app: "NC.OS Mobile",
-          version: 1,
-          savedAt: new Date().toISOString(),
-          path: state.path,
-          selected: state.selected,
-          zoom: state.zoom,
-          view: { x: state.x, y: state.y },
-          data: state.data
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], {
-          type: "application/json"
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "nc-os-mobile.json";
-        a.click();
-        URL.revokeObjectURL(url);
-        notify("JSON gespeichert.");
-      }
-
-      function loadJSON(file) {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          try {
-            const data = JSON.parse(String(reader.result));
-            if (data.app !== "NC.OS Mobile" || !Array.isArray(data.path)) {
-              throw new Error("Ungültiges NC.OS-Mobile-JSON.");
-            }
-            state.path = data.path.map(String);
-            state.selected = Array.isArray(data.selected) ? data.selected : null;
-            state.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Number(data.zoom) || 1));
-            state.x = Number(data.view?.x) || 0;
-            state.y = Number(data.view?.y) || 0;
-            state.data = data.data && typeof data.data === "object" ? data.data : {};
-            updateHud();
-            draw();
-            notify("JSON geladen.");
-          } catch {
-            notify("JSON konnte nicht geladen werden.");
-          }
-        };
-        reader.readAsText(file);
-      }
-
-      // Maus: Auswahl und Mausrad-Zoom
-      canvas.addEventListener("click", (e) => {
-        if (e.detail > 1) return;
-        selectCell(cellAt(e.clientX, e.clientY));
-      });
-
-      canvas.addEventListener("dblclick", (e) => {
-        e.preventDefault();
-        const cell = cellAt(e.clientX, e.clientY);
-        if (cell) {
-          selectCell(cell);
-          drillDown();
-        } else {
-          zoomAt(1.5, e.clientX, e.clientY);
-        }
-      });
-
-      canvas.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY);
-      }, { passive: false });
-
-      // Touch und Pointer: Tap, Doppeltipp, Halten, Wischen, Pinch und Zwei-Finger-Pan
-      canvas.addEventListener("pointerdown", (e) => {
-        canvas.setPointerCapture(e.pointerId);
-        state.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-        state.moved = false;
-        state.velocityX = 0;
-        state.velocityY = 0;
-
-        if (state.pointers.size === 1) {
-          const cell = cellAt(e.clientX, e.clientY);
-          state.gesture = {
-            type: "one",
-            startX: e.clientX,
-            startY: e.clientY,
-            lastX: e.clientX,
-            lastY: e.clientY,
-            cell
-          };
-
-          clearTimeout(state.longPressTimer);
-          state.longPressTimer = setTimeout(() => {
-            if (!state.moved && state.gesture?.type === "one") {
-              selectCell(cell);
-              contextAction();
-              state.gesture.type = "handled";
-            }
-          }, LONG_PRESS_MS);
-        } else if (state.pointers.size === 2) {
-          clearTimeout(state.longPressTimer);
-          const pts = [...state.pointers.values()];
-          state.gesture = {
-            type: "two",
-            distance: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
-            centerX: (pts[0].x + pts[1].x) / 2,
-            centerY: (pts[0].y + pts[1].y) / 2
-          };
-        }
-      });
-
-      canvas.addEventListener("pointermove", (e) => {
-        if (!state.pointers.has(e.pointerId)) return;
-        state.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-        if (state.pointers.size === 1 && state.gesture?.type === "one") {
-          const dx = e.clientX - state.gesture.lastX;
-          const dy = e.clientY - state.gesture.lastY;
-          const total = Math.hypot(e.clientX - state.gesture.startX, e.clientY - state.gesture.startY);
-
-          if (total > 7) {
-            state.moved = true;
-            clearTimeout(state.longPressTimer);
-            pan(dx, dy);
-          }
-          state.gesture.lastX = e.clientX;
-          state.gesture.lastY = e.clientY;
-        } else if (state.pointers.size === 2 && state.gesture?.type === "two") {
-          const pts = [...state.pointers.values()];
-          const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-          const centerX = (pts[0].x + pts[1].x) / 2;
-          const centerY = (pts[0].y + pts[1].y) / 2;
-
-          if (state.gesture.distance > 0 && distance > 0) {
-            zoomAt(distance / state.gesture.distance, centerX, centerY);
-          }
-          pan(centerX - state.gesture.centerX, centerY - state.gesture.centerY);
-
-          state.gesture.distance = distance;
-          state.gesture.centerX = centerX;
-          state.gesture.centerY = centerY;
-          state.moved = true;
-        }
-      });
-
-      function pointerEnd(e) {
-        clearTimeout(state.longPressTimer);
-        const gesture = state.gesture;
-
-        if (gesture?.type === "one" && !state.moved) {
-          const cell = cellAt(e.clientX, e.clientY);
-          if (cell) {
-            selectCell(cell);
-            const now = Date.now();
-            const key = `${cell.row}:${cell.col}`;
-            if (now - state.lastTap < 330 && key === state.lastTapCell) {
-              drillDown();
-              state.lastTap = 0;
-              state.lastTapCell = null;
-            } else {
-              state.lastTap = now;
-              state.lastTapCell = key;
-            }
-          }
-        }
-
-        state.pointers.delete(e.pointerId);
-        if (state.pointers.size === 0) state.gesture = null;
-      }
-
-      canvas.addEventListener("pointerup", pointerEnd);
-      canvas.addEventListener("pointercancel", pointerEnd);
-
-      // MiniMap: anklicken/antippen, um die Canvas-Position zu wechseln
-      mini.addEventListener("pointerdown", (e) => {
-        const rect = mini.getBoundingClientRect();
-        const pad = 8;
-        const size = Math.min(rect.width, rect.height) - pad * 2;
-        const col = Math.max(0, Math.min(8, Math.floor((e.clientX - rect.left - pad) / (size / 9))));
-        const row = Math.max(0, Math.min(8, Math.floor((e.clientY - rect.top - pad) / (size / 9))));
-        const cell = cellLabel(row, col);
-        state.x = 0;
-        state.y = 0;
-        state.selected = [row, col];
-        state.path = state.path.slice(0, Math.min(state.path.length, 8));
-        updateHud();
-        draw();
-        notify(`MiniMap: Feld ${cell}`);
-      });
-
-      // Tastatur
-      window.addEventListener("keydown", (e) => {
-        const target = e.target;
-        if (target && /INPUT|TEXTAREA|SELECT/.test(target.tagName)) return;
-
-        const amount = 28;
-        if (e.key === "ArrowLeft") { e.preventDefault(); pan(amount, 0); }
-        else if (e.key === "ArrowRight") { e.preventDefault(); pan(-amount, 0); }
-        else if (e.key === "ArrowUp") { e.preventDefault(); pan(0, amount); }
-        else if (e.key === "ArrowDown") { e.preventDefault(); pan(0, -amount); }
-        else if (e.key === "+" || e.key === "=") zoomAt(1.12);
-        else if (e.key === "-" || e.key === "_") zoomAt(1 / 1.12);
-        else if (e.key === "Home") { e.preventDefault(); goRoot(); }
-        else if (e.key === "Backspace") {
-          e.preventDefault();
-          if (state.path.length) {
-            state.path.pop();
-            state.selected = null;
-            resetView();
-            updateHud();
-            draw();
-          }
-        } else if (e.key === "Enter") drillDown();
-      });
-
-      document.getElementById("homeBtn").addEventListener("click", goRoot);
-      document.getElementById("backBtn").addEventListener("click", () => {
-        if (!state.path.length) return goRoot();
-        state.path.pop();
-        state.selected = null;
-        resetView();
-        updateHud();
-        draw();
-      });
-      document.getElementById("saveBtn").addEventListener("click", saveJSON);
-      document.getElementById("loadBtn").addEventListener("click", () => {
-        document.getElementById("fileInput").click();
-      });
-      document.getElementById("fileInput").addEventListener("change", (e) => {
-        loadJSON(e.target.files && e.target.files[0]);
-        e.target.value = "";
-      });
-
-      // Dezente Trägheit beim Wischen
-      function animate() {
-        if (state.pointers.size === 0 &&
-            (Math.abs(state.velocityX) > .15 || Math.abs(state.velocityY) > .15)) {
-          state.x += state.velocityX;
-          state.y += state.velocityY;
-          state.velocityX *= .90;
-          state.velocityY *= .90;
-          draw();
-        }
-        requestAnimationFrame(animate);
-      }
-
-      window.addEventListener("resize", resize);
-      updateHud();
-      resize();
-      animate();
-    })();
+      shown.textContent = visible;
+      empty.style.display = visible ? "none" : "block";
+    });
   </script>
 </body>
 </html>
