@@ -11,61 +11,74 @@ const alphaLauf = [
 ];
 
 function pruefeEintrag(eintrag) {
-  const fehlt = ["file", "name", "rolle", "daten"]
-    .filter((feld) => !eintrag[feld]?.trim());
+  if (!eintrag || typeof eintrag !== "object") {
+    return { ok: false, fehler: ["Eintrag ist kein Objekt"] };
+  }
 
-  return {
-    ok: fehlt.length === 0,
-    fehler: fehlt
-  };
+  const pflichtfelder = ["file", "name", "rolle", "daten"];
+  const fehlt = pflichtfelder.filter(
+    feld => typeof eintrag[feld] !== "string" || !eintrag[feld].trim()
+  );
+
+  if (fehlt.length) {
+    return { ok: false, fehler: [`Fehlende Felder: ${fehlt.join(", ")}`] };
+  }
+
+  // Spezifische Plausibilitätsprüfung für 2.html.
+  if (eintrag.file === "2.html") {
+    const istSteckkartenSchritt =
+      eintrag.name === "Steckkarten" &&
+      eintrag.rolle === "Noise" &&
+      /\bSLI\b/i.test(eintrag.daten) &&
+      /\b42\s*%/.test(eintrag.daten);
+
+    if (!istSteckkartenSchritt) {
+      return {
+        ok: false,
+        fehler: ["2.html erwartet Steckkarten, Noise und den SLI-Wert 42 %"]
+      };
+    }
+  }
+
+  return { ok: true, fehler: [] };
 }
 
-function fuehreAlphaLaufAus(eintraege) {
+function pruefeAlphaLauf(eintraege) {
   if (!Array.isArray(eintraege) || eintraege.length === 0) {
     throw new Error("Alpha-Lauf benötigt mindestens einen Eintrag.");
   }
 
   const dateien = new Set();
-  const ergebnisse = [];
 
-  for (const eintrag of eintraege) {
+  return eintraege.map((eintrag, index) => {
     const pruefung = pruefeEintrag(eintrag);
+    const datei = eintrag?.file;
 
-    if (!pruefung.ok) {
-      ergebnisse.push({
-        ...eintrag,
-        status: "FEHLER",
-        meldung: `Fehlende Felder: ${pruefung.fehler.join(", ")}`
-      });
-      continue;
+    if (pruefung.ok && dateien.has(datei)) {
+      pruefung.ok = false;
+      pruefung.fehler.push(`Datei doppelt: ${datei}`);
     }
 
-    if (dateien.has(eintrag.file)) {
-      ergebnisse.push({
-        ...eintrag,
-        status: "FEHLER",
-        meldung: `Datei doppelt: ${eintrag.file}`
-      });
-      continue;
-    }
+    if (pruefung.ok) dateien.add(datei);
 
-    dateien.add(eintrag.file);
-
-    ergebnisse.push({
+    return {
       ...eintrag,
-      status: "BEREIT",
-      meldung: `${eintrag.rolle} verarbeitet ${eintrag.daten}`
-    });
-  }
-
-  return ergebnisse;
+      schritt: index + 1,
+      status: pruefung.ok ? "BEREIT" : "FEHLER",
+      meldung: pruefung.ok
+        ? datei === "2.html"
+          ? "Steckkarten-Daten geprüft; SLI-Wert: 42 %."
+          : "Pflichtfelder geprüft."
+        : pruefung.fehler.join(" · ")
+    };
+  });
 }
 
-const ergebnisse = fuehreAlphaLaufAus(alphaLauf);
+const ergebnisse = pruefeAlphaLauf(alphaLauf);
 
 for (const eintrag of ergebnisse) {
   console.log(
-    `${eintrag.status} · ${eintrag.file} · ${eintrag.name} · ` +
-    `${eintrag.rolle} · ${eintrag.meldung}`
+    `${eintrag.status} · Schritt ${eintrag.schritt} · ` +
+    `${eintrag.file} · ${eintrag.name} · ${eintrag.meldung}`
   );
 }
