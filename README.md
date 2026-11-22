@@ -13,7 +13,7 @@ Diese README beschreibt ausschließlich die geometrische Struktur des Projekts.
 - `vo.l2.html` und `vol.1.html` — ältere Stände
 
 ## Geometrie-Regeln
-
+ 
 - `0.html` bis `9.html` bleiben getrennte Dateien.
 - Bestehende Stände bleiben erhalten; Änderungen werden ergänzt.
 - Pro Element sind höchstens drei Anker zulässig.
