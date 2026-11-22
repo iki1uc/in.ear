@@ -10,6 +10,62 @@ const alphaLauf = [
   { file: "8.html", name: "Scanner", rolle: "Eye", daten: "1:1-Scan" }
 ];
 
-for (const lauf of alphaLauf) {
-  console.log(`Alpha Lauf ${lauf.file} · ${lauf.name} · ${lauf.rolle} · ${lauf.daten}`);
+function pruefeEintrag(eintrag) {
+  const fehlt = ["file", "name", "rolle", "daten"]
+    .filter((feld) => !eintrag[feld]?.trim());
+
+  return {
+    ok: fehlt.length === 0,
+    fehler: fehlt
+  };
+}
+
+function fuehreAlphaLaufAus(eintraege) {
+  if (!Array.isArray(eintraege) || eintraege.length === 0) {
+    throw new Error("Alpha-Lauf benötigt mindestens einen Eintrag.");
+  }
+
+  const dateien = new Set();
+  const ergebnisse = [];
+
+  for (const eintrag of eintraege) {
+    const pruefung = pruefeEintrag(eintrag);
+
+    if (!pruefung.ok) {
+      ergebnisse.push({
+        ...eintrag,
+        status: "FEHLER",
+        meldung: `Fehlende Felder: ${pruefung.fehler.join(", ")}`
+      });
+      continue;
+    }
+
+    if (dateien.has(eintrag.file)) {
+      ergebnisse.push({
+        ...eintrag,
+        status: "FEHLER",
+        meldung: `Datei doppelt: ${eintrag.file}`
+      });
+      continue;
+    }
+
+    dateien.add(eintrag.file);
+
+    ergebnisse.push({
+      ...eintrag,
+      status: "BEREIT",
+      meldung: `${eintrag.rolle} verarbeitet ${eintrag.daten}`
+    });
+  }
+
+  return ergebnisse;
+}
+
+const ergebnisse = fuehreAlphaLaufAus(alphaLauf);
+
+for (const eintrag of ergebnisse) {
+  console.log(
+    `${eintrag.status} · ${eintrag.file} · ${eintrag.name} · ` +
+    `${eintrag.rolle} · ${eintrag.meldung}`
+  );
 }
