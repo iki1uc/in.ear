@@ -1,31 +1,32 @@
-# NC.OS — iki1uc
+# NC.OS — Geometrie
 
-NC.OS in 1 Repo. 10 fertige Existenzen. Nichts wird gelöscht, nur angehängt.
+## Zweck
 
-**HALT = ZIEL · Log nur anhängen · Roots bleiben, nur erweitern**
+Diese README beschreibt ausschließlich die geometrische Struktur des Projekts.
 
-## Start
+## Dateien
 
-Einfach öffnen:
-
-- `index.html` — Einstieg / Index
-- `0.html` bis `9.html` — 10 einzelne, fertige Existenzen
+- `index.html` — Einstiegspunkt
+- `0.html` bis `9.html` — zehn getrennte Ansichten
 - `ctrl.html` — Controller
-- `rom.htm` / `ram.htm` — ROM nur lesen / RAM flüchtig
-- `vo.l2.html` / `vol.1.html` — ältere Stände, bleiben als Zeuge
+- `rom.htm` und `ram.htm` — getrennte ROM- und RAM-Ansichten
+- `vo.l2.html` und `vol.1.html` — ältere Stände
 
-Kein Build. Kein `npm install`. Kein Server nötig.
-Doppelklick auf `index.html` reicht, oder über 【entity-GitHub Pages¦canonical_name=GitHub】.
+## Geometrie-Regeln
 
-## Regeln
+- `0.html` bis `9.html` bleiben getrennte Dateien.
+- Bestehende Stände bleiben erhalten; Änderungen werden ergänzt.
+- Pro Element sind höchstens drei Anker zulässig.
+- Doppelte Anker sind nicht zulässig.
+- Kein Anker bedeutet: keine geometrische Bindung.
 
-1. **0.html bis 9.html bleiben 10 einzelne Dateien.**
-   3 und 6 sind nur umgezogen, nicht zusammengelegt.
-2. **Nichts löschen.** Log, Anker, Stand — nur anhängen.
-3. **Max 3 Anker.** Kein Doppel-Anker. Leer = kein Anker.
-4. **ROM nur lesen. RAM flüchtig. Nichts wird vermischt.**
-5. **Kein Auto-Start, kein Timer.** Erst prüfen, dann freigeben, dann ausführen.
-6. **729.729.729 liest man als 9.** `999 99 9 99 999`. Name ist Funktion.
+## Ausführung
+
+`index.html` kann direkt im Browser geöffnet werden. Ein Build-Schritt ist nicht erforderlich.
+
+## Geometrische Daten
+
+Die konkreten Punkte, Maße, Koordinatensysteme und Berechnungen werden hier ergänzt, sobald sie im Projektcode festgelegt sind.
 
 ## Struktur
 🧩 Lizenz NC · iki1uc · Eye Brain Open Copyright (c) 2026 iki1uc — Alle Rechte vorbehalten.
@@ -36,4 +37,4 @@ Nur der Autor iki1uc darf dieses Projekt verwenden, verbreiten oder erweitern.
 
 Externe Nutzung nur mit expliziter Business-Lizenz.
 
-Eye Brain Open · SAM führt · DEEP macht · PC befiehlt · PQ erinnert Discord: wie immer · offen Team: open HALT = ZIEL · SEEK liest, ordnet, hängt an · Löscht nie
+Eye Brain Open · SAM führt · DEEP macht · PC befiehlt · PQ erinnert Discord: wieimmer · & · partner key open Team: open HALT = ZIEL · SEEK liest, ordnet, hängt an · Löscht nie
