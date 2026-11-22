@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050805">
-  <title>NC.OS · Index</title>
+  <title>NC.OS · Freudenhund</title>
 
   <style>
     :root {
@@ -27,227 +27,234 @@
       padding-bottom: env(safe-area-inset-bottom);
       background: var(--bg);
       color: var(--text);
-      font: 15px/1.45 system-ui, sans-serif;
+      font: 15px/1.5 system-ui, sans-serif;
     }
 
     header {
       position: sticky;
       top: 0;
-      z-index: 1;
-      padding: max(12px, env(safe-area-inset-top)) 14px 12px;
+      z-index: 2;
+      padding: max(12px, env(safe-area-inset-top)) 14px 10px;
       border-bottom: 1px solid var(--line);
       background: #050805ee;
       backdrop-filter: blur(10px);
     }
 
-    .heading {
+    .top, nav {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
     }
+
+    .top { justify-content: space-between; }
 
     h1 {
       margin: 0;
       color: var(--green);
-      font-size: 18px;
+      font-size: 17px;
       letter-spacing: .04em;
     }
 
-    #count {
-      color: var(--muted);
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    #search {
-      width: 100%;
-      min-height: 46px;
-      margin-top: 12px;
-      padding: 10px 12px;
+    .role, .case-link, button {
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 9px;
       background: var(--panel);
       color: var(--text);
-      font: inherit;
-      font-size: 16px;
     }
 
-    #search:focus-visible, a:focus-visible {
-      outline: 2px solid var(--gold);
-      outline-offset: 2px;
+    .role {
+      padding: 4px 9px;
+      color: var(--gold);
+      font-size: 12px;
+    }
+
+    nav {
+      overflow-x: auto;
+      padding-top: 10px;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .case-link {
+      flex: 0 0 auto;
+      min-width: 42px;
+      padding: 7px 10px;
+      color: var(--muted);
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .case-link[aria-current="page"] {
+      border-color: var(--green);
+      color: var(--green);
     }
 
     main {
       width: min(100%, 760px);
-      margin: 0 auto;
+      margin: auto;
       padding: 14px;
     }
 
-    .hint {
-      margin: 0 2px 12px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    #pages {
-      display: grid;
-      gap: 9px;
-    }
-
-    .page {
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 12px;
-      min-height: 76px;
-      padding: 12px;
+    .card {
+      margin-bottom: 12px;
+      padding: 16px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: var(--panel);
-      color: inherit;
-      text-decoration: none;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    .page:active {
-      background: #102016;
-      border-color: var(--green);
-    }
-
-    .number {
-      display: grid;
-      width: 40px;
-      height: 40px;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: 10px;
+    h2 {
+      margin: 0 0 5px;
       color: var(--gold);
-      font-weight: 800;
+      font-size: 14px;
     }
 
-    .title {
+    .muted {
       margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .description {
-      margin: 3px 0 0;
       color: var(--muted);
       font-size: 13px;
-      overflow-wrap: anywhere;
     }
 
-    .arrow {
-      color: var(--green);
-      font-size: 22px;
-    }
-
-    #empty {
-      display: none;
-      padding: 22px 10px;
-      color: var(--muted);
+    .scanner {
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+      padding: 26px 16px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
       text-align: center;
     }
 
-    @media (min-width: 620px) {
-      #pages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .scanner-icon {
+      display: grid;
+      width: 68px;
+      height: 68px;
+      place-items: center;
+      border: 1px solid var(--green);
+      border-radius: 50%;
+      color: var(--green);
+      font-size: 30px;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      * { scroll-behavior: auto !important; }
+    button {
+      min-height: 46px;
+      padding: 10px 16px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:hover, button:focus-visible, .case-link:focus-visible {
+      border-color: var(--green);
+      outline: 2px solid transparent;
+    }
+
+    button:disabled { opacity: .55; cursor: wait; }
+
+    #status {
+      min-height: 1.5em;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    #status[data-state="ok"] { color: var(--green); }
+    #status[data-state="error"] { color: #ff7777; }
+
+    #result {
+      display: none;
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: #050805;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    @media (min-width: 620px) {
+      main { padding-top: 22px; }
+      .card { padding: 20px; }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <div class="heading">
-      <h1>NC.OS <span style="color:var(--muted)">· INDEX</span></h1>
-      <span id="count">10 Seiten</span>
+    <div class="top">
+      <h1>NC.OS · Freudenhund</h1>
+      <span class="role">Erkennung</span>
     </div>
-    <input id="search" type="search" placeholder="Seiten durchsuchen …"
-           aria-label="Seiten durchsuchen">
+
+    <nav aria-label="Alpha-Lauf">
+      <a class="case-link" href="0.html" aria-current="page" aria-label="Freudenhund">0</a>
+      <a class="case-link" href="1.html" aria-label="RAM">1</a>
+      <a class="case-link" href="2.html" aria-label="Steckkarten">2</a>
+      <a class="case-link" href="3.html" aria-label="Kernel">3</a>
+      <a class="case-link" href="4.html" aria-label="Industry Verified">4</a>
+      <a class="case-link" href="5.html" aria-label="In-Ear Loader">5</a>
+      <a class="case-link" href="6.html" aria-label="Letzter Tech">6</a>
+      <a class="case-link" href="7.html" aria-label="11 zu 7">7</a>
+      <a class="case-link" href="8.html" aria-label="Scanner">8</a>
+    </nav>
   </header>
 
   <main>
-    <p class="hint">Tippe auf eine Seite, um sie zu öffnen.</p>
+    <section class="card">
+      <h2>Scanner-Eingang</h2>
+      <p class="muted">Freudenhund · Erkennung</p>
+    </section>
 
-    <nav id="pages" aria-label="NC.OS-Seiten">
-      <a class="page" href="0.html" data-search="0 seite case">
-        <span class="number">0</span>
-        <span><span class="title">Seite 0</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="1.html" data-search="1 seite case">
-        <span class="number">1</span>
-        <span><span class="title">Seite 1</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="2.html" data-search="2 seite case">
-        <span class="number">2</span>
-        <span><span class="title">Seite 2</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="3.html" data-search="3 seite case">
-        <span class="number">3</span>
-        <span><span class="title">Seite 3</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="4.html" data-search="4 seite case">
-        <span class="number">4</span>
-        <span><span class="title">Seite 4</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="5.html" data-search="5 seite case">
-        <span class="number">5</span>
-        <span><span class="title">Seite 5</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="6.html" data-search="6 seite case">
-        <span class="number">6</span>
-        <span><span class="title">Seite 6</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="7.html" data-search="7 seite case">
-        <span class="number">7</span>
-        <span><span class="title">Seite 7</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="8.html" data-search="8 seite case">
-        <span class="number">8</span>
-        <span><span class="title">Seite 8</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-      <a class="page" href="9.html" data-search="9 seite case">
-        <span class="number">9</span>
-        <span><span class="title">Seite 9</span><p class="description">Beschreibung folgt</p></span>
-        <span class="arrow" aria-hidden="true">›</span>
-      </a>
-    </nav>
+    <section class="card scanner" aria-labelledby="scan-title">
+      <div class="scanner-icon" aria-hidden="true">⌖</div>
+      <div>
+        <h2 id="scan-title">Eingang prüfen</h2>
+        <p class="muted">Text oder Kennung scannen und als Eingang erfassen.</p>
+      </div>
 
-    <div id="empty">Keine passende Seite gefunden.</div>
+      <label>
+        <span class="muted">Eingabe</span><br>
+        <input id="scan-input" type="text" autocomplete="off"
+          placeholder="Text eingeben oder scannen"
+          style="width:min(100%,420px);min-height:46px;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#050805;color:var(--text);font:inherit">
+      </label>
+
+      <button id="scan-button" type="button">Eingang erfassen</button>
+      <p id="status" role="status" aria-live="polite">Bereit.</p>
+      <pre id="result"></pre>
+    </section>
   </main>
 
   <script>
-    const search = document.querySelector("#search");
-    const pages = [...document.querySelectorAll(".page")];
-    const count = document.querySelector("#count");
-    const empty = document.querySelector("#empty");
+    const input = document.querySelector("#scan-input");
+    const button = document.querySelector("#scan-button");
+    const status = document.querySelector("#status");
+    const result = document.querySelector("#result");
 
-    search.addEventListener("input", () => {
-      const query = search.value.trim().toLocaleLowerCase("de");
-      let visible = 0;
+    button.addEventListener("click", () => {
+      const value = input.value.trim();
 
-      for (const page of pages) {
-        const found = page.dataset.search.includes(query);
-        page.hidden = !found;
-        if (found) visible++;
+      if (!value) {
+        status.textContent = "Bitte zuerst Text eingeben oder scannen.";
+        status.dataset.state = "error";
+        input.focus();
+        return;
       }
 
-      count.textContent = `${visible} ${visible === 1 ? "Seite" : "Seiten"}`;
-      empty.style.display = visible ? "none" : "block";
+      const record = {
+        case: "0.html",
+        name: "Freudenhund",
+        rolle: "Erkennung",
+        daten: "Scanner-Eingang",
+        eingang: value,
+        zeit: new Date().toLocaleString("de-DE")
+      };
+
+      result.textContent = JSON.stringify(record, null, 2);
+      result.style.display = "block";
+      status.textContent = "Eingang lokal erfasst.";
+      status.dataset.state = "ok";
+    });
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") button.click();
     });
   </script>
 </body>
