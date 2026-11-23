@@ -2,500 +2,127 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#07111b">
-<title>NC.OS · Mainboard 729</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<title>NC.OS ROOT · 4.html</title>
 <style>
-:root{color-scheme:dark;--bg:#07111b;--panel:#0d1a27;--panel2:#101f2e;--line:#26394a;--text:#e8f1f8;--muted:#91a4b5;--cyan:#56e7ff;--green:#54f29a;--pink:#ff69b4;--gold:#ffd479;--radius:14px}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(ellipse at 15% 0%,#12304a 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}
-button,input{font:inherit}
-button{border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:#122335;color:var(--text);cursor:pointer;transition:border-color .15s,transform .15s,background .15s}
-button:hover{border-color:var(--cyan);transform:translateY(-1px)}
-button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-button.primary{background:var(--green);border-color:var(--green);color:#04130b;font-weight:800}
-button.danger:hover{border-color:var(--pink);color:var(--pink)}
-header,.layout{width:min(1250px,100%);margin:auto;padding-left:18px;padding-right:18px}
-header{padding-top:22px;padding-bottom:16px}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:42px;height:42px;display:grid;place-items:center;border:1px solid #56e7ff66;border-radius:12px;color:var(--cyan);font-size:22px;background:#56e7ff0c}
-h1{font-size:clamp(20px,3vw,28px);margin:0;letter-spacing:.02em}
-header p{color:var(--muted);margin:5px 0 0}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;padding-bottom:28px}
-main,.side{display:grid;align-content:start;gap:14px}
-.card{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-width:0}
-.card h2{font-size:15px;margin:0 0 11px}
-.muted{color:var(--muted)}
-.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.position{font-size:clamp(25px,5vw,38px);font-weight:800;letter-spacing:.02em}
-.position span{color:var(--cyan)}
-.badge{border:1px solid var(--line);border-radius:99px;padding:5px 9px;color:var(--muted);font-size:12px}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
-.metric{padding:10px;border:1px solid var(--line);border-radius:10px;background:#07121d}
-.metric small{display:block;color:var(--muted)}
-.metric strong{font-size:17px;color:var(--text)}
-.blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.block{min-height:61px;border:1px solid var(--line);border-radius:10px;padding:9px;background:#081521;color:var(--muted);text-align:left;cursor:pointer}
-.block b{display:block;color:var(--text);font-size:13px}
-.block small{font-size:11px}
-.block.active{border-color:var(--green);background:#54f29a12;box-shadow:inset 0 0 0 1px #54f29a44}
-.block.active b{color:var(--green)}
-.grid9{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px}
-.cell{aspect-ratio:1;min-width:0;padding:0;border:1px solid #26394a;border-radius:6px;background:#07121d;color:#92a6b7;font-size:clamp(9px,1.5vw,12px)}
-.cell:hover{background:#163047}
-.cell.neighbor{border-color:#56e7ff99;color:var(--cyan)}
-.cell.current{background:#f3fbff;color:#06111a;border-color:#fff;font-weight:900;box-shadow:0 0 12px #dffaff55}
-.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.layer-label{color:var(--muted);margin-right:auto}
-input[type=text]{min-width:0;flex:1;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#07121d;color:var(--text)}
-.jump-row{display:flex;gap:8px}
-.log{min-height:48px;max-height:150px;overflow:auto;white-space:pre-wrap;padding:10px;border:1px solid var(--line);border-radius:9px;background:#050c13;color:#b7c7d4;font-size:12px}
-.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #ffffff10}
-.kv:last-child{border-bottom:0}
-.kv span:first-child{color:var(--muted)}
-.kv strong{overflow-wrap:anywhere;text-align:right}
-kbd{display:inline-block;min-width:24px;padding:2px 5px;text-align:center;background:#07121d;border:1px solid var(--line);border-radius:5px;color:var(--text)}
-canvas{display:block;width:100%;height:130px;border:1px solid var(--line);border-radius:9px;background:#07121d}
-#importFile{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-.status{min-height:1.5em;color:var(--muted);font-size:12px}
-.footer-note{font-size:12px;color:var(--muted)}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:580px){header,.layout{padding-left:12px;padding-right:12px}.card{padding:13px}.side{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.cell{font-size:9px}}
+:root{color-scheme:dark;--bg:#0b0f14;--panel:#141a22;--panel2:#1b2430;--input:#0f141b;--border:#2c3645;--text:#e6edf3;--muted:#9fb0c3;--accent:#4da3ff;--good:#45d483;--danger:#ff7070;--shadow:0 4px 24px rgb(0 0 0/.28)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;padding-bottom:calc(68px + env(safe-area-inset-bottom));background:var(--bg);color:var(--text);font:14px/1.5 Consolas,ui-monospace,monospace}
+header{position:sticky;top:0;z-index:5;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--border)}
+h1{margin:0;color:var(--accent);font-size:17px}h2{margin:0 0 10px;color:var(--accent);font-size:13px;letter-spacing:.05em}.muted{color:var(--muted);font-size:12px}
+#breadcrumb{position:sticky;top:58px;z-index:4;display:flex;align-items:center;gap:4px;min-height:38px;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap}
+#breadcrumb button{flex:0 0 auto;padding:2px 6px;background:transparent;border:0;color:var(--accent);font-weight:bold}
+#breadcrumb .sep{color:var(--muted)}
+#statusBar{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--panel2);color:var(--muted);font-size:12px;flex-wrap:wrap}
+#statusBar span{white-space:nowrap}
+#tools{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 12px}
+#tools button{padding:8px 6px;font-size:12px;border-radius:9px}
+main{margin:0 0 20px}.panel{margin:0 12px 12px;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
+button,input,select,textarea{font:inherit}
+button{padding:9px 12px;color:var(--text);background:var(--panel2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+button:hover{border-color:var(--accent)}button:active{transform:scale(.98)}button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,select,textarea{min-width:0;padding:9px;color:var(--text);background:var(--input);border:1px solid var(--border);border-radius:9px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#matrixGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.child{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88px;padding:8px 4px;text-align:center;gap:2px}
+.child.has-canvas{border-color:var(--good)}.child.has-canvas .child-title{color:var(--text)}.child.empty{opacity:.6}
+.child-num{font-size:22px;font-weight:bold;color:var(--accent)}.child-title{font-size:11px;overflow-wrap:anywhere;max-width:100%;color:var(--muted)}.child-fmt{font-size:10px;color:var(--muted);letter-spacing:.1em}
+.leaf-msg{padding:16px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:12px}
+#editor{display:block;width:100%;height:44vh;min-height:200px;resize:vertical;font-size:16px;line-height:1.5}
+#preview{min-height:42px;margin-top:10px;padding:10px;background:var(--input);border:1px solid var(--border);border-radius:9px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+#searchBox{width:100%}.result{display:block;width:100%;margin:8px 0;padding:10px;text-align:left;overflow-wrap:anywhere;border-radius:10px}
+#log{max-height:44vh;overflow:auto;font-size:12px}.logline{padding:5px 0;border-bottom:1px solid rgb(255 255 255/.06)}
+textarea.small{display:block;width:100%;height:80px;margin:4px 0 8px}
+#bottomNav{position:fixed;z-index:10;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);background:var(--panel);border-top:1px solid var(--border)}
+#bottomNav button{height:56px;padding:4px;border:0;border-radius:0;background:transparent;font-size:11px}
+#bottomNav button.on{background:var(--accent);color:#07111b;font-weight:bold}
+.tab{display:none}.tab.on{display:block}
+.status-good{color:var(--good);font-weight:bold}.status-error{color:var(--danger)}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--panel:#0d1218;--panel2:#161d26;--input:#0a0e13;--border:#28323f}}
+@media(min-width:800px){main{max-width:1000px;margin:0 auto}#tools{grid-template-columns:repeat(9,1fr)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="logo" aria-hidden="true">◈</div>
-    <div>
-      <h1>NC.OS · Mainboard 729</h1>
-      <p>Navigation, Zellübersicht, Live-Daten und lokaler Speicher in einem Dashboard.</p>
-    </div>
-  </div>
-</header>
-
-<div class="layout">
+<header><h1>NC.OS ROOT · 4.html</h1><div class="muted">CTRL = Befehl, nicht Zwang · 729 = 3⁶ · echte Hierarchie</div></header>
+<nav id="breadcrumb" aria-label="Breadcrumb"></nav>
+<div id="statusBar" aria-live="polite"><span id="stLevel">LEVEL 0</span><span id="stScale">1</span><span id="stPath">ROOT</span><span id="stCount">0 Canvas</span><span id="haltState">HALT AUS</span></div>
+<div id="tools" role="toolbar" aria-label="Werkzeuge"><button type="button" data-action="matrix">◼ MATRIX</button><button type="button" data-action="editor">✎ EDITOR</button><button type="button" data-action="zeugung">⚙ ZEUGUNG</button><button type="button" data-action="log">☰ LOG</button><button type="button" data-action="import">↓ IMPORT</button><button type="button" data-action="export">↑ EXPORT</button><button type="button" data-action="pipeline">▸ PIPELINE</button><button type="button" data-action="seek">◇ SEEK</button><button type="button" data-action="halt">■ HALT</button><input id="loadFile" type="file" accept=".json,application/json" hidden></div>
 <main>
-  <section class="card">
-    <div class="topline">
-      <div>
-        <div class="muted">AKTIVE ZELLE</div>
-        <div class="position"><span id="currentId">1-1-1</span></div>
-      </div>
-      <div class="badge" id="positionBadge">Position 0 / 728</div>
-    </div>
-    <div class="metrics">
-      <div class="metric"><small>Ebene k</small><strong id="metricK">1 / 9</strong></div>
-      <div class="metric"><small>3×3-Block</small><strong id="metricBlock">1</strong></div>
-      <div class="metric"><small>Nachbarn</small><strong id="metricNeighbors">0</strong></div>
-      <div class="metric"><small>Autosave</small><strong id="metricSave">AN</strong></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>3×3 Mainboard · Blöcke der aktiven Ebene</h2>
-    <div class="blocks" id="blocks" aria-label="Neun 3-mal-3-Blöcke"></div>
-    <p class="footer-note">Grün = aktiver Block. Anklicken springt zur Zelle im Zentrum des Blocks.</p>
-  </section>
-
-  <section class="card">
-    <div class="topline">
-      <h2>9×9 Zellmatrix</h2>
-      <span class="badge" id="layerLabel">Ebene 1 · k=1</span>
-    </div>
-    <div class="grid9" id="grid9" aria-label="Zellmatrix der aktiven Ebene"></div>
-    <p class="footer-note">Weiß = aktuelle Zelle · Cyan = direkte Nachbarn in derselben Ebene.</p>
-    <div class="row">
-      <button id="prevLayer">◀ Ebene −81 · E</button>
-      <span class="layer-label" id="layerStatus">Ebene 1 / 9</span>
-      <button id="nextLayer">Ebene +81 · Q ▶</button>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Positionskorridor</h2>
-    <canvas id="corridor" width="900" height="130" aria-label="Grafische Darstellung der aktuellen Position"></canvas>
-    <p class="footer-note">Der Marker und die Welle werden aus der tatsächlichen Position berechnet.</p>
-  </section>
+<section class="tab on" id="matrixTab"><div class="panel"><h2>MATRIX · KINDER DES AKTUELLEN PFADS</h2><div id="matrixGrid"></div><p class="muted">Jeder Knoten hat 3 Kinder. Tiefe 6 → 729 Blätter. Klick auf Kind navigiert tiefer.</p></div></section>
+<section class="tab" id="editorTab"><div class="panel"><h2>EDITOR · <span id="editorPath" class="muted"></span></h2><div class="toolbar"><select id="fmtSel" aria-label="Format"></select><input id="titleIn" placeholder="Titel" aria-label="Titel" style="flex:1;min-width:120px"><button type="button" data-action="save">Speichern</button><button type="button" data-action="new">Leeren</button></div><p class="muted" id="canvasId">Neu · wird beim Speichern angelegt</p><textarea id="editor" placeholder="Text eingeben …"></textarea><div class="muted" style="margin-top:8px">Vorschau</div><div id="preview" aria-live="polite">Vorschau erscheint hier.</div></div></section>
+<section class="tab" id="searchTab"><div class="panel"><h2>SUCHE</h2><input id="searchBox" placeholder="Titel · Pfad · Text · Format" aria-label="Suche" autocomplete="off"><div id="searchResults" aria-live="polite" style="margin-top:10px"></div></div></section>
+<section class="tab" id="logTab"><div class="panel"><h2>LOG · SEEK</h2><div id="log" aria-live="polite"></div><button type="button" data-action="seek" style="margin-top:10px">SEEK protokollieren</button></div></section>
+<section class="tab" id="zeugungTab"><div class="panel"><h2>ZEUGUNG · REGEL + HTML + JS → KIND</h2><p class="muted status-error">Hinweis: In der ZEUGUNG-Funktion wird das JavaScript als ausführbarer Code in die heruntergeladene HTML-Datei geschrieben. Daher nur vertrauenswürdigen Code eingeben. escapeScriptEnd() macht JS nicht sicher — es verhindert nur, dass &lt;/script&gt; den Block vorzeitig schließt.</p><label class="muted" for="z1">Regel / Beschreibung</label><textarea class="small" id="z1">3 Fenster = 1 Kind</textarea><label class="muted" for="z2">HTML-Inhalt</label><textarea class="small" id="z2">&lt;h2&gt;Hallo Welt&lt;/h2&gt;</textarea><label class="muted" for="z3">JavaScript</label><textarea class="small" id="z3">console.log('Kind lebt');</textarea><button type="button" data-action="birth">KIND ZEUGEN · DOWNLOAD</button><span class="muted" id="zeugOut" aria-live="polite" style="margin-left:8px"></span></div></section>
 </main>
-
-<aside class="side">
-  <section class="card">
-    <h2>Zellsprung</h2>
-    <p class="muted">Koordinatenformat <strong>i-j-k</strong>, z. B. 4-5-6.</p>
-    <div class="jump-row">
-      <input id="jumpInput" type="text" placeholder="4-5-6" autocomplete="off" aria-label="Zellkoordinaten">
-      <button id="jumpButton" class="primary">SPRUNG</button>
-    </div>
-    <div class="row">
-      <button id="homeButton">⌂ HOME 40</button>
-      <button id="middleButton">◉ MITTE</button>
-      <button id="endButton">■ ENDE</button>
-    </div>
-    <p class="footer-note">Mit dieser Formel ist HOME 40 = 5-5-1 (Mitte der ersten Ebene); die geometrische Mitte 5-5-5 liegt auf Position 364.</p>
-    <div class="log" id="jumpLog" role="status" aria-live="polite">Bereit.</div>
-  </section>
-
-  <section class="card">
-    <h2>Tastatursteuerung</h2>
-    <div class="kv"><span><kbd>W</kbd> / <kbd>↑</kbd></span><strong>−9 · Zeile hoch</strong></div>
-    <div class="kv"><span><kbd>S</kbd> / <kbd>↓</kbd></span><strong>+9 · Zeile runter</strong></div>
-    <div class="kv"><span><kbd>A</kbd> / <kbd>←</kbd></span><strong>−1 · Spalte</strong></div>
-    <div class="kv"><span><kbd>D</kbd> / <kbd>→</kbd></span><strong>+1 · Spalte</strong></div>
-    <div class="kv"><span><kbd>Q</kbd></span><strong>+81 · Ebene</strong></div>
-    <div class="kv"><span><kbd>E</kbd></span><strong>−81 · Ebene</strong></div>
-    <p class="footer-note">Pfeiltasten und WASD bewegen innerhalb der Ebene (auch nach einem Mausklick auf einen Knopf). Q/E wechseln die Ebene. Im Eingabefeld bleiben Tasten normale Texteingaben.</p>
-  </section>
-
-  <section class="card">
-    <h2>Zell-Details</h2>
-    <div class="kv"><span>i · j · k</span><strong id="detailCoords">1 · 1 · 1</strong></div>
-    <div class="kv"><span>Oij = i × j</span><strong id="detailIJ">1</strong></div>
-    <div class="kv"><span>Oik = i × k</span><strong id="detailIK">1</strong></div>
-    <div class="kv"><span>Ojk = j × k</span><strong id="detailJK">1</strong></div>
-    <div class="kv"><span>Block</span><strong id="detailBlock">1</strong></div>
-    <div class="kv"><span>Absolute Position</span><strong id="detailPosition">0</strong></div>
-  </section>
-
-  <section class="card">
-    <h2>Speicher · Import · Export</h2>
-    <p class="muted">Autosave-Key: <code>NCOS729</code>. Gespeichert wird ausschließlich <code>{ position }</code>.</p>
-    <div class="row">
-      <button id="exportButton">⬇ EXPORT JSON</button>
-      <button id="importButton" type="button">⬆ IMPORT JSON</button>
-      <input id="importFile" type="file" accept=".json,application/json" aria-label="JSON-Datei importieren" tabindex="-1">
-    </div>
-    <div class="row"><button id="clearButton" class="danger">↺ Autosave löschen</button></div>
-    <p class="status" id="saveStatus" aria-live="polite">Autosave bereit.</p>
-  </section>
-
-  <section class="card">
-    <h2>Protokoll · nur anhängen</h2>
-    <div class="row"><button id="saveLog">LOG SPEICHERN</button><span class="status" id="logCount"></span></div>
-    <div class="log" id="systemLog" role="status" aria-live="polite" style="margin-top:8px">Bereit.</div>
-  </section>
-</aside>
-</div>
-
+<nav id="bottomNav" aria-label="Hauptnavigation"><button type="button" class="on" data-tab="matrix">◼ Matrix</button><button type="button" data-tab="editor">✎ Editor</button><button type="button" data-tab="search">⌕ Suche</button><button type="button" data-tab="log">☰ Log</button><button type="button" data-tab="zeugung">⚙ Zeugung</button></nav>
 <script>
 "use strict";
-
-const STORAGE_KEY = "NCOS729";
-const LOG_KEY = "NCOS729.log";
 const $ = id => document.getElementById(id);
-
-// position = (k-1)*81 + (i-1)*9 + (j-1)
-const CELLS = [];
-for (let k = 1; k <= 9; k++) {
-  for (let i = 1; i <= 9; i++) {
-    for (let j = 1; j <= 9; j++) {
-      CELLS.push({ id: `${i}-${j}-${k}`, i, j, k });
+const STORAGE_KEY = "ncos-4";
+const FORMATS = ["PLAIN","NOTE","RULE","CODE","HTML","JS","PQ","PC","NODE","CHAIN","STORY","EXPORT"];
+const LEVELS = [1,3,9,27,81,243,729];
+const MAX_LEVEL = 6;
+const DECOR = { anker:"A01", seed:"S01", zoom:"2.3", home:40 };
+function defaultState(){return {canvas:{},log:[],path:["ROOT"],halted:false,selectedId:null,nextId:419,version:4};}
+let state = defaultState();
+function escapeHtml(s){return String(s).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+function escapeScriptEnd(s){return s.replace(/<\/script/gi, "<\\/script");}
+function pathStr(p){ return p.join("."); }
+function getLevel(){ return state.path.length - 1; }
+function findCanvasByPath(pStr){return Object.values(state.canvas).find(c => c.path === pStr) || null;}
+function childrenOf(pathArr){const base = pathStr(pathArr);return [1,2,3].map(i => {const p = base + "." + i;return { label: String(i), path: p, canvas: findCanvasByPath(p) };});}
+function persist(){try {localStorage.setItem(STORAGE_KEY, JSON.stringify(state));return true;} catch (e) {console.error("persist fehlgeschlagen:", e);return false;}}
+function loadFromStorage(){try {const raw = localStorage.getItem(STORAGE_KEY);if (!raw) return;state = normalizeState(JSON.parse(raw));} catch (e) {console.warn("load fehlgeschlagen, nutze default:", e);state = defaultState();}}
+function normalizeState(v){
+  if (!v || typeof v !== "object") throw new Error("Kein Objekt");
+  const s = defaultState();
+  s.log = Array.isArray(v.log) ? v.log.filter(x => typeof x === "string").slice(-200) : [];
+  s.path = Array.isArray(v.path) && v.path.length ? v.path.map(String).slice(0, 20) : ["ROOT"];
+  s.halted = !!v.halted;
+  s.nextId = Number.isSafeInteger(v.nextId) && v.nextId > 0 ? v.nextId : 419;
+  if (v.canvas && typeof v.canvas === "object") {
+    for (const [k, c] of Object.entries(v.canvas)) {
+      if (!c || typeof c !== "object") continue;
+      const id = Number(c.id ?? k);
+      if (!Number.isSafeInteger(id) || id < 1) continue;
+      s.canvas[id] = {id,path:typeof c.path === "string" ? c.path : "ROOT",title:typeof c.title === "string" ? c.title : "",text:typeof c.text === "string" ? c.text : "",format:FORMATS.includes(c.format) ? c.format : "PLAIN",created:Number.isFinite(c.created) ? c.created : 0,modified:Number.isFinite(c.modified) ? c.modified : 0};
+      if (id >= s.nextId) s.nextId = id + 1;
     }
   }
+  if (v.selectedId != null && s.canvas[v.selectedId]) s.selectedId = Number(v.selectedId);
+  return s;
 }
-let position = 0;
-let saveTimer = 0;
-
-function cellAt(index) { return CELLS[Math.max(0, Math.min(CELLS.length - 1, index))]; }
-function cellPosition(i, j, k) { return (k - 1) * 81 + (i - 1) * 9 + (j - 1); }
-function blockNumber(cell) { return Math.floor((cell.i - 1) / 3) * 3 + Math.floor((cell.j - 1) / 3) + 1; }
-function announce(message) { $("jumpLog").textContent = message; }
-
-// Protokoll: wird NUR angehängt (nie gekürzt, nie geleert) und bleibt nach dem Neuladen erhalten.
-const pad = n => String(n).padStart(2, "0");
-const hms = iso => { const d = new Date(iso); return pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()); };
-let logLines = [];
-try { const s = JSON.parse(localStorage.getItem(LOG_KEY)); if (Array.isArray(s)) logLines = s; } catch {}
-function systemLog(message) {
-  logLines.push({ t: new Date().toISOString(), m: message });
-  try { localStorage.setItem(LOG_KEY, JSON.stringify(logLines)); } catch {}
-  renderLog();
+function log(msg){state.log.push(`${new Date().toLocaleTimeString("de-DE")} · ${msg}`);state.log = state.log.slice(-200);persist();renderLog();}
+function renderLog(){const el = $("log");el.replaceChildren();const recent = state.log.slice(-50);if (!recent.length) {el.textContent = "Noch keine Einträge.";return;}recent.forEach(line => {const div = document.createElement("div");div.className = "logline";div.textContent = line;el.append(div);});}
+function renderBreadcrumb(){const el = $("breadcrumb");el.replaceChildren();state.path.forEach((label, i) => {if (i) {const sep = document.createElement("span");sep.className = "sep";sep.textContent = "›";el.append(sep);}const btn = document.createElement("button");btn.type = "button";btn.textContent = label;btn.setAttribute("aria-label", `Pfad bis ${label}`);btn.addEventListener("click", () => {state.path = state.path.slice(0, i + 1);const c = findCanvasByPath(pathStr(state.path));state.selectedId = c ? c.id : null;renderAll();log(`BREADCRUMB → ${pathStr(state.path)}`);});el.append(btn);});}
+function renderStatus(){const lvl = getLevel();$("stLevel").textContent = `LEVEL ${lvl}`;$("stScale").textContent = `3^${lvl} = ${LEVELS[lvl]}`;$("stPath").textContent = pathStr(state.path);$("stCount").textContent = `${Object.keys(state.canvas).length} Canvas`;$("haltState").textContent = state.halted ? "HALT = ZIEL" : "HALT AUS";$("haltState").className = state.halted ? "status-good" : "";}
+function renderMatrix(){const grid = $("matrixGrid");grid.replaceChildren();if (getLevel() >= MAX_LEVEL) {const p = document.createElement("div");p.className = "leaf-msg";p.textContent = `Level ${MAX_LEVEL} erreicht · 729 Blätter · Blatt-Pfad ${pathStr(state.path)}`;grid.append(p);return;}const children = childrenOf(state.path);children.forEach(child => {const btn = document.createElement("button");btn.type = "button";btn.className = "child " + (child.canvas ? "has-canvas" : "empty");btn.innerHTML = `<span class="child-num">${child.label}</span><span class="child-title">${child.canvas ? escapeHtml(child.canvas.title || "(ohne Titel)") : "leer"}</span><span class="child-fmt">${child.canvas ? escapeHtml(child.canvas.format) : "—"}</span>`;btn.addEventListener("click", () => {state.path = [...state.path, child.label];state.selectedId = child.canvas ? child.canvas.id : null;renderAll();log(`MATRIX → ${pathStr(state.path)}${child.canvas ? " · Canvas #" + child.canvas.id : " · leer"}`);showTab("editor");});grid.append(btn);});}
+function renderEditor(){const canvas = findCanvasByPath(pathStr(state.path));$("editorPath").textContent = pathStr(state.path);if (canvas) {state.selectedId = canvas.id;$("titleIn").value = canvas.title;$("editor").value = canvas.text;$("fmtSel").value = FORMATS.includes(canvas.format) ? canvas.format : "PLAIN";$("preview").textContent = canvas.text || "Vorschau erscheint hier.";$("canvasId").textContent = `Canvas #${canvas.id} · ${canvas.format}`;} else {state.selectedId = null;$("titleIn").value = "";$("editor").value = "";$("fmtSel").value = "PLAIN";$("preview").textContent = "Vorschau erscheint hier.";$("canvasId").textContent = `Neu · Pfad ${pathStr(state.path)} · wird beim Speichern angelegt`;}}
+function saveCanvas(){const pStr = pathStr(state.path);let canvas = findCanvasByPath(pStr);const now = Date.now();if (!canvas) {const id = state.nextId++;canvas = { id, path: pStr, title: "", text: "", format: "PLAIN", created: now, modified: now };state.canvas[id] = canvas;log(`NEU · Canvas #${id} @ ${pStr}`);}canvas.title = $("titleIn").value.trim();canvas.text = $("editor").value;canvas.format = FORMATS.includes($("fmtSel").value) ? $("fmtSel").value : "PLAIN";canvas.modified = now;state.selectedId = canvas.id;persist();renderAll();log(`SPEICHERN · Canvas #${canvas.id} @ ${pStr} (${canvas.format})`);}
+function newCanvas(){$("titleIn").value = "";$("editor").value = "";$("fmtSel").value = "PLAIN";$("preview").textContent = "Vorschau erscheint hier.";log("EDITOR · geleert (Canvas bleibt bis Speichern unverändert)");}
+let searchTimer;
+function scheduleSearch(){clearTimeout(searchTimer);searchTimer = setTimeout(renderSearch, 150);}
+function renderSearch(){const q = $("searchBox").value.trim().toLowerCase();const out = $("searchResults");out.replaceChildren();if (!q) { out.textContent = "Suchbegriff eingeben."; return; }const hits = Object.values(state.canvas).filter(c => [c.title, c.text, c.path, c.format].join(" ").toLowerCase().includes(q)).sort((a, b) => b.modified - a.modified).slice(0, 50);if (!hits.length) { out.textContent = "Keine Treffer."; return; }hits.forEach(c => {const btn = document.createElement("button");btn.type = "button";btn.className = "result";btn.innerHTML = `<strong>Canvas #${c.id} · ${escapeHtml(c.format)}</strong><div class="muted">${escapeHtml(c.path)} · ${escapeHtml(c.title || "(ohne Titel)")}</div><div class="muted">${escapeHtml((c.text || "").slice(0, 120))}</div>`;btn.addEventListener("click", () => {state.path = c.path.split(".");state.selectedId = c.id;renderAll();showTab("editor");log(`SUCHE → ${c.path} · Canvas #${c.id}`);});out.append(btn);});}
+function exportJSON(){const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });const url = URL.createObjectURL(blob);const a = document.createElement("a");a.href = url;a.download = "ncos-root.json";a.click();setTimeout(() => URL.revokeObjectURL(url), 1000);log("EXPORT · JSON");}
+async function importJSON(file){if (!file) return;try {const text = await file.text();state = normalizeState(JSON.parse(text));persist();renderAll();log("IMPORT · JSON OK");} catch (e) {console.error(e);alert("Importfehler: " + e.message);log("IMPORT · FEHLER · Zustand unverändert");}}
+function zeugen(){const rule = $("z1").value;const html = $("z2").value;const js = escapeScriptEnd($("z3").value);const safeRule = escapeHtml(rule);const doc = `<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="ncos-rule" content="${safeRule}">\n<title>NC.OS · Kind</title>\n</head>\n<body>\n${html}\n<script>\n${js}\n<\/script>\n</body>\n</html>`;const blob = new Blob([doc], { type:"text/html" });const url = URL.createObjectURL(blob);const a = document.createElement("a");a.href = url;a.download = "ncos-kind.html";a.click();setTimeout(() => URL.revokeObjectURL(url), 1000);$("zeugOut").textContent = `Kind erzeugt · ${doc.length} Zeichen`;log(`ZEUGUNG · HTML+JS · ${doc.length} Zeichen`);}
+function toggleHalt(){state.halted = !state.halted;persist();renderStatus();log(`HALT · ${state.halted ? "ZIEL" : "AUS"}`);}
+function showTab(name){const valid = ["matrix","editor","search","log","zeugung"];if (!valid.includes(name)) return;document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.id === name + "Tab"));document.querySelectorAll("#bottomNav [data-tab]").forEach(b => {const on = b.dataset.tab === name;b.classList.toggle("on", on);if (on) b.setAttribute("aria-current", "page");else b.removeAttribute("aria-current");});window.scrollTo({ top:0, behavior:"smooth" });}
+function renderAll(){renderBreadcrumb();renderStatus();renderMatrix();renderEditor();renderSearch();renderLog();}
+function runAction(name){switch(name){case "matrix": showTab("matrix"); break;case "editor": showTab("editor"); break;case "zeugung": showTab("zeugung"); break;case "log": showTab("log"); break;case "import": $("loadFile").click(); break;case "export": exportJSON(); break;case "halt": toggleHalt(); break;case "save": saveCanvas(); break;case "new": newCanvas(); break;case "birth": zeugen(); break;case "pipeline": log("PIPELINE · markiert · 729 → 243 → 81 → 27 → 9 → 3 → 1"); break;case "seek": log("SEEK · gelesen · geordnet · angehängt"); break;}}
+function bindEvents(){
+  $("fmtSel").innerHTML = FORMATS.map((n, i) => `<option value="${n}">F${String(i+1).padStart(2,"0")} ${n}</option>`).join("");
+  document.addEventListener("click", e => {const btn = e.target.closest("[data-action]");if (!btn) return;runAction(btn.dataset.action);});
+  document.querySelectorAll("#bottomNav [data-tab]").forEach(b => {b.addEventListener("click", () => showTab(b.dataset.tab));});
+  $("editor").addEventListener("input", () => {$("preview").textContent = $("editor").value || "Vorschau erscheint hier.";});
+  $("searchBox").addEventListener("input", scheduleSearch);
+  $("loadFile").addEventListener("change", async e => {const file = e.target.files?.[0];if (file) await importJSON(file);e.target.value = "";});
 }
-function renderLog() {
-  const show = logLines.slice(-200);
-  $("systemLog").textContent = show.length ? show.map(l => `${hms(l.t)} | ${l.m}`).join("\n") : "Bereit.";
-  $("systemLog").scrollTop = $("systemLog").scrollHeight;
-  $("logCount").textContent = `${logLines.length} Zeilen`;
-}
-function saveLogFile() {
-  systemLog("LOG SPEICHERN geklickt");
-  const text = logLines.map(l => `${new Date(l.t).toLocaleDateString("sv-SE")} ${hms(l.t)} | ${l.m}`).join("\n") + "\n";
-  download("NC-LOG.txt", text, "text/plain;charset=utf-8");
-}
-function download(name, content, type) {
-  const url = URL.createObjectURL(new Blob([content], { type }));
-  const link = document.createElement("a");
-  link.href = url; link.download = name;
-  document.body.appendChild(link); link.click(); link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function saveState() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ position }));
-      $("saveStatus").textContent = `Gespeichert · Position ${position}`;
-      $("metricSave").textContent = "AN";
-    } catch {
-      $("saveStatus").textContent = "Speichern nicht möglich – Browser blockiert localStorage.";
-      $("metricSave").textContent = "FEHLER";
-    }
-  }, 100);
-}
-function loadState() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if (saved && Number.isInteger(saved.position) && saved.position >= 0 && saved.position < CELLS.length) {
-      position = saved.position;
-      return true;
-    }
-  } catch {
-    systemLog("Gespeicherter Zustand war ungültig; starte bei Position 0.");
-  }
-  return false;
-}
-function neighbors(cell) {
-  const result = [];
-  for (let i = Math.max(1, cell.i - 1); i <= Math.min(9, cell.i + 1); i++) {
-    for (let j = Math.max(1, cell.j - 1); j <= Math.min(9, cell.j + 1); j++) {
-      if (i !== cell.i || j !== cell.j) result.push(`${i}-${j}-${cell.k}`);
-    }
-  }
-  return new Set(result);
-}
-function gotoPosition(index, source = "Navigation") {
-  if (!Number.isInteger(index) || index < 0 || index >= CELLS.length) {
-    announce(`✗ Position ungültig: ${index}. Erlaubt sind 0 bis 728.`);
-    return false;
-  }
-  position = index;
-  render();
-  saveState();
-  announce(`✓ ${source}: ${cellAt(position).id} · Position ${position}`);
-  return true;
-}
-function gotoCell(i, j, k, source = "Sprung") {
-  if (![i, j, k].every(n => Number.isInteger(n) && n >= 1 && n <= 9)) return false;
-  return gotoPosition(cellPosition(i, j, k), source);
-}
-
-function buildBoard() {
-  const blocks = $("blocks");
-  for (let n = 1; n <= 9; n++) {
-    const button = document.createElement("button");
-    const row = Math.floor((n - 1) / 3) + 1;
-    const col = ((n - 1) % 3) + 1;
-    button.className = "block";
-    button.innerHTML = `<b>Block ${n}</b><small>Bereich ${row} · ${col}</small>`;
-    button.setAttribute("aria-label", `Zu Block ${n} springen`);
-    button.addEventListener("click", () => {
-      const startI = (row - 1) * 3 + 1;
-      const startJ = (col - 1) * 3 + 1;
-      gotoCell(startI + 1, startJ + 1, cellAt(position).k, `Block ${n}`);
-    });
-    blocks.appendChild(button);
-  }
-  const grid = $("grid9");
-  for (let n = 0; n < 81; n++) {
-    const button = document.createElement("button");
-    button.className = "cell";
-    button.addEventListener("click", () => {
-      gotoCell(Math.floor(n / 9) + 1, n % 9 + 1, cellAt(position).k, "Zelle gewählt");
-    });
-    grid.appendChild(button);
-  }
-}
-
-function render() {
-  const cell = cellAt(position);
-  const neighborIds = neighbors(cell);
-  const activeBlock = blockNumber(cell);
-
-  $("currentId").textContent = cell.id;
-  $("positionBadge").textContent = `Position ${position} / 728`;
-  $("metricK").textContent = `${cell.k} / 9`;
-  $("metricBlock").textContent = String(activeBlock);
-  $("metricNeighbors").textContent = String(neighborIds.size);
-  $("layerLabel").textContent = `Ebene ${cell.k} · k=${cell.k}`;
-  $("layerStatus").textContent = `Ebene ${cell.k} / 9`;
-  $("detailCoords").textContent = `${cell.i} · ${cell.j} · ${cell.k}`;
-  $("detailIJ").textContent = String(cell.i * cell.j);
-  $("detailIK").textContent = String(cell.i * cell.k);
-  $("detailJK").textContent = String(cell.j * cell.k);
-  $("detailBlock").textContent = String(activeBlock);
-  $("detailPosition").textContent = String(position);
-
-  [...$("blocks").children].forEach((button, n) => {
-    const active = n + 1 === activeBlock;
-    button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-  [...$("grid9").children].forEach((button, n) => {
-    const i = Math.floor(n / 9) + 1, j = n % 9 + 1, id = `${i}-${j}-${cell.k}`;
-    button.textContent = `${i}-${j}`;
-    button.classList.toggle("current", id === cell.id);
-    button.classList.toggle("neighbor", neighborIds.has(id));
-    button.setAttribute("aria-label", `Zelle ${id}${id === cell.id ? ", aktuelle Zelle" : ""}`);
-  });
-  $("prevLayer").disabled = cell.k === 1;
-  $("nextLayer").disabled = cell.k === 9;
-  drawCorridor();
-}
-
-// Canvas: Zeichnen in CSS-Pixeln (Größe aus dem Layout), Auflösung über devicePixelRatio
-let cssW = 450, cssH = 130;
-function resizeCanvas() {
-  const canvas = $("corridor");
-  const rect = canvas.getBoundingClientRect();
-  const scale = window.devicePixelRatio || 1;
-  cssW = rect.width || 450;
-  cssH = rect.height || 130;
-  canvas.width = Math.max(1, Math.round(cssW * scale));
-  canvas.height = Math.max(1, Math.round(cssH * scale));
-  const ctx = canvas.getContext("2d");
-  if (ctx) ctx.setTransform(scale, 0, 0, scale, 0, 0);
-  drawCorridor();
-}
-function drawCorridor() {
-  const canvas = $("corridor");
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  const width = cssW, height = cssH;
-  ctx.clearRect(0, 0, width, height);
-
-  const markerX = 12 + (position / 728) * (width - 24);
-  const gradient = ctx.createLinearGradient(12, 0, width - 12, 0);
-  gradient.addColorStop(0, "#54f29a");
-  gradient.addColorStop(1, "#56e7ff");
-
-  ctx.strokeStyle = gradient;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (let x = 0; x <= width; x += 4) {
-    const phase = position / 26;
-    const y = height * 0.52 + Math.sin(x / 44 + phase) * 22 + Math.sin(x / 17) * 7;
-    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.stroke();
-
-  ctx.fillStyle = "#ffffff1c";
-  ctx.fillRect(12, height - 19, width - 24, 5);
-  ctx.fillStyle = gradient;
-  ctx.fillRect(12, height - 19, Math.max(2, markerX - 12), 5);
-
-  ctx.strokeStyle = "#fff";
-  ctx.beginPath();
-  ctx.moveTo(markerX, 18);
-  ctx.lineTo(markerX, height - 12);
-  ctx.stroke();
-
-  ctx.fillStyle = "#e8f1f8";
-  ctx.font = "14px system-ui";
-  ctx.fillText(`0 → ${position}  ·  Zelle ${cellAt(position).id}`, 12, 14);
-}
-
-function jumpFromInput() {
-  const raw = $("jumpInput").value.trim();
-  const match = raw.match(/^([1-9])-([1-9])-([1-9])$/);
-  if (!match) {
-    announce(`✗ Nicht gefunden: "${raw}". Format: i-j-k, z. B. 4-5-6.`);
-    return;
-  }
-  gotoCell(Number(match[1]), Number(match[2]), Number(match[3]), "SPRUNG");
-}
-function moveAxis(axis, delta) {
-  const c = cellAt(position);
-  const next = { i: c.i, j: c.j, k: c.k };
-  next[axis] += delta;
-  if (next[axis] < 1 || next[axis] > 9) {
-    announce(`Grenze erreicht: Achse ${axis.toUpperCase()} bleibt zwischen 1 und 9.`);
-    return;
-  }
-  gotoCell(next.i, next.j, next.k, `Achse ${axis.toUpperCase()}`);
-}
-
-$("jumpButton").addEventListener("click", jumpFromInput);
-$("jumpInput").addEventListener("keydown", event => { if (event.key === "Enter") jumpFromInput(); });
-$("prevLayer").addEventListener("click", () => moveAxis("k", -1));
-$("nextLayer").addEventListener("click", () => moveAxis("k", 1));
-$("homeButton").addEventListener("click", () => gotoPosition(40, `HOME 40 · ${cellAt(40).id}`));
-$("middleButton").addEventListener("click", () => gotoCell(5, 5, 5, "MITTE"));
-$("endButton").addEventListener("click", () => gotoCell(9, 9, 9, "ENDE"));
-
-// Tasten: nur Textfelder sind ausgenommen. Knöpfe NICHT, sonst wären WASD/Pfeile nach jedem Klick tot.
-document.addEventListener("keydown", event => {
-  if (event.altKey || event.ctrlKey || event.metaKey) return;
-  if (event.target instanceof HTMLElement &&
-      (event.target.isContentEditable || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName))) return;
-  const moves = {
-    w: ["i", -1], arrowup: ["i", -1], s: ["i", 1], arrowdown: ["i", 1],
-    a: ["j", -1], arrowleft: ["j", -1], d: ["j", 1], arrowright: ["j", 1],
-    q: ["k", 1], e: ["k", -1]
-  };
-  const move = moves[event.key.toLowerCase()];
-  if (!move) return;
-  event.preventDefault();
-  moveAxis(move[0], move[1]);
-});
-
-$("exportButton").addEventListener("click", () => {
-  const data = { position, cell: cellAt(position).id, exported: new Date().toISOString() };
-  download("NCOS729.json", JSON.stringify(data, null, 2), "application/json");
-  systemLog(`Exportiert: Position ${position}, Zelle ${cellAt(position).id}.`);
-});
-
-// Ein Knopf IN einem <label> öffnet den Dateidialog nicht zuverlässig — darum direkt per input.click()
-$("importButton").addEventListener("click", () => $("importFile").click());
-$("importFile").addEventListener("change", async event => {
-  const file = event.target.files?.[0];
-  event.target.value = "";
-  if (!file) return;
-  try {
-    const data = JSON.parse(await file.text());
-    const hasPos = Number.isInteger(data.position) && data.position >= 0 && data.position < CELLS.length;
-    let fromCell = null;
-    if (typeof data.cell === "string") {
-      const match = data.cell.match(/^([1-9])-([1-9])-([1-9])$/);
-      if (!match) throw new Error("Ungültige Zell-ID.");
-      fromCell = cellPosition(Number(match[1]), Number(match[2]), Number(match[3]));
-    }
-    if (!hasPos && fromCell === null) throw new Error("Datei benötigt eine gültige Position oder Zell-ID.");
-    if (hasPos && fromCell !== null && fromCell !== data.position) throw new Error("Position und Zell-ID widersprechen sich.");
-    gotoPosition(hasPos ? data.position : fromCell, "IMPORT");
-    systemLog(`Importiert: ${file.name} · ${cellAt(position).id}.`);
-  } catch (error) {
-    const message = `Import fehlgeschlagen: ${error.message}`;
-    announce(`✗ ${message}`);
-    systemLog(message);
-  }
-});
-
-// löscht nur den Autosave-Stand (Position), NICHT das Protokoll
-$("clearButton").addEventListener("click", () => {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-    clearTimeout(saveTimer);
-    position = 0;
-    render();
-    $("saveStatus").textContent = "Autosave gelöscht · Position auf 0 gesetzt.";
-    announce(`Autosave gelöscht. Aktuelle Zelle: ${cellAt(0).id}.`);
-    systemLog("Autosave gelöscht; Navigation auf Position 0 gesetzt. Protokoll bleibt.");
-  } catch {
-    $("saveStatus").textContent = "Autosave konnte nicht gelöscht werden.";
-  }
-});
-$("saveLog").addEventListener("click", saveLogFile);
-
-buildBoard();
-const restored = loadState();
-render();
-resizeCanvas();
-$("saveStatus").textContent = restored ? `Wiederhergestellt · Position ${position}` : "Autosave bereit.";
-systemLog(`Mainboard geladen · Position ${position} · Zelle ${cellAt(position).id}.`);
-renderLog();
-window.addEventListener("resize", resizeCanvas);
+function init(){loadFromStorage();bindEvents();renderAll();log(`NC.OS ROOT · 4.html gestartet · Level ${getLevel()} · Pfad ${pathStr(state.path)}`);}
+init();
 </script>
 </body>
 </html>
