@@ -1,97 +1,278 @@
 <!DOCTYPE html>
 <html lang="de" data-theme="dark">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NC.OS · PY-Batches · Demo</title>
 <style>
-:root{--bg:#070f16;--card:#0d1822;--fg:#e6edf7;--muted:#8aa0b4;--ok:#4ade80;--bad:#f87171;--warn:#f59e0b;--line:#1f3444}
-:root[data-theme="light"]{--bg:#f4f7fa;--card:#fff;--fg:#10202e;--muted:#5b6f80;--ok:#15803d;--bad:#b91c1c;--warn:#b45309;--line:#cfd9e2}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:Consolas,monospace;padding:16px}
-.wrap{max-width:900px;margin:0 auto}
-h1{font-size:16px;letter-spacing:2px;margin:0 0 12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
-.controls{display:flex;gap:8px;flex-wrap:wrap}
-button{background:var(--card);color:var(--ok);border:1px solid var(--ok);border-radius:6px;padding:8px 16px;font:inherit;cursor:pointer;min-height:40px}
-button:hover:not(:disabled){background:var(--ok);color:var(--bg)}
-button:disabled{opacity:.4;cursor:not-allowed}
-.muted{color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.stat{border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
-.stat b{display:block;font-size:24px}
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
-.cell{border:1px solid var(--line);border-radius:6px;padding:6px 0;text-align:center;font-size:12px}
-.cell.treffer{background:var(--ok);color:var(--bg);border-color:var(--ok)}
-.cell.daneben{background:var(--bad);color:var(--bg);border-color:var(--bad)}
-.cell.korrigiert{background:var(--warn);color:var(--bg);border-color:var(--warn)}
-#output{min-height:120px;max-height:240px;overflow:auto;white-space:pre-wrap;font-size:13px}
-ul{margin:6px 0 0;padding-left:20px}li.fixed{color:var(--warn)}li.err{color:var(--bad)}
-.row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0}.ok{color:var(--ok)}.bad{color:var(--bad)}
-@media (max-width:480px){.controls{flex-direction:column}button{width:100%;min-height:48px}.stats{grid-template-columns:repeat(2,1fr)}.card{max-width:100%}}
-</style></head>
-<body><div class="wrap">
-<h1>NC.OS · PY-BATCHES · 3 × 7 = 21</h1>
-<div class="card"><div class="controls">
-<button id="boot" data-testid="boot-btn" type="button">BOOT</button>
-<button id="halt" data-testid="halt-btn" type="button" disabled>HALT</button>
-<button id="theme" data-testid="theme-btn" type="button">THEME</button></div></div>
+:root {
+  color-scheme: dark;
+  --bg:#070f16; --card:#0d1822; --fg:#e6edf7; --muted:#8aa0b4;
+  --ok:#4ade80; --bad:#f87171; --warn:#f59e0b; --line:#1f3444;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:#f4f7fa; --card:#fff; --fg:#10202e; --muted:#5b6f80;
+  --ok:#15803d; --bad:#b91c1c; --warn:#b45309; --line:#cfd9e2;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; padding:16px; background:var(--bg); color:var(--fg);
+  font-family:Consolas,monospace;
+}
+.wrap { max-width:900px; margin:0 auto; }
+h1 { font-size:16px; letter-spacing:2px; margin:0 0 12px; }
+.card {
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:14px; margin-bottom:12px;
+}
+.controls { display:flex; gap:8px; flex-wrap:wrap; }
+button {
+  min-height:40px; padding:8px 16px; border:1px solid var(--ok);
+  border-radius:6px; background:var(--card); color:var(--ok);
+  font:inherit; cursor:pointer;
+}
+button:hover:not(:disabled) { background:var(--ok); color:var(--bg); }
+button:disabled { opacity:.4; cursor:not-allowed; }
+button:focus-visible { outline:2px solid var(--warn); outline-offset:3px; }
+.muted { color:var(--muted); }
+.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.stat { border:1px solid var(--line); border-radius:8px; padding:10px; text-align:center; }
+.stat b { display:block; font-size:24px; }
+.grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
+.cell { border:1px solid var(--line); border-radius:6px; padding:6px 0; text-align:center; font-size:12px; }
+.cell.treffer { background:var(--ok); color:var(--bg); border-color:var(--ok); }
+.cell.daneben { background:var(--bad); color:var(--bg); border-color:var(--bad); }
+.cell.korrigiert { background:var(--warn); color:var(--bg); border-color:var(--warn); }
+#output { min-height:120px; max-height:240px; overflow:auto; white-space:pre-wrap; font-size:13px; }
+ul { margin:6px 0 0; padding-left:20px; }
+li.fixed { color:var(--warn); }
+li.err { color:var(--bad); }
+.row { display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:4px 0; }
+.ok { color:var(--ok); }
+.bad { color:var(--bad); }
+@media (max-width:480px) {
+  .controls { flex-direction:column; }
+  button { width:100%; min-height:48px; }
+  .stats { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NC.OS · PY-BATCHES · 3 × 7 = 21</h1>
 
-<div class="card"><div class="stats">
-<div class="stat"><span class="muted">TREFFER</span><b id="s-treffer" data-testid="stat-treffer">0</b></div>
-<div class="stat"><span class="muted">DANEBEN</span><b id="s-daneben" data-testid="stat-daneben">0</b></div>
-<div class="stat"><span class="muted">OFFEN</span><b id="s-offen" data-testid="stat-offen">21</b></div>
-<div class="stat"><span class="muted">BATCH</span><b id="s-batch" data-testid="stat-batch">–</b></div></div>
-<div class="grid" id="grid"></div></div>
+  <div class="card">
+    <div class="controls">
+      <button id="boot" data-testid="boot-btn" type="button">BOOT</button>
+      <button id="halt" data-testid="halt-btn" type="button" disabled>HALT</button>
+      <button id="theme" data-testid="theme-btn" type="button">THEME</button>
+    </div>
+  </div>
 
-<div class="card"><div id="output" data-testid="output" role="status" aria-live="polite"><span class="muted">System bereit. BOOT drücken.</span></div></div>
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><span class="muted">TREFFER</span><b id="s-treffer" data-testid="stat-treffer">0</b></div>
+      <div class="stat"><span class="muted">DANEBEN</span><b id="s-daneben" data-testid="stat-daneben">0</b></div>
+      <div class="stat"><span class="muted">OFFEN</span><b id="s-offen" data-testid="stat-offen">21</b></div>
+      <div class="stat"><span class="muted">BATCH</span><b id="s-batch" data-testid="stat-batch">–</b></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
 
-<div class="card"><b>Fehlerliste</b><ul id="errs" data-testid="errors"><li class="muted">noch keine</li></ul></div>
+  <div class="card">
+    <div id="output" data-testid="output" role="status" aria-live="polite">
+      <span class="muted">System bereit. BOOT drücken.</span>
+    </div>
+  </div>
 
-<div class="card"><b>729-Testkarte</b> <span class="muted">(Verdichtung 729 → 81 → 9 → 3 → 1)</span><div id="t729" data-testid="card729"></div></div>
+  <div class="card">
+    <b>Fehlerliste</b>
+    <ul id="errs" data-testid="errors"><li class="muted">noch keine</li></ul>
+  </div>
+
+  <div class="card">
+    <b>729-Testkarte</b>
+    <span class="muted">(Verdichtung 729 → 81 → 9 → 3 → 1)</span>
+    <div id="t729" data-testid="card729"></div>
+  </div>
 </div>
+
 <script>
-const $=id=>document.getElementById(id);
-const FAST=/[?&]fast=1/.test(location.search),D=FAST?5:350;
-const B1={t:[2,4,5,7],d:[1,3,6]},B2={t:[10,11,13,14],d:[8,9,12]};
-const py=Array.from({length:21},()=>"offen");
-let timer=null,running=false;
-function render(){
-  const c=s=>py.filter(x=>x===s).length;
-  $("s-treffer").textContent=c("treffer")+c("korrigiert");$("s-daneben").textContent=c("daneben");$("s-offen").textContent=c("offen");
-  $("grid").innerHTML=py.map((s,i)=>`<div class="cell ${s}">PY ${i+1}</div>`).join("");
-  const e=py.map((s,i)=>s==="daneben"?`<li class="err">PY ${i+1} — DANEBEN</li>`:s==="korrigiert"?`<li class="fixed">PY ${i+1} — DANEBEN → TARGETEER → TREFFER</li>`:"").join("");
-  $("errs").innerHTML=e||'<li class="muted">noch keine</li>';
+"use strict";
+
+const $ = id => document.getElementById(id);
+const FAST = new URLSearchParams(location.search).get("fast") === "1";
+const DELAY = FAST ? 5 : 350;
+
+const B1 = { treffer:[2,4,5,7], daneben:[1,3,6] };
+const B2 = { treffer:[10,11,13,14], daneben:[8,9,12] };
+const py = Array(21).fill("offen");
+
+let timer = null;
+let running = false;
+let runId = 0;
+
+function render() {
+  const count = state => py.filter(value => value === state).length;
+
+  $("s-treffer").textContent = count("treffer") + count("korrigiert");
+  $("s-daneben").textContent = count("daneben");
+  $("s-offen").textContent = count("offen");
+
+  $("grid").innerHTML = py.map((state, index) =>
+    `<div class="cell ${state}">PY ${index + 1}</div>`
+  ).join("");
+
+  const errors = py.map((state, index) => {
+    if (state === "daneben") {
+      return `<li class="err">PY ${index + 1} — DANEBEN</li>`;
+    }
+    if (state === "korrigiert") {
+      return `<li class="fixed">PY ${index + 1} — DANEBEN → TARGETEER → TREFFER</li>`;
+    }
+    return "";
+  }).join("");
+
+  $("errs").innerHTML = errors || '<li class="muted">noch keine</li>';
 }
-function log(t){const o=$("output");if(o.dataset.fresh!=="0"){o.textContent="";o.dataset.fresh="0";}o.textContent+=t+"\n";o.scrollTop=o.scrollHeight;}
-function plan(){
-  const q=[];
-  const batch=(n,b,fix)=>{
-    q.push(()=>{$("s-batch").textContent=n;log(`BATCH ${n} — 7 PY`);});
-    for(let k=1;k<=7;k++){const i=(n-1)*7+k;q.push(()=>{const ok=b.t.includes(i);py[i-1]=ok?"treffer":"daneben";log(`  PY ${i}: ${ok?"TREFFER":"DANEBEN"}`);render();});}
-    if(fix)q.push(()=>{b.d.forEach(i=>py[i-1]="korrigiert");log("  TARGETEER → 7/7 TREFFER");render();});
-    else q.push(()=>log("  = 4 TREFFER · 3 DANEBEN"));
-  };
-  batch(1,B1,false);batch(2,B2,true);
-  q.push(()=>{$("s-batch").textContent=3;log("BATCH 3 — 7 PY\n  Status: noch offen");});
-  q.push(()=>{log("21 PY · 1 KETTE · HALT = ZIEL");finish();});
-  return q;
+
+function log(text) {
+  const output = $("output");
+  if (output.dataset.fresh !== "0") {
+    output.textContent = "";
+    output.dataset.fresh = "0";
+  }
+  output.textContent += text + "\n";
+  output.scrollTop = output.scrollHeight;
 }
-function setRun(r){running=r;$("boot").disabled=r;$("halt").disabled=!r;}
-function finish(){clearTimeout(timer);setRun(false);}
-function boot(){
-  py.fill("offen");$("output").dataset.fresh="1";$("s-batch").textContent="–";render();setRun(true);
-  const q=plan();let i=0;
-  (function next(){if(!running||i>=q.length)return;q[i++]();timer=setTimeout(next,D);})();
+
+function setRunning(value) {
+  running = value;
+  $("boot").disabled = value;
+  $("halt").disabled = !value;
 }
-function halt(){clearTimeout(timer);setRun(false);log("HALT. Stand eingefroren. HALT = ZIEL");}
-$("boot").onclick=boot;$("halt").onclick=halt;
-// Theme (Dark/Light), merkt sich die Wahl
-const root=document.documentElement;
-try{const s=localStorage.getItem("ncos-theme");if(s)root.dataset.theme=s;else if(matchMedia("(prefers-color-scheme: light)").matches)root.dataset.theme="light";}catch{}
-$("theme").onclick=()=>{const t=root.dataset.theme==="dark"?"light":"dark";root.dataset.theme=t;try{localStorage.setItem("ncos-theme",t);}catch{}};
-// 729-Testkarte: jede Zeile wird wirklich gerechnet
-const T=[[729,9,81],[81,9,9],[9,3,3],[3,3,1]];
-$("t729").innerHTML=T.map(([a,b,c])=>{const ok=a/b===c;return`<div class="row"><span>${a} ÷ ${b} = ${c}</span><span class="${ok?"ok":"bad"}">${ok?"✓":"✗"}</span></div>`;}).join("")+
-  `<div class="row"><span>7 + 7 + 7 = 21</span><span class="${7+7+7===21?"ok":"bad"}">${7+7+7===21?"✓":"✗"}</span></div>`;
+
+function finish() {
+  clearTimeout(timer);
+  timer = null;
+  setRunning(false);
+}
+
+function boot() {
+  clearTimeout(timer);
+  runId++;
+  const thisRun = runId;
+
+  py.fill("offen");
+  $("output").dataset.fresh = "1";
+  $("s-batch").textContent = "–";
+  render();
+  setRunning(true);
+
+  const steps = [];
+
+  function addBatch(number, batch, correctErrors) {
+    steps.push(() => {
+      $("s-batch").textContent = number;
+      log(`BATCH ${number} — 7 PY`);
+    });
+
+    for (let offset = 1; offset <= 7; offset++) {
+      const index = (number - 1) * 7 + offset;
+      steps.push(() => {
+        const hit = batch.treffer.includes(index);
+        py[index - 1] = hit ? "treffer" : "daneben";
+        log(`  PY ${index}: ${hit ? "TREFFER" : "DANEBEN"}`);
+        render();
+      });
+    }
+
+    if (correctErrors) {
+      steps.push(() => {
+        batch.daneben.forEach(index => { py[index - 1] = "korrigiert"; });
+        log("  TARGETEER → 7/7 TREFFER");
+        render();
+      });
+    } else {
+      steps.push(() => log("  = 4 TREFFER · 3 DANEBEN"));
+    }
+  }
+
+  addBatch(1, B1, false);
+  addBatch(2, B2, true);
+
+  steps.push(() => {
+    $("s-batch").textContent = "3";
+    log("BATCH 3 — 7 PY\n  Status: noch offen");
+  });
+
+  steps.push(() => {
+    log("21 PY · 1 KETTE · HALT = ZIEL");
+    finish();
+  });
+
+  let index = 0;
+
+  function next() {
+    if (!running || thisRun !== runId) return;
+    if (index >= steps.length) {
+      finish();
+      return;
+    }
+    steps[index++]();
+    if (running && thisRun === runId) {
+      timer = setTimeout(next, DELAY);
+    }
+  }
+
+  next();
+}
+
+function halt() {
+  if (!running) return;
+  clearTimeout(timer);
+  timer = null;
+  runId++;
+  setRunning(false);
+  log("HALT. Stand eingefroren. HALT = ZIEL");
+}
+
+$("boot").addEventListener("click", boot);
+$("halt").addEventListener("click", halt);
+
+// Dark-/Light-Theme mit gespeicherter Auswahl
+const root = document.documentElement;
+
+try {
+  const savedTheme = localStorage.getItem("ncos-theme");
+  if (savedTheme === "dark" || savedTheme === "light") {
+    root.dataset.theme = savedTheme;
+  } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+    root.dataset.theme = "light";
+  }
+} catch {}
+
+$("theme").addEventListener("click", () => {
+  const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+  root.dataset.theme = nextTheme;
+  try {
+    localStorage.setItem("ncos-theme", nextTheme);
+  } catch {}
+});
+
+// 729-Testkarte
+const tests = [[729,9,81], [81,9,9], [9,3,3], [3,3,1]];
+
+$("t729").innerHTML = tests.map(([a,b,c]) => {
+  const valid = a / b === c;
+  return `<div class="row"><span>${a} ÷ ${b} = ${c}</span><span class="${valid ? "ok" : "bad"}">${valid ? "✓" : "✗"}</span></div>`;
+}).join("") + (() => {
+  const valid = 7 + 7 + 7 === 21;
+  return `<div class="row"><span>7 + 7 + 7 = 21</span><span class="${valid ? "ok" : "bad"}">${valid ? "✓" : "✗"}</span></div>`;
+})();
+
 render();
-</script></body></html>
+</script>
+</body>
+</html>
