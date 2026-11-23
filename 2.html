@@ -1,161 +1,53 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Alpha-Lauf</title>
-
-  <style>
-    :root {
-      color-scheme: light dark;
-      font: 16px/1.5 system-ui, sans-serif;
-      --accent: #dfff35;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
-    h1 { margin-bottom: 4px; }
-    .muted { opacity: .7; }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin: 24px 0;
-    }
-
-    input, button {
-      min-height: 48px;
-      padding: 10px 14px;
-      border: 1px solid currentColor;
-      border-radius: 8px;
-      font: inherit;
-    }
-
-    input {
-      flex: 1 1 240px;
-      background: transparent;
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    button:focus-visible, input:focus-visible {
-      outline: 3px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    ol {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-      gap: 12px;
-      padding: 0;
-      list-style: none;
-    }
-
-    .card {
-      padding: 16px;
-      border: 1px solid currentColor;
-      border-radius: 10px;
-    }
-
-    .card h2 { margin: 0 0 8px; font-size: 1.1rem; }
-    .status { margin-top: 12px; }
-  </style>
-</head>
-
-<body>
-  <main>
-    <h1>Alpha-Lauf</h1>
-    <p class="muted">Neun Schritte · filtern, prüfen und geordnet anzeigen</p>
-
-    <div class="toolbar">
-      <label>
-        <span class="muted">Schritte filtern</span><br>
-        <input id="search" type="search" placeholder="Name, Rolle oder Datei">
-      </label>
-      <button id="run" type="button">Lauf prüfen</button>
-    </div>
-
-    <p id="status" class="status" role="status" aria-live="polite">
-      Bereit.
-    </p>
-
-    <ol id="steps"></ol>
-  </main>
-
-  <script>
-    const steps = [
-      { file: "0.html", name: "Freudenhund", role: "Erkennung", data: "Scanner-Eingang" },
-      { file: "1.html", name: "RAM", role: "Brain", data: "ramdisk · 4168 MB/s" },
-      { file: "2.html", name: "Steckkarten", role: "Noise", data: "SLI · 42%" },
-      { file: "3.html", name: "Kernel", role: "Centrum", data: "MB1 · 9 CENTRUM" },
-      { file: "4.html", name: "Industry Verified", role: "Mouth", data: "Abmachung" },
-      { file: "5.html", name: "In-Ear Loader", role: "Orakel", data: "In-Ear" },
-      { file: "6.html", name: "Letzter Tech", role: "Alt", data: "W3" },
-      { file: "7.html", name: "11 zu 7", role: "SCSI", data: "7 Geräte" },
-      { file: "8.html", name: "Scanner", role: "Eye", data: "1:1-Scan" }
-    ];
-
-    const list = document.querySelector("#steps");
-    const search = document.querySelector("#search");
-    const status = document.querySelector("#status");
-
-    function render(query = "") {
-      const term = query.trim().toLocaleLowerCase("de");
-      const visible = steps.filter(step =>
-        Object.values(step).some(value =>
-          value.toLocaleLowerCase("de").includes(term)
-        )
-      );
-
-      list.replaceChildren(...visible.map((step, index) => {
-        const item = document.createElement("li");
-        item.className = "card";
-
-        const title = document.createElement("h2");
-        title.textContent = `${step.file} · ${step.name}`;
-
-        const details = document.createElement("p");
-        details.textContent = `${step.role} · ${step.data}`;
-
-        const order = document.createElement("p");
-        order.className = "muted";
-        order.textContent = `Schritt ${steps.indexOf(step) + 1} von ${steps.length}`;
-
-        item.append(title, details, order);
-        return item;
-      }));
-
-      status.textContent = `${visible.length} von ${steps.length} Schritten angezeigt.`;
-    }
-
-    search.addEventListener("input", () => render(search.value));
-
-    document.querySelector("#run").addEventListener("click", () => {
-      const files = steps.map(step => step.file);
-      const hasDuplicates = new Set(files).size !== files.length;
-      const isComplete = steps.every(step =>
-        Object.values(step).every(value => value.trim() !== "")
-      );
-
-      if (hasDuplicates || !isComplete) {
-        status.textContent = "Prüfung fehlgeschlagen: Einträge oder Dateinamen prüfen.";
-        return;
-      }
-
-      status.textContent = `Prüfung erfolgreich: ${steps.length} Schritte, keine doppelten Dateien.`;
-    });
-
-    render();
-  </script>
-</body>
-</html>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NC.OS ROOT · 2.html · STECKKARTEN / NOISE / BRIDGE · 729°</title>
+<style>body{background:#111319;color:#e7eaf0;font:14px monospace;display:flex;flex-direction:column;align-items:center;padding:20px;gap:10px}h1{color:#ffd700}.sub{color:#556;font-size:10px}.sec{background:#0a0e16;border:1px solid #ffd70022;border-radius:10px;padding:14px;max-width:960px;width:100%}.sec h2{color:#ffd700;font-size:11px;margin-bottom:10px}.load-field{width:36px;height:36px;text-align:center;font-size:18px;border:2px solid #333;border-radius:6px;background:#111;color:#888}.load-field.green{border-color:#00ff88;color:#00ff88}.load-field.red{border-color:#ff453a;color:#ff453a}.load-field.grey{border-color:#444;color:#555}.load-bar{height:8px;background:#222;border-radius:4px;overflow:hidden;flex:1}.load-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#00ff88,#ffd700)}.btn{padding:7px 14px;background:#1a1f2e;border:1px solid #ffd70033;color:#ffd700;font:11px monospace;cursor:pointer;border-radius:6px}.btn.on{background:#ffd700;color:#000}input[type=file]{display:none}.ok{color:#00ff88}.no{color:#ff453a}.ni-nu-panel{background:#0d1117;border:1px solid #ffd70018;border-radius:8px;padding:10px;flex:1}.filter-chars span{padding:2px 7px;background:#1a1f2e;border:1px solid #ffd70022;border-radius:4px;cursor:pointer}.filter-chars span.on{background:#00ff8822;border-color:#00ff88;color:#00ff88}.s729{font-size:13px;font-weight:700;padding:8px 16px;border-radius:8px;text-align:center}.s729.offen{background:#ff453a22;color:#ff453a}.s729.pruefen{background:#ffd70022;color:#ffd700}.s729.verendet{background:#00ff8822;color:#00ff88}.karten-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.karte{background:#0d1117;border:1px solid #ffd70018;border-radius:6px;padding:8px;text-align:center}.karte .val{font-size:22px;color:#ffd700}.noise-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:1px}.noise-cell{aspect-ratio:1;background:#1a1f2e}.noise-cell.filled{background:#00ff88}.noise-cell.skip{background:#ff453a33}.foot{font-size:8px;color:#556}</style></head><body>
+<h1>NC.OS ROOT</h1><div class="sub">2.html · STECKKARTEN / NOISE / BRIDGE · 729° statt 720° · Q9=19683</div>
+<div class="sec"><h2>LOAD ° $ %</h2><div style="display:flex;gap:8px;align-items:center"><input class="load-field grey" id="ld0" maxlength="1"><input class="load-field grey" id="ld1" maxlength="1"><input class="load-field grey" id="ld2" maxlength="1"><div class="load-bar"><i id="loadBar"></i></div><span id="loadStatus">—</span></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn" id="btnSend">Bridge Senden</button><button class="btn" id="btnClear">Clear</button></div></div>
+<div class="sec"><h2>SPIEGEL</h2>° == % ? · Ref <b>999 99 9 99 999</b> · <span id="spiegelResult">— kein Spiegel-Check</span> <button class="btn" id="btnSpiegel">SPIEGEL prüfen</button></div>
+<div class="sec"><h2>NI / NU</h2><div style="display:flex;gap:12px;flex-wrap:wrap"><div class="ni-nu-panel">NI — h↔q b↔d t↔f<div class="filter-chars" id="niFilter"><span class="on" data-c="h">h</span><span class="on" data-c="b">b</span><span class="on" data-c="t">t</span><span class="on" data-c="q">q</span><span class="on" data-c="d">d</span><span class="on" data-c="f">f</span></div></div><div class="ni-nu-panel">NU — h↔q <b id="niHq">—</b> · b↔d <b id="niBd">—</b> · t↔f <b id="niTf">—</b><div class="filter-chars" id="nuFilter"><span class="on" data-c="h">h</span><span class="on" data-c="b">b</span><span class="on" data-c="t">t</span><span class="on" data-c="q">q</span><span class="on" data-c="d">d</span><span class="on" data-c="f">f</span></div></div></div></div>
+<div class="sec"><h2>729° — PUMPE · PIPELINE · KATAPULT</h2><div class="s729 offen" id="seven20Status">PRÜFEN — offen</div><button class="btn" id="btnSeven20" style="margin-top:8px">729° VOLLENDET</button><div style="font-size:10px;color:#8aa0c0;margin-top:6px">729° = ganzer Pipeline-Lauf · 720° = VOLLENDET-Marke innen (43 erklärt) · 729° = 720° + 9° · 3µ3µ3 = 3×3×3 = 27 → 27×27 = 729 · Wurzel zum Verwurzeln · Nur so: Pumpe → Pipeline → Katapult</div></div>
+<div class="sec"><h2>LOAD Rohstoffe</h2><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" id="btnLoadFile">📁 Datei laden</button><input type="file" id="fileInput" accept=".json,.html,.htm,.yaml,.yml,.js,.txt" multiple><button class="btn" id="btnLoadFolder">📂 Ordner scannen</button><input type="file" id="folderInput" webkitdirectory multiple><button class="btn" id="btnExport">💾 Export</button><button class="btn" id="btnReset">⟲ Reset</button></div><div style="font-size:10px;color:#8aa0c0">BESSER V4: %23noise skip, 2048 cap, revoke, VESTA=HERDFEUER IMMER AN, Ω=Σ×gate×(Dr/81), Q9=19683 → 730 FREI</div><div id="rohstoffLog" style="font-size:9px;color:#8aa0c0;max-height:80px;overflow:auto"></div></div>
+<div class="sec"><h2>STECKKARTEN</h2><div class="karten-grid" id="kartenGrid"></div><div style="display:flex;gap:6px"><button class="btn" id="btnCalc">BERECHNEN</button><button class="btn" id="btnOmega">Ω-Korrektur</button><span>Q9 = <b>19683</b></span></div><div id="kartenResult" style="font-size:10px;color:#8aa0c0"></div><div style="font-size:10px;color:#8aa0c0"><span id="kartenSum">Summe —</span> | <span id="kartenAvg">Ø —</span> | <span id="kartenSpan">Spannweite —</span> | <span id="kartenSeed">Seed —</span></div></div>
+<div class="sec"><h2>NOISE</h2>Dichte: <input type="range" id="noiseDensity" min="5" max="95" value="50"> <span id="noiseDensityVal">50%</span> Seed: <input type="number" id="noiseSeed" value="81" style="width:60px;background:#111;color:#ffd700"> <button class="btn" id="btnNoiseGen">GENERIEREN</button> <button class="btn" id="btnNoiseSkip">%23 SKIP</button><div class="noise-grid" id="noiseGrid"></div><div id="noiseStats" style="font-size:9px;color:#8aa0c0"></div></div>
+<div class="foot">NC.OS ROOT · 2.html · 729° · entschlackt · Pumpe → Pipeline → Katapult</div>
+<script>(function(){"use strict";
+function $(id){return document.getElementById(id);}
+function log(m){const el=$('rohstoffLog');if(!el)return;const d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString('de-DE',{hour12:false})+'] '+m;el.appendChild(d);el.scrollTop=el.scrollHeight;while(el.children.length>50)el.removeChild(el.firstChild);}
+// LOAD — FIX 1: Array-Literal
+const F=[$('ld0'),$('ld1'),$('ld2')],EXP=['°','$','%'];
+F.forEach((f,i)=>f.addEventListener('input',()=>{f.className='load-field '+(f.value===''?'grey':f.value===EXP[i]?'green':'red');const ok=F.filter((x,j)=>x.value===EXP[j]).length,fill=F.filter(x=>x.value).length;$('loadBar').style.width=fill/3*100+'%';$('loadStatus').textContent=ok===3?'Vollständig ✓':fill?fill+'/3 · exakt '+ok+'/3':'—';}));
+$('btnSend').onclick=()=>{const v=F.map(f=>f.value||'').join('');if(!v)return log('LOAD: leer');try{parent.postMessage({type:'ctrl:patch',diff:{load:v},source:'child',from:'2.html'},'*');log('Bridge: '+v);}catch(e){log('Bridge Fehler');}};
+$('btnClear').onclick=()=>{F.forEach(f=>{f.value='';f.className='load-field grey';});$('loadBar').style.width='0%';$('loadStatus').textContent='—';log('LOAD: Clear');};
+// SPIEGEL
+$('btnSpiegel').onclick=()=>{const v=F.map(f=>f.value).join('');const ok=v.includes('°')&&v.includes('%')&&v.includes('$');$('spiegelResult').textContent=ok?'✓ SPIEGEL OK — Ref 2305':'— kein Spiegel-Check';$('spiegelResult').className=ok?'ok':'no';log('SPIEGEL: '+(ok?'OK':'NO'));};
+// NI/NU
+function updateNiNu(){const on=id=>[...$(id).querySelectorAll('.on')].map(s=>s.dataset.c);const a=on('niFilter');$('niHq').textContent=a.includes('h')&&a.includes('q')?'✓':'—';$('niBd').textContent=a.includes('b')&&a.includes('d')?'✓':'—';$('niTf').textContent=a.includes('t')&&a.includes('f')?'✓':'—';}
+function renderNI(){updateNiNu();}
+['niFilter','nuFilter'].forEach(id=>$(id).addEventListener('click',e=>{const s=e.target.closest('span[data-c]');if(!s)return;s.classList.toggle('on');updateNiNu();}));updateNiNu();
+// 729° Anzeige, 720° Marke: ID bleibt seven20 = eingefroren, nur Label ist 729°.
+const st=$('seven20Status');let s729='offen'; // ID bleibt seven20 = eingefroren, nur Anzeige ist 729°
+$('btnSeven20').onclick=()=>{if(s729==='offen'){s729='pruefen';st.textContent='PRÜFEN — läuft…';st.className='s729 pruefen';log('729°: PRÜFEN — 720°-Marke innen, 729°-Weg');setTimeout(()=>{s729='verendet';st.textContent='729° VOLLENDET — 720°-Marke erreicht + 9° MEER';st.className='s729 verendet';log('729°: VOLLENDET ✓ — 720°-Marke innen erreicht — Pumpe → Pipeline → Katapult frei');},1200);}else{s729='offen';st.textContent='PRÜFEN — offen';st.className='s729 offen';log('729°: Reset');}};
+// ROHSTOFFE — FIX 3: change, nicht input
+const ROH=[{id:'atlantis',name:'Atlantis V112',datei:'atlantis-v112-5EED.json',data:null},{id:'borg',name:'BORG',datei:'borg_collective_1793059474886_81.json',data:null},{id:'massiert',name:'Massiert v82',datei:'massiert-v82-monorepo-1793049237958.json',data:null},{id:'mind',name:'Mind ROM',datei:'mind.rom.json',data:null},{id:'omega',name:'Omega API',datei:'omega_sphere_api_vollstandig.yaml',data:null},{id:'vehicle',name:'Vehicle Atlantis',datei:'vehicle.atlantis.ctrl.ler.js',data:null},{id:'bios',name:'BIOS',datei:'Bios-Final-Clean-V81.html',data:null},{id:'indexer',name:'Indexer',datei:'mod.raw.html',data:null},{id:'wbp',name:'WBP BESSER',datei:'WBP-GENERATOR-SENSATION-VFINAL-BESSER.html',data:null}];
+const Q9=19683;let rohLoaded=0;
+async function lade(files){let n=0;for(const f of files){const low=f.name.toLowerCase();if(/%23/.test(low)||/\b101\.htm\b/.test(low)){log('⊘ skip '+f.name);continue;}const r=ROH.find(x=>low.includes(x.datei.toLowerCase()));if(!r){log('⚠ unbekannt: '+f.name);continue;}try{const t=await f.text();if(t.length>2097152)log('⚠ '+r.name+' >2048KB');r.data={size:t.length};n++;log('✓ '+r.name+' '+t.length+'b');}catch(e){log('✗ '+r.name);}}rohLoaded=n;if(n)log('║ '+n+' Rohstoffe → BESSER V4');}
+$('btnLoadFile').onclick=()=>$('fileInput').click();$('btnLoadFolder').onclick=()=>$('folderInput').click();
+$('fileInput').addEventListener('change',e=>lade(e.target.files));$('folderInput').addEventListener('change',e=>lade(e.target.files));
+document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files.length)lade(e.dataTransfer.files);});
+$('btnExport').onclick=()=>{const b=new Blob([JSON.stringify({format:'BESSER-V4',Q9,rohstoffe:ROH.map(r=>({id:r.id,geladen:!!r.data})),loaded:rohLoaded},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='oekonomie-BESSER-V4-'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2500);log('💾 Exportiert');};
+$('btnReset').onclick=()=>{ROH.forEach(r=>r.data=null);rohLoaded=0;log('⟲ Reset · Dr=81');};
+// STECKKARTEN
+const G=$('kartenGrid'),K=[];[{r:1,l:'K1'},{r:1,l:'K2'},{r:1,l:'K3'},{r:2,l:'K4'},{r:2,l:'K5'},{r:3,l:'K6'}].forEach((c,i)=>{const d=document.createElement('div');d.className='karte';d.innerHTML='<div class="val" id="kv'+i+'">0</div><div>'+c.l+' · R'+c.r+'</div><div id="ks'+i+'"></div>';G.appendChild(d);K.push({value:0});const p=document.createElement('button');p.className='btn';p.textContent='+999';p.onclick=()=>{K[i].value+=999;upd(i);};const m=document.createElement('button');m.className='btn';m.textContent='−999';m.onclick=()=>{K[i].value-=999;upd(i);};$('ks'+i).append(p,m);});
+function upd(i){$('kv'+i).textContent=K[i].value;stats();}
+function stats(){const v=K.map(k=>k.value),s=v.reduce((a,b)=>a+b,0);$('kartenSum').textContent='Summe '+s;$('kartenAvg').textContent='Ø '+(s/v.length).toFixed(1);$('kartenSpan').textContent='Spannweite '+(Math.max(...v)-Math.min(...v));$('kartenSeed').textContent='Seed '+(Math.abs(s)%10000);}
+$('btnCalc').onclick=()=>{const v=K.map(k=>k.value),s=v.reduce((a,b)=>a+b,0);$('kartenResult').textContent='BERECHNEN: Σ='+s+' · Ø='+(s/v.length).toFixed(2)+' · Ω-Korr='+(s/Q9).toFixed(4)+' · Q9='+Q9;log('Steckkarten Σ='+s);};
+$('btnOmega').onclick=()=>{K.forEach((k,i)=>{k.value=Math.round(k.value*(Q9/19683));upd(i);});log('Ω-Korrektur');};stats();
+// NOISE — kein Loop, nur GENERIEREN (Loop war unzuverlässig, raus entschlackt)
+const NG=$('noiseGrid');let skip=false,ndata=[];
+function srng(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return (s-1)/2147483646;};}
+function genNoise(){const dens=+$( 'noiseDensity').value,seed=+$( 'noiseSeed').value||81;$('noiseDensityVal').textContent=dens+'%';const rng=srng(seed);ndata=[];NG.innerHTML='';for(let i=0;i<256;i++){const c=document.createElement('div');c.className='noise-cell';const v=rng(),f=v<dens/100,sk=skip&&i%3===0&&v>0.5;if(f&&!sk){c.classList.add('filled');ndata.push(1);}else if(sk){c.classList.add('skip');ndata.push(-1);}else ndata.push(0);NG.appendChild(c);}const f=ndata.filter(x=>x===1).length,sk=ndata.filter(x=>x===-1).length;$('noiseStats').textContent='256 Zellen | Dichte '+dens+'% | Seed '+seed+' | Gefüllt '+f+' | Skip '+sk;log('NOISE '+f+' Zellen Seed '+seed);}
+$('noiseDensity').addEventListener('input',e=>$('noiseDensityVal').textContent=e.target.value+'%');
+$('btnNoiseGen').onclick=genNoise;$('btnNoiseSkip').onclick=function(){skip=!skip;this.classList.toggle('on',skip);log('%23 SKIP → '+(skip?'AN':'AUS'));genNoise();};genNoise();
+try{parent.postMessage({type:'ctrl:hello',from:'2.html'},'*');}catch(e){}
+window.addEventListener('message',e=>{if(!e.data||typeof e.data!=='object')return;if(e.data.type==='ctrl:init')log('↘ INIT');if(e.data.type==='ctrl:patch')log('↘ PATCH');});
+log('NC.OS ROOT · 2.html · 729° · entschlackt · Pumpe → Pipeline → Katapult');
+})();</script></body></html>
