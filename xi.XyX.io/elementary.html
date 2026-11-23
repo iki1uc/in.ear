@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NC.OS ROOT · ELEMENTARY LAUF</title>
+<style>
+  :root{color-scheme:dark;--bg:#070b12;--panel:#101827;--line:#263449;--green:#46ff88;--gold:#ffd166;--blue:#66ccff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#e7edf6;font:14px/1.45 ui-monospace,Consolas,monospace}
+  header,footer{padding:12px 16px;background:#0c1320;border-bottom:1px solid var(--line)}
+  header{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  h1{font-size:16px;color:var(--green);margin:0 auto 0 0}
+  button,input{font:inherit}
+  button{background:#142033;color:var(--green);border:1px solid #35506a;border-radius:6px;padding:7px 10px;cursor:pointer}
+  button:hover,button.active{border-color:var(--green);background:#183027}
+  main{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:12px;padding:12px;height:calc(100vh - 105px)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px;min-width:0}
+  #breadcrumb{color:var(--gold);margin-bottom:8px;overflow-wrap:anywhere}
+  #canvas{width:100%;height:100%;min-height:360px;display:block;background:#050910;border:1px solid var(--line);border-radius:6px;touch-action:none}
+  aside{display:flex;flex-direction:column;gap:10px;overflow:auto}
+  .toolbar{display:flex;flex-wrap:wrap;gap:6px}
+  .small{font-size:11px;color:#9aabc1}
+  #log{height:130px;overflow:auto;background:#050910;padding:8px;border:1px solid var(--line);border-radius:6px;font-size:11px}
+  #elements{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+  .element{padding:6px;text-align:center;border:1px solid var(--line);border-radius:5px}
+  .element b{display:block;color:var(--blue);font-size:17px}
+  footer{border:0;border-top:1px solid var(--line);font-size:10px;color:#90a0b5}
+  @media(max-width:800px){main{height:auto;min-height:calc(100vh - 105px);grid-template-columns:1fr}#canvas{height:55vh}aside{overflow:visible}}
+</style>
+</head>
+<body>
+<header>
+  <h1>NC.OS ROOT · ELEMENTARY LAUF</h1>
+  <button onclick="goBack()">← Zurück</button>
+  <button onclick="setMode('gravity')">Gravitation</button>
+  <button onclick="setMode('magnetism')">Magnetismus</button>
+  <button onclick="setMode('atom')">Atom / Elemente</button>
+  <button onclick="seek()">SEEK</button>
+  <button onclick="toggleHalt()" id="haltBtn">HALT: AUS</button>
+  <button onclick="exportJSON()">EXPORT JSON</button>
+  <input id="loadFile" type="file" accept=".json,application/json" hidden>
+  <button onclick="document.getElementById('loadFile').click()">JSON wählen</button>
+  <button onclick="importJSON()">IMPORT JSON</button>
+</header>
+
+<main>
+  <section class="panel">
+    <div id="breadcrumb">ROOT</div>
+    <canvas id="canvas" aria-label="NC.OS navigierbare 3×3-Matrix"></canvas>
+  </section>
+
+  <aside>
+    <section class="panel">
+      <b>Modell</b>
+      <p class="small" id="modelNote">Schematische Darstellung, keine Messung oder physikalische Simulation.</p>
+      <div id="elements"></div>
+    </section>
+    <section class="panel">
+      <b>0–9 Index · Alpha-Lauf</b>
+      <div id="indexList" class="small"></div>
+    </section>
+    <section class="panel">
+      <b>Systemlog</b>
+      <div id="log"></div>
+    </section>
+  </aside>
+</main>
+
+<footer>Einzeldatei · lokaler State · Canvas-Navigation · Zoom/Pan/Pinch · Minimap · JSON Import/Export</footer>
+
+<script>
+"use strict";
+
+const alphaLauf = [
+  {file:"0.html",name:"Freudenhund",rolle:"Erkennung",daten:"Scanner-Eingang"},
+  {file:"1.html",name:"RAM",rolle:"Brain",daten:"ramdisk · 4168 MB/s"},
+  {file:"2.html",name:"Steckkarten",rolle:"Noise",daten:"SLI · 42%"},
+  {file:"3.html",name:"Kernel",rolle:"Centrum",daten:"MB1 · 9 CENTRUM"},
+  {file:"4.html",name:"Industry Verified",rolle:"Mouth",daten:"Abmachung"},
+  {file:"5.html",name:"Uni-Logbuch",rolle:"Tracker",daten:"…"},
+  {file:"6.html",name:"Letzter Tech",rolle:"Alt",daten:"W3"},
+  {file:"7.html",name:"NC Mobile Index",rolle:"Knotenübersicht",daten:"94 Knoten · 1 Root · 3 Achsen · 9 Kerne · 81 Zellen"},
+  {file:"8.html",name:"Scanner",rolle:"Eye",daten:"1:1-Scan"},
+  {file:"9.html",name:"ZOOM · WHIRL",rolle:"Bewegung",daten:"3 · 9 · 81"}
+];
+
+const state = {
+  version:1,
+  halt:false,
+  seek:0,
+  mode:"gravity",
+  level:0,
+  currentId:"ROOT",
+  path:["ROOT"],
+  viewport:{x:0,y:0,zoom:1},
+  canvas:{},
+  log:[],
+  selectedElement:6
+};
+
+const elementData = [
+  {n:1,s:"H",name:"Wasserstoff"},{n:2,s:"He",name:"Helium"},
+  {n:3,s:"Li",name:"Lithium"},{n:4,s:"Be",name:"Beryllium"},
+  {n:5,s:"B",name:"Bor"},{n:6,s:"C",name:"Kohlenstoff"},
+  {n:7,s:"N",name:"Stickstoff"},{n:8,s:"O",name:"Sauerstoff"},
+  {n:9,s:"F",name:"Fluor"}
+];
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+let dirty=true,dragging=false,lastX=0,lastY=0;
+const pointers=new Map();
+let pinchStart=null;
+
+function markDirty(){dirty=true;saveState()}
+function saveState(){
+  try{localStorage.setItem("ncos-root-state",JSON.stringify(state))}catch(_){}
+}
+function log(message){
+  const stamp=new Date().toLocaleTimeString("de-DE");
+  state.log.push(`[${stamp}] ${message}`);
+  if(state.log.length>150)state.log=state.log.slice(-150);
+  const box=document.getElementById("log");
+  box.textContent=state.log.join("\n");
+  box.scrollTop=box.scrollHeight;
+  saveState();
+}
+function setMode(mode){
+  state.mode=mode;
+  const notes={
+    gravity:"Schematische Gravitation: zentrale Masse und illustrative Feldlinien.",
+    magnetism:"Schematisches Magnetfeld: illustrative Dipol-Feldlinien.",
+    atom:"Atommodell: Kern und Elektronenbahnen sind nicht maßstabsgetreu."
+  };
+  document.getElementById("modelNote").textContent=notes[mode];
+  log("Modus: "+mode);
+  markDirty();
+}
+function toggleHalt(){
+  state.halt=!state.halt;
+  document.getElementById("haltBtn").textContent="HALT: "+(state.halt?"AN":"AUS");
+  log(state.halt?"HALT aktiviert":"HALT aufgehoben");
+  markDirty();
+}
+function seek(){
+  state.seek=(state.seek+1)%10;
+  state.currentId=String(state.seek);
+  state.path.push(state.currentId);
+  log("SEEK → Index "+state.seek+" · "+alphaLauf[state.seek].name);
+  markDirty();
+}
+function enterNode(id){
+  state.currentId=String(id);
+  state.level=Math.min(6,state.path.length);
+  state.path.push(state.currentId);
+  log("Knoten betreten: "+state.currentId);
+  markDirty();
+}
+function goBack(){
+  if(state.path.length>1)state.path.pop();
+  state.currentId=state.path[state.path.length-1]||"ROOT";
+  state.level=Math.max(0,state.path.length-1);
+  markDirty();
+}
+function loadNode(id){
+  const node=state.canvas[id];
+  if(!node)return;
+  state.currentId=id;
+  state.level=node.level;
+  markDirty();
+}
+function zoomAt(cx,cy,newZoom){
+  const old=state.viewport.zoom;
+  const zoom=Math.max(.25,Math.min(8,newZoom));
+  state.viewport.x=cx-((cx-state.viewport.x)*zoom/old);
+  state.viewport.y=cy-((cy-state.viewport.y)*zoom/old);
+  state.viewport.zoom=zoom;
+  markDirty();
+}
+function resizeCanvas(){
+  const r=canvas.getBoundingClientRect(),dpr=Math.min(2,devicePixelRatio||1);
+  canvas.width=Math.round(r.width*dpr);
+  canvas.height=Math.round(r.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  dirty=true;
+}
+function renderBreadcrumb(){
+  document.getElementById("breadcrumb").textContent=state.path.join(" > ");
+}
+function drawHud(w){
+  ctx.fillStyle="#46ff88";ctx.font="12px monospace";
+  ctx.fillText("LEVEL "+state.level,16,22);
+  ctx.fillText("ZOOM "+state.viewport.zoom.toFixed(2),16,41);
+  ctx.fillText("NODE "+state.currentId,16,60);
+  ctx.fillStyle=state.halt?"#ff6868":"#9aabc1";
+  ctx.fillText(state.halt?"HALT":"RUN · "+state.mode.toUpperCase(),16,79);
+}
+function drawMatrix(){
+  const rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#050910";ctx.fillRect(0,0,w,h);
+  ctx.save();ctx.translate(state.viewport.x,state.viewport.y);ctx.scale(state.viewport.zoom,state.viewport.zoom);
+
+  const size=Math.min(w*.72,h*.72),cell=size/3;
+  const ox=(w-size)/2,oy=(h-size)/2;
+  for(let i=0;i<9;i++){
+    const row=Math.floor(i/3),col=i%3,x=ox+col*cell,y=oy+row*cell;
+    ctx.fillStyle=(String(i)===state.currentId)?"#173629":"#101827";
+    ctx.fillRect(x+4,y+4,cell-8,cell-8);
+    ctx.strokeStyle="#35506a";ctx.strokeRect(x+4,y+4,cell-8,cell-8);
+    ctx.fillStyle=i===0?"#ffd166":"#66ccff";
+    ctx.font="bold 22px monospace";ctx.textAlign="center";
+    ctx.fillText(String(i),x+cell/2,y+cell/2);
+    ctx.font="10px monospace";ctx.fillStyle="#9aabc1";
+    ctx.fillText(alphaLauf[i].name.slice(0,18),x+cell/2,y+cell/2+20);
+  }
+  ctx.restore();
+  drawModel(w,h);
+  drawHud(w);
+  drawMiniMap(w,h);
+}
+function drawModel(w,h){
+  const cx=w-92,cy=100;
+  ctx.save();ctx.globalAlpha=.8;ctx.strokeStyle="#66ccff";ctx.fillStyle="#ffd166";
+  if(state.mode==="gravity"){
+    ctx.beginPath();ctx.arc(cx,cy,12,0,Math.PI*2);ctx.fill();
+    for(let r=25;r<=70;r+=15){ctx.beginPath();ctx.ellipse(cx,cy,r,r*.55,0,0,Math.PI*2);ctx.stroke()}
+    ctx.fillStyle="#fff";ctx.font="9px monospace";ctx.textAlign="center";ctx.fillText("MASSEN · SKIZZE",cx,cy+88);
+  }else if(state.mode==="magnetism"){
+    for(let r=18;r<=62;r+=11){
+      ctx.beginPath();ctx.ellipse(cx,cy,r,r*.48,0,Math.PI,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.ellipse(cx,cy,r,r*.48,0,0,Math.PI);ctx.stroke();
+    }
+    ctx.fillStyle="#ff6868";ctx.fillRect(cx-4,cy-25,8,25);
+    ctx.fillStyle="#66ccff";ctx.fillRect(cx-4,cy,8,25);
+    ctx.fillStyle="#fff";ctx.font="9px monospace";ctx.textAlign="center";ctx.fillText("DIPOLE · SKIZZE",cx,cy+72);
+  }else{
+    ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);ctx.fill();
+    for(let r=22;r<=62;r+=20){
+      ctx.beginPath();ctx.ellipse(cx,cy,r,r*.55,0,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx+r,cy,3,0,Math.PI*2);ctx.fill();
+    }
+    ctx.fillStyle="#fff";ctx.font="9px monospace";ctx.textAlign="center";ctx.fillText("ATOM · SCHEMA",cx,cy+76);
+  }
+  ctx.restore();
+}
+function drawMiniMap(w,h){
+  const s=112,x=w-s-12,y=h-s-12;
+  ctx.fillStyle="rgba(0,0,0,.82)";ctx.fillRect(x,y,s,s);
+  ctx.strokeStyle="#46ff88";ctx.strokeRect(x,y,s,s);
+  const cell=(s-12)/3;
+  for(let i=0;i<9;i++){
+    const xx=x+6+(i%3)*cell,yy=y+6+Math.floor(i/3)*cell;
+    ctx.fillStyle=String(i)===state.currentId?"#ffd166":"#244034";
+    ctx.fillRect(xx+2,yy+2,cell-4,cell-4);
+  }
+  ctx.strokeStyle="#ffd166";ctx.lineWidth=1;
+  ctx.strokeRect(x+6,y+6, s-12,s-12);
+}
+function render(){
+  drawMatrix();
+  renderBreadcrumb();
+  document.getElementById("haltBtn").textContent="HALT: "+(state.halt?"AN":"AUS");
+}
+function loop(){
+  if(dirty){render();dirty=false}
+  requestAnimationFrame(loop);
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="nc-os-root.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function validateImport(data){
+  if(!data||typeof data!=="object"||Array.isArray(data))throw Error("Root muss ein JSON-Objekt sein");
+  if(data.version!==1)throw Error("Nicht unterstützte Version");
+  if(typeof data.halt!=="boolean")throw Error("halt muss Boolean sein");
+  if(!Number.isFinite(data.seek)||data.seek<0||data.seek>9)throw Error("seek muss 0–9 sein");
+  if(!["gravity","magnetism","atom"].includes(data.mode))throw Error("Ungültiger Modus");
+  if(!Array.isArray(data.path)||data.path.length>100)throw Error("path ungültig");
+  if(!data.viewport||![data.viewport.x,data.viewport.y,data.viewport.zoom].every(Number.isFinite))throw Error("viewport ungültig");
+  if(data.viewport.zoom<.25||data.viewport.zoom>8)throw Error("Zoom außerhalb des erlaubten Bereichs");
+  if(!Array.isArray(data.log)||data.log.some(x=>typeof x!=="string"))throw Error("log ungültig");
+  return true;
+}
+function importJSON(){
+  const file=document.getElementById("loadFile").files[0];
+  if(!file)return alert("Bitte zuerst eine JSON-Datei auswählen.");
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const imported=JSON.parse(e.target.result);
+      validateImport(imported);
+      Object.assign(state,imported);
+      state.path=state.path.length?state.path:["ROOT"];
+      state.canvas=state.canvas&&typeof state.canvas==="object"?state.canvas:{};
+      document.getElementById("modelNote").textContent="Importierter Zustand geladen. Visualisierung schematisch.";
+      log("IMPORT OK · Schema geprüft");
+      markDirty();
+    }catch(err){alert("JSON ungültig:\n"+err.message)}
+  };
+  reader.readAsText(file);
+}
+function renderElements(){
+  document.getElementById("elements").innerHTML=elementData.map(e=>
+    `<div class="element"><b>${e.s}</b>${e.n} · ${e.name}</div>`
+  ).join("");
+}
+function renderIndex(){
+  document.getElementById("indexList").innerHTML=alphaLauf.map((e,i)=>
+    `<div>${i} · <b>${e.name}</b> — ${e.rolle}: ${e.daten}</div>`
+  ).join("");
+}
+canvas.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect(),factor=e.deltaY<0?1.1:.9;
+  zoomAt(e.clientX-r.left,e.clientY-r.top,state.viewport.zoom*factor);
+},{passive:false});
+canvas.addEventListener("pointerdown",e=>{
+  canvas.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1){dragging=true;lastX=e.clientX;lastY=e.clientY}
+  if(pointers.size===2){
+    const p=[...pointers.values()];
+    pinchStart={distance:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y),zoom:state.viewport.zoom};
+    dragging=false;
+  }
+});
+canvas.addEventListener("pointermove",e=>{
+  if(!pointers.has(e.pointerId))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===2&&pinchStart){
+    const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
+    const r=canvas.getBoundingClientRect();
+    zoomAt(r.width/2,r.height/2,pinchStart.zoom*d/pinchStart.distance);
+  }else if(dragging){
+    state.viewport.x+=e.clientX-lastX;state.viewport.y+=e.clientY-lastY;
+    lastX=e.clientX;lastY=e.clientY;markDirty();
+  }
+});
+function endPointer(e){
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinchStart=null;
+  dragging=pointers.size===1;
+  if(dragging){const p=[...pointers.values()][0];lastX=p.x;lastY=p.y}
+}
+canvas.addEventListener("pointerup",endPointer);
+canvas.addEventListener("pointercancel",endPointer);
+canvas.addEventListener("click",e=>{
+  if(Math.abs(e.clientX-lastX)>5)return;
+  const r=canvas.getBoundingClientRect(),size=Math.min(r.width*.72,r.height*.72),cell=size/3;
+  const ox=(r.width-size)/2,oy=(r.height-size)/2;
+  const x=(e.clientX-r.left-state.viewport.x)/state.viewport.zoom;
+  const y=(e.clientY-r.top-state.viewport.y)/state.viewport.zoom;
+  const col=Math.floor((x-ox)/cell),row=Math.floor((y-oy)/cell);
+  if(col>=0&&col<3&&row>=0&&row<3)enterNode(row*3+col);
+});
+window.addEventListener("resize",resizeCanvas);
+try{
+  const saved=JSON.parse(localStorage.getItem("ncos-root-state")||"null");
+  if(saved) {validateImport(saved);Object.assign(state,saved)}
+}catch(_){log("Gespeicherter Zustand nicht geladen; Standardzustand verwendet")}
+renderElements();renderIndex();resizeCanvas();
+document.getElementById("modelNote").textContent="Schematische Gravitation: zentrale Masse und illustrative Feldlinien.";
+log("NC.OS ROOT bereit · 0–9 Index geladen");
+loop();
+</script>
+</body>
+</html>
