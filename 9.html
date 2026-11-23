@@ -1,86 +1,443 @@
 <!DOCTYPE html>
-<html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZOOM · WHIRL 3→9→81→9→3</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#070f16;color:#dfe8f4;font-family:Consolas,monospace;height:100vh;display:flex;flex-direction:column}
-header{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:8px 10px;border-bottom:1px solid rgba(74,222,128,.25)}
-.t{margin-right:auto;color:#4ade80;font-weight:bold;letter-spacing:2px;font-size:12px}
-button,input{background:#111827;color:#4ade80;border:1px solid #4ade80;border-radius:6px;padding:5px 10px;font:inherit;font-size:12px}
-button{cursor:pointer}button.on{background:#4ade80;color:#071018}
-input{width:120px;color:#e6edf7}
-canvas{flex:1;width:100%;min-height:0}
-footer{padding:7px;text-align:center;color:#f59e0b;font-size:12px;border-top:1px solid rgba(74,222,128,.15);white-space:pre-line}
-</style></head><body>
-<header><span class="t">ZOOM · WHIRL</span>
-<button data-l="3" class="on">3</button><button data-l="9">9</button><button data-l="81">81</button>
-<button id="cyc" class="on">ZYKLUS 3→9→81→9→3</button><button id="wh" class="on">WHIRL</button>
-<button id="rw">⏮</button><button id="st">⏭</button>
-<input id="cmd" placeholder="sam: whirl, stop…" autocomplete="off"></header>
-<canvas id="cv"></canvas>
-<footer id="info"></footer>
-<script>
-const cv=document.getElementById("cv"),g=cv.getContext("2d"),$=id=>document.getElementById(id);
-const GREEN="#4ade80",ORG="#f59e0b",TXT="#e6edf7",PAN="#111827",STEP=40;   // 9 × 40° = 360°
-const BASE=[{x:50,y:16,n:"ZOOM"},{x:14,y:76,n:"ZO.OM"},{x:86,y:76,n:"Z.O.O.M"}],CEN={x:50,y:52};
-const L={3:BASE.map((b,i)=>({...b,p:-1,b:i})),9:[],81:[]};
-L[3].forEach((v,i)=>BASE.forEach((b,j)=>L[9].push({x:v.x+(b.x-CEN.x)*.22,y:v.y+(b.y-CEN.y)*.22,n:b.n,p:i,b:i})));
-L[9].forEach((v,i)=>{for(let a=-1;a<=1;a++)for(let c=-1;c<=1;c++)L[81].push({x:v.x+c*1.6,y:v.y+a*1.6,p:i,b:v.b});});
-const SEQ=[3,9,81,9,3],INTV={3:1.0,9:.5,81:.1};
-let level=3,seqI=0,cycle=true,whirl=true,idx=0,prev=0,f=1,steps=0,lvSteps=0,rot=0,rotT=0,acc=0,msg="sam: bereit";
-let W=0,H=0,sc=1,ox=0,oy=0,last=0;
-function setLevel(v){level=v;idx=0;prev=0;f=1;lvSteps=0;document.querySelectorAll("[data-l]").forEach(b=>b.classList.toggle("on",+b.dataset.l===v));}
-function step(d){const n=L[level].length;prev=idx;idx=(idx+d+n)%n;f=0;steps+=d;lvSteps+=d;rotT=steps*STEP;
-  const lim=level===81?81:9;
-  if(cycle&&d>0&&lvSteps>=lim){seqI=(seqI+1)%SEQ.length;setLevel(SEQ[seqI]);}}
-function resize(){const d=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*d;cv.height=H*d;g.setTransform(d,0,0,d,0,0);sc=Math.min(W/100,H/92);ox=(W-100*sc)/2;oy=(H-92*sc)/2;}
-// Drehung um die Mitte (Whirl)
-function T(x,y){const a=rot*Math.PI/180,c=Math.cos(a),s=Math.sin(a),dx=x-CEN.x,dy=y-CEN.y;return[ox+(CEN.x+dx*c-dy*s)*sc,oy+(CEN.y+dx*s+dy*c)*sc];}
-function circ(x,y,r,fill,st,lw){const[X,Y]=T(x,y);g.beginPath();g.arc(X,Y,r*sc,0,7);if(fill){g.fillStyle=fill;g.fill();}if(st){g.lineWidth=lw||1;g.strokeStyle=st;g.stroke();}}
-function ln(a,b,w,c){const p=T(a.x,a.y),q=T(b.x,b.y);g.beginPath();g.moveTo(p[0],p[1]);g.lineTo(q[0],q[1]);g.lineWidth=w;g.strokeStyle=c;g.stroke();}
-const RAD={3:7,9:2.6,81:.65},HUE=[350,130,215];
-function draw(t){
-  g.fillStyle="#070f16";g.fillRect(0,0,W,H);
-  // 9 Raster-Marken (9 × 40°), aktive Marke leuchtet
-  const R=44,act=((steps%9)+9)%9;
-  for(let k=0;k<9;k++){const a=(-90+k*STEP)*Math.PI/180,x=ox+(CEN.x+Math.cos(a)*R)*sc,y=oy+(CEN.y+Math.sin(a)*R)*sc;
-    g.beginPath();g.arc(x,y,(k===act?1.3:.6)*sc,0,7);g.fillStyle=k===act?ORG:"#1f3444";g.fill();}
-  g.beginPath();g.arc(ox+CEN.x*sc,oy+CEN.y*sc,R*sc,0,7);g.strokeStyle="rgba(74,222,128,.15)";g.lineWidth=1;g.stroke();
-  // Dreieck + Ebenen verbinden
-  ln(BASE[0],BASE[1],3,GREEN);ln(BASE[0],BASE[2],3,GREEN);ln(BASE[1],BASE[2],3,GREEN);
-  if(level>=9)L[9].forEach(n=>ln(L[3][n.p],n,1.5,`hsla(${HUE[n.b]},80%,60%,.6)`));
-  if(level===81)L[81].forEach(n=>ln(L[9][n.p],n,.6,`hsla(${HUE[n.b]},80%,60%,.5)`));
-  L[3].forEach(n=>circ(n.x,n.y,level===3?7:10,PAN,GREEN,3));
-  if(level>=9)L[9].forEach(n=>circ(n.x,n.y,level===9?2.6:3,PAN,GREEN,2));
-  if(level===81)L[81].forEach(n=>circ(n.x,n.y,.65,`hsl(${HUE[n.b]},85%,62%)`));
-  // Beschriftung bleibt aufrecht
-  g.textAlign="center";g.fillStyle=TXT;
-  if(level===3)L[3].forEach(n=>{const[X,Y]=T(n.x,n.y);g.font=`${2.4*sc}px Consolas`;g.fillText(n.n,X,Y+.8*sc);});
-  if(level===9)L[9].forEach(n=>{const[X,Y]=T(n.x,n.y);g.font=`${1.05*sc}px Consolas`;g.fillText(n.n,X,Y+.4*sc);});
-  g.fillStyle=ORG;g.font=`bold ${2.8*sc}px Consolas`;g.fillText("ZOOMEND",ox+CEN.x*sc,oy+CEN.y*sc+sc);g.fillText("bewegen",ox+CEN.x*sc,oy+(CEN.y+4)*sc+sc);
-  // Läufer pulsiert
-  const a=L[level][prev],b=L[level][idx],e=f*f*(3-2*f),x=a.x+(b.x-a.x)*e,y=a.y+(b.y-a.y)*e,p=(Math.sin(t*.004)+1)/2,r=level===81?1+p:2+p*2;
-  g.globalAlpha=.3+p*.35;circ(x,y,r*1.8,ORG);g.globalAlpha=1;circ(x,y,r,ORG);
-  const lim=level===81?81:9;
-  $("info").textContent=`${level} · Schritt ${((lvSteps%lim)+lim)%lim}/${lim} · ${(((steps*STEP)%360)+360)%360}° · Umdrehung ${Math.floor(steps/9)}  ·  ${cycle?"ZYKLUS 3→9→81→9→3":"fest"}  ·  ${whirl?"WHIRL läuft":"STOP"}\n${msg}`;
-}
-function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;
-  if(whirl){acc+=dt;if(acc>=INTV[level]){acc=0;step(1);}}
-  f=Math.min(1,f+dt/INTV[level]);rot+=(rotT-rot)*Math.min(1,dt*8);
-  draw(t);requestAnimationFrame(loop);}
-// SAM-Befehle (offline)
-function sam(c){c=c.toLowerCase().trim().replace(/^nc /,"");
-  if(c==="whirl"){whirl=true;step(1);return"WHIRL: dreht. 1 Atom, 40°, weiter.";}
-  if(c==="rewind"){step(-1);return"REWIND: 1 Schritt zurück. nichts gelöscht.";}
-  if(c==="stop"||c==="clean"){whirl=false;return c==="stop"?"STOP. alles aus. nur du.":"CLEAN: stop. schauen.";}
-  if(c==="gong"){whirl=false;cycle=false;setLevel(3);seqI=0;return"GONG ——— kreis zu. abgang.";}
-  if(c==="use"||c==="user")return"USER: du bist da. level 6. aktiv.";
-  return"sam: whirl | rewind | stop | clean | gong";}
-function sync(){$("wh").classList.toggle("on",whirl);$("cyc").classList.toggle("on",cycle);}
-document.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{cycle=false;setLevel(+b.dataset.l);seqI=SEQ.indexOf(level);sync();});
-$("cyc").onclick=()=>{cycle=!cycle;sync();};
-$("wh").onclick=()=>{whirl=!whirl;sync();};
-$("st").onclick=()=>step(1);$("rw").onclick=()=>step(-1);
-$("cmd").addEventListener("keydown",e=>{if(e.key==="Enter"){msg=sam(e.target.value);e.target.value="";sync();}});
-addEventListener("resize",resize);resize();requestAnimationFrame(loop);
-</script></body></html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZOOM · WHIRL 3→9→81→9→3</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #070f16;
+      color: #dfe8f4;
+      font-family: Consolas, monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(74, 222, 128, .25);
+    }
+
+    .t {
+      margin-right: auto;
+      color: #4ade80;
+      font-weight: bold;
+      letter-spacing: 2px;
+      font-size: 12px;
+    }
+
+    button, input {
+      background: #111827;
+      color: #4ade80;
+      border: 1px solid #4ade80;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font: inherit;
+      font-size: 12px;
+    }
+
+    button { cursor: pointer; }
+    button.on { background: #4ade80; color: #071018; }
+
+    input { width: 180px; color: #e6edf7; }
+    input::placeholder { color: #8292a3; }
+
+    canvas {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      display: block;
+    }
+
+    footer {
+      padding: 7px;
+      text-align: center;
+      color: #f59e0b;
+      font-size: 12px;
+      border-top: 1px solid rgba(74, 222, 128, .15);
+      white-space: pre-line;
+    }
+
+    @media (max-width: 560px) {
+      .t { width: 100%; }
+      input { flex: 1; min-width: 130px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="t">ZOOM · WHIRL</span>
+    <button data-l="3" class="on">3</button>
+    <button data-l="9">9</button>
+    <button data-l="81">81</button>
+    <button id="cyc" class="on">ZYKLUS 3→9→81→9→3</button>
+    <button id="wh" class="on">WHIRL</button>
+    <button id="rw" title="Einen Schritt zurück">⏮</button>
+    <button id="st" title="Einen Schritt vor">⏭</button>
+    <input id="cmd" placeholder="sam: whirl, stop, gong…" autocomplete="off">
+  </header>
+
+  <canvas id="cv"></canvas>
+  <footer id="info"></footer>
+
+  <script>
+    "use strict";
+
+    const cv = document.getElementById("cv");
+    const g = cv.getContext("2d");
+    const $ = id => document.getElementById(id);
+
+    const GREEN = "#4ade80";
+    const ORG = "#f59e0b";
+    const TXT = "#e6edf7";
+    const PAN = "#111827";
+    const STEP = 40;
+
+    const BASE = [
+      { x: 50, y: 16, n: "ZOOM" },
+      { x: 14, y: 76, n: "ZO.OM" },
+      { x: 86, y: 76, n: "Z.O.O.M" }
+    ];
+    const CEN = { x: 50, y: 52 };
+    const L = { 3: BASE.map((b, i) => ({ ...b, p: -1, b: i })), 9: [], 81: [] };
+
+    L[3].forEach((v, i) => {
+      BASE.forEach((b, j) => {
+        L[9].push({
+          x: v.x + (b.x - CEN.x) * .22,
+          y: v.y + (b.y - CEN.y) * .22,
+          n: b.n,
+          p: i,
+          b: j
+        });
+      });
+    });
+
+    L[9].forEach((v, i) => {
+      for (let a = -1; a <= 1; a++) {
+        for (let c = -1; c <= 1; c++) {
+          L[81].push({
+            x: v.x + c * 1.6,
+            y: v.y + a * 1.6,
+            p: i,
+            b: v.b
+          });
+        }
+      }
+    });
+
+    const SEQ = [3, 9, 81, 9, 3];
+    const INTV = { 3: 1.0, 9: 0.5, 81: 0.1 };
+    const RAD = { 3: 7, 9: 2.6, 81: .65 };
+    const HUE = [350, 130, 215];
+
+    let level = 3;
+    let seqI = 0;
+    let cycle = true;
+    let whirl = true;
+    let idx = 0;
+    let prev = 0;
+    let f = 1;
+    let steps = 0;
+    let lvSteps = 0;
+    let rot = 0;
+    let rotT = 0;
+    let acc = 0;
+    let msg = "sam: bereit";
+
+    let W = 0, H = 0, sc = 1, ox = 0, oy = 0, last = 0;
+
+    function setLevel(v) {
+      level = v;
+      idx = 0;
+      prev = 0;
+      f = 1;
+      lvSteps = 0;
+
+      document.querySelectorAll("[data-l]").forEach(button => {
+        button.classList.toggle("on", Number(button.dataset.l) === v);
+      });
+    }
+
+    function step(d) {
+      const n = L[level].length;
+      prev = idx;
+      idx = (idx + d + n) % n;
+      f = 0;
+      steps += d;
+      lvSteps += d;
+      rotT = steps * STEP;
+
+      const limit = level === 81 ? 81 : 9;
+      if (cycle && d > 0 && lvSteps >= limit) {
+        seqI = (seqI + 1) % SEQ.length;
+        setLevel(SEQ[seqI]);
+      }
+    }
+
+    function resize() {
+      const d = window.devicePixelRatio || 1;
+      W = cv.clientWidth;
+      H = cv.clientHeight;
+      cv.width = Math.round(W * d);
+      cv.height = Math.round(H * d);
+      g.setTransform(d, 0, 0, d, 0, 0);
+      sc = Math.min(W / 100, H / 92);
+      ox = (W - 100 * sc) / 2;
+      oy = (H - 92 * sc) / 2;
+    }
+
+    function transformPoint(x, y) {
+      const a = rot * Math.PI / 180;
+      const c = Math.cos(a);
+      const s = Math.sin(a);
+      const dx = x - CEN.x;
+      const dy = y - CEN.y;
+
+      return [
+        ox + (CEN.x + dx * c - dy * s) * sc,
+        oy + (CEN.y + dx * s + dy * c) * sc
+      ];
+    }
+
+    function circ(x, y, r, fill, stroke, lineWidth) {
+      const [X, Y] = transformPoint(x, y);
+      g.beginPath();
+      g.arc(X, Y, Math.max(.5, r * sc), 0, Math.PI * 2);
+
+      if (fill) {
+        g.fillStyle = fill;
+        g.fill();
+      }
+      if (stroke) {
+        g.lineWidth = lineWidth || 1;
+        g.strokeStyle = stroke;
+        g.stroke();
+      }
+    }
+
+    function line(a, b, width, color) {
+      const p = transformPoint(a.x, a.y);
+      const q = transformPoint(b.x, b.y);
+
+      g.beginPath();
+      g.moveTo(p[0], p[1]);
+      g.lineTo(q[0], q[1]);
+      g.lineWidth = width;
+      g.strokeStyle = color;
+      g.stroke();
+    }
+
+    function draw(t) {
+      g.fillStyle = "#070f16";
+      g.fillRect(0, 0, W, H);
+
+      // Neun Rastermarken: jeweils 40 Grad auseinander.
+      const R = 44;
+      const active = ((steps % 9) + 9) % 9;
+
+      for (let k = 0; k < 9; k++) {
+        const a = (-90 + k * STEP) * Math.PI / 180;
+        const x = ox + (CEN.x + Math.cos(a) * R) * sc;
+        const y = oy + (CEN.y + Math.sin(a) * R) * sc;
+
+        g.beginPath();
+        g.arc(x, y, (k === active ? 1.3 : .6) * sc, 0, Math.PI * 2);
+        g.fillStyle = k === active ? ORG : "#1f3444";
+        g.fill();
+      }
+
+      g.beginPath();
+      g.arc(ox + CEN.x * sc, oy + CEN.y * sc, R * sc, 0, Math.PI * 2);
+      g.strokeStyle = "rgba(74,222,128,.15)";
+      g.lineWidth = 1;
+      g.stroke();
+
+      // Grunddreieck.
+      line(BASE[0], BASE[1], 3, GREEN);
+      line(BASE[0], BASE[2], 3, GREEN);
+      line(BASE[1], BASE[2], 3, GREEN);
+
+      if (level >= 9) {
+        L[9].forEach(n => {
+          line(L[3][n.p], n, 1.5, `hsla(${HUE[n.b]},80%,60%,.6)`);
+        });
+      }
+
+      if (level === 81) {
+        L[81].forEach(n => {
+          line(L[9][n.p], n, .6, `hsla(${HUE[n.b]},80%,60%,.5)`);
+        });
+      }
+
+      L[3].forEach(n => {
+        circ(n.x, n.y, level === 3 ? 7 : 10, PAN, GREEN, 3);
+      });
+
+      if (level >= 9) {
+        L[9].forEach(n => {
+          circ(n.x, n.y, level === 9 ? 2.6 : 3, PAN, GREEN, 2);
+        });
+      }
+
+      if (level === 81) {
+        L[81].forEach(n => {
+          circ(n.x, n.y, .65, `hsl(${HUE[n.b]},85%,62%)`);
+        });
+      }
+
+      // Beschriftungen bleiben aufrecht.
+      g.textAlign = "center";
+      g.fillStyle = TXT;
+
+      if (level === 3) {
+        L[3].forEach(n => {
+          const [X, Y] = transformPoint(n.x, n.y);
+          g.font = `${2.4 * sc}px Consolas`;
+          g.fillText(n.n, X, Y + .8 * sc);
+        });
+      }
+
+      if (level === 9) {
+        L[9].forEach(n => {
+          const [X, Y] = transformPoint(n.x, n.y);
+          g.font = `${1.05 * sc}px Consolas`;
+          g.fillText(n.n, X, Y + .4 * sc);
+        });
+      }
+
+      g.fillStyle = ORG;
+      g.font = `bold ${2.8 * sc}px Consolas`;
+      g.fillText("ZOOMEND", ox + CEN.x * sc, oy + CEN.y * sc + sc);
+      g.fillText("bewegen", ox + CEN.x * sc, oy + (CEN.y + 4) * sc + sc);
+
+      // Bewegter Läufer.
+      const a = L[level][prev];
+      const b = L[level][idx];
+      const e = f * f * (3 - 2 * f);
+      const x = a.x + (b.x - a.x) * e;
+      const y = a.y + (b.y - a.y) * e;
+      const pulse = (Math.sin(t * .004) + 1) / 2;
+      const radius = level === 81 ? 1 + pulse : 2 + pulse * 2;
+
+      g.globalAlpha = .3 + pulse * .35;
+      circ(x, y, radius * 1.8, ORG);
+      g.globalAlpha = 1;
+      circ(x, y, radius, ORG);
+
+      const limit = level === 81 ? 81 : 9;
+      const degree = ((steps * STEP) % 360 + 360) % 360;
+      const shownStep = ((lvSteps % limit) + limit) % limit;
+
+      $("info").textContent =
+        `${level} · Schritt ${shownStep}/${limit} · ${degree}° · Umdrehung ${Math.floor(steps / 9)}  ·  ` +
+        `${cycle ? "ZYKLUS 3→9→81→9→3" : "fest"}  ·  ${whirl ? "WHIRL läuft" : "STOP"}\n${msg}`;
+    }
+
+    function loop(t) {
+      const dt = Math.min(.05, (t - last) / 1000 || 0);
+      last = t;
+
+      if (whirl) {
+        acc += dt;
+        if (acc >= INTV[level]) {
+          acc = 0;
+          step(1);
+        }
+      }
+
+      f = Math.min(1, f + dt / INTV[level]);
+      rot += (rotT - rot) * Math.min(1, dt * 8);
+
+      draw(t);
+      requestAnimationFrame(loop);
+    }
+
+    function sam(command) {
+      const c = command.toLowerCase().trim().replace(/^nc\s+/, "");
+
+      if (c === "whirl") {
+        whirl = true;
+        step(1);
+        sync();
+        return "WHIRL: dreht. 1 Atom, 40°, weiter.";
+      }
+
+      if (c === "rewind") {
+        step(-1);
+        return "REWIND: 1 Schritt zurück. nichts gelöscht.";
+      }
+
+      if (c === "stop" || c === "clean") {
+        whirl = false;
+        sync();
+        return c === "stop" ? "STOP. alles aus. nur du." : "CLEAN: stop. schauen.";
+      }
+
+      if (c === "gong") {
+        whirl = false;
+        cycle = false;
+        setLevel(3);
+        seqI = 0;
+        idx = 0;
+        prev = 0;
+        sync();
+        return "GONG ——— kreis zu. abgang.";
+      }
+
+      if (c === "use" || c === "user") {
+        return "USER: du bist da. level 6. aktiv.";
+      }
+
+      return "sam: whirl | rewind | stop | clean | gong";
+    }
+
+    function sync() {
+      $("wh").classList.toggle("on", whirl);
+      $("cyc").classList.toggle("on", cycle);
+    }
+
+    document.querySelectorAll("[data-l]").forEach(button => {
+      button.addEventListener("click", () => {
+        cycle = false;
+        setLevel(Number(button.dataset.l));
+        seqI = Math.max(0, SEQ.indexOf(level));
+        sync();
+      });
+    });
+
+    $("cyc").addEventListener("click", () => {
+      cycle = !cycle;
+      seqI = Math.max(0, SEQ.indexOf(level));
+      sync();
+    });
+
+    $("wh").addEventListener("click", () => {
+      whirl = !whirl;
+      sync();
+    });
+
+    $("st").addEventListener("click", () => step(1));
+    $("rw").addEventListener("click", () => step(-1));
+
+    $("cmd").addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        msg = sam($("cmd").value);
+        $("cmd").value = "";
+      }
+    });
+
+    window.addEventListener("resize", resize);
+    resize();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
