@@ -1,215 +1,97 @@
-<!doctype html>
-<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NC FINAL — 729 CORE + Mainboard · Kanon (Mainboard-Zählung)</title>
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NC.OS · PY-Batches · Demo</title>
 <style>
-:root{color-scheme:dark;--bg:#070b12;--panel:#101927;--line:#26364b;--text:#dce8f4;--muted:#91a5ba;--cyan:#63d7e8;--green:#79d69b;--red:#ff7d87;--amber:#f3c66d}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#14243a 0,transparent 36%),var(--bg);color:var(--text);font:14px/1.5 ui-monospace,Consolas,monospace}
-header{padding:22px clamp(16px,4vw,48px);border-bottom:1px solid var(--line)}h1{margin:0;font-size:clamp(22px,4vw,32px)}h2{font-size:17px;margin:0 0 12px}p{color:var(--muted);margin:8px 0}
-main{padding:20px clamp(12px,3vw,36px) 48px;max-width:1600px;margin:auto}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
-.panel{background:linear-gradient(160deg,#121e2d,#0c1420);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;min-width:0}
-.kpi{font-size:30px;color:var(--cyan);font-weight:800}.small{font-size:12px;color:var(--muted)}.tag{display:inline-block;padding:3px 8px;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:11px;margin:2px}
-button,select,input{background:#0a1320;color:var(--text);border:1px solid #38506b;border-radius:8px;padding:9px 11px;font:inherit}button{cursor:pointer}button:hover{border-color:var(--cyan)}button.primary{background:#123345;border-color:#2e8292}button:disabled{opacity:.4}
-.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.scroll{overflow:auto;max-height:520px;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}th,td{padding:7px 9px;border-bottom:1px solid #203047;text-align:right}th{position:sticky;top:0;background:#142236;color:var(--cyan)}td:first-child,th:first-child{text-align:left}
-#cube{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:5px;max-height:430px;overflow:auto;padding:4px}
-.cell{font-size:11px;padding:7px 3px;text-align:center;border:1px solid #263c55;border-radius:6px;background:#0a1422;cursor:pointer}.cell:hover,.cell.active{border-color:var(--cyan);background:#153044}.cell b{display:block;color:var(--cyan)}
-#report,#log{white-space:pre-wrap;font-size:12px;max-height:300px;overflow:auto}#log{max-height:240px}
-.blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.block{min-height:61px;border:1px solid var(--line);border-radius:10px;padding:9px;background:#081521;color:var(--muted);text-align:left;cursor:pointer}.block b{display:block;color:var(--text)}.block.active{border-color:var(--green);background:#54f29a12}.block.active b{color:var(--green)}
-.grid-wrap{width:100%;max-width:520px;margin:12px auto;touch-action:none}
-#gridCanvas{display:block;width:100%;height:auto;aspect-ratio:1;background:#000;border:1px solid var(--line);border-radius:10px}
-.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #ffffff10}.kv span:first-child{color:var(--muted)}
-canvas{display:block;width:100%;height:130px;border:1px solid var(--line);border-radius:9px;background:#07121d}
-kbd{display:inline-block;min-width:24px;padding:2px 5px;text-align:center;background:#07121d;border:1px solid var(--line);border-radius:5px}
-.ok{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}.status{font-weight:800}
-.m123-card{border:1px solid var(--line);border-radius:10px;padding:14px;background:#0a0d14}.m123-slider{display:flex;align-items:center;gap:10px;margin:9px 0}.m123-slider input{flex:1}.m123-avg{font-size:20px;font-weight:800}.m123-bar{height:8px;background:#18202e;border-radius:5px;overflow:hidden}.m123-fill{height:100%;background:var(--cyan)}
-</style></head><body>
-<header><div class="tag">OFFLINE · LOKAL · KANON: NC FINAL</div>
-<h1>NC FINAL — 729 CORE + Mainboard</h1>
-<p>9 Identitäten · 81 Beziehungen · 729 Zellen · <b style="color:#fff">Kanon-Formel: Position = (k-1)×81 + (i-1)×9 + (j-1)</b> · HOME 40 = <b style="color:#fff">5-5-1</b> · MITTE 364 = 5-5-5 · ENDE 728 = 9-9-9</p>
-<p id="storageWarn" class="warn" hidden>Speichern im Browser nicht möglich oder Speicher voll. Nutze „Protokoll speichern“ und die Exporte — nichts wird automatisch gelöscht.</p>
-<p class="warn">Kanon = Mainboard-Zählung. NC FINAL wurde darauf umgestellt. Import-Regel (strikt): Datei braucht <code>position</code> und/oder <code>cell</code>. Sind beide da und widersprechen sie sich, wird der Import abgelehnt. Alte <code>position</code>-Werte ohne eindeutige Versions-/Formatangabe werden NICHT automatisch umgerechnet. Export/Import: Datei braucht <code>position</code> und/oder <code>cell</code>. Sind beide da und widersprechen sie sich, wird der Import abgelehnt. Alte <code>position</code>-Werte ohne Versions-/Formatangabe werden nicht automatisch umgerechnet.</p></header>
-<main>
-<section class="grid"><div class="panel"><div class="small">IDENTITÄTEN</div><div class="kpi">9</div><div class="small">Tiefe 1–9</div></div>
-<div class="panel"><div class="small">2D-BASIS</div><div class="kpi">81</div><div class="small">9 × 9 Beziehungen</div></div>
-<div class="panel"><div class="small">3D-RAUM</div><div class="kpi">729</div><div class="small">9 × 9 × 9</div></div>
-<div class="panel"><div class="small">PRÜFSTATUS</div><div class="kpi" id="headlineStatus">—</div><div class="small" id="headlineSub">Noch nicht geprüft</div></div></section>
+:root{--bg:#070f16;--card:#0d1822;--fg:#e6edf7;--muted:#8aa0b4;--ok:#4ade80;--bad:#f87171;--warn:#f59e0b;--line:#1f3444}
+:root[data-theme="light"]{--bg:#f4f7fa;--card:#fff;--fg:#10202e;--muted:#5b6f80;--ok:#15803d;--bad:#b91c1c;--warn:#b45309;--line:#cfd9e2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Consolas,monospace;padding:16px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-size:16px;letter-spacing:2px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+button{background:var(--card);color:var(--ok);border:1px solid var(--ok);border-radius:6px;padding:8px 16px;font:inherit;cursor:pointer;min-height:40px}
+button:hover:not(:disabled){background:var(--ok);color:var(--bg)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.muted{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+.stat b{display:block;font-size:24px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.cell{border:1px solid var(--line);border-radius:6px;padding:6px 0;text-align:center;font-size:12px}
+.cell.treffer{background:var(--ok);color:var(--bg);border-color:var(--ok)}
+.cell.daneben{background:var(--bad);color:var(--bg);border-color:var(--bad)}
+.cell.korrigiert{background:var(--warn);color:var(--bg);border-color:var(--warn)}
+#output{min-height:120px;max-height:240px;overflow:auto;white-space:pre-wrap;font-size:13px}
+ul{margin:6px 0 0;padding-left:20px}li.fixed{color:var(--warn)}li.err{color:var(--bad)}
+.row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0}.ok{color:var(--ok)}.bad{color:var(--bad)}
+@media (max-width:480px){.controls{flex-direction:column}button{width:100%;min-height:48px}.stats{grid-template-columns:repeat(2,1fr)}.card{max-width:100%}}
+</style></head>
+<body><div class="wrap">
+<h1>NC.OS · PY-BATCHES · 3 × 7 = 21</h1>
+<div class="card"><div class="controls">
+<button id="boot" data-testid="boot-btn" type="button">BOOT</button>
+<button id="halt" data-testid="halt-btn" type="button" disabled>HALT</button>
+<button id="theme" data-testid="theme-btn" type="button">THEME</button></div></div>
 
-<section class="panel"><h2>01 · Mainboard — Aktive Zelle</h2>
-<div class="controls"><span class="kpi" id="currentId">1-1-1</span><span class="tag" id="positionBadge">Position 0 / 728</span>
-<input id="jumpInput" placeholder="4-5-6" style="flex:1;min-width:140px"><button id="jumpButton" class="primary">SPRUNG</button>
-<button id="homeButton">⌂ HOME 40</button><button id="middleButton">◉ MITTE</button><button id="endButton">■ ENDE</button></div>
-<p class="small"><kbd>W</kbd>/<kbd>↑</kbd> i−1 · <kbd>S</kbd>/<kbd>↓</kbd> i+1 · <kbd>A</kbd>/<kbd>←</kbd> j−1 · <kbd>D</kbd>/<kbd>→</kbd> j+1 · <kbd>Q</kbd> k+1 (+81) · <kbd>E</kbd> k−1 (−81) · Grenze = Stop. Im Eingabefeld = Texteingabe.</p>
-<div class="blocks" id="blocks"></div>
-<div class="grid-wrap"><canvas id="gridCanvas" aria-label="729-Zellen-Raster"></canvas></div>
-<p class="small">Weiß = du · Cyan = Nachbarn in derselben Ebene (k). Block-Klick = Sprung ins Block-Zentrum.</p>
-<canvas id="corridor" width="900" height="130"></canvas>
-<div class="grid" style="margin-top:12px"><div><div class="kv"><span>i · j · k</span><strong id="detailCoords">1 · 1 · 1</strong></div><div class="kv"><span>Oij</span><strong id="detailIJ">1</strong></div><div class="kv"><span>Oik</span><strong id="detailIK">1</strong></div><div class="kv"><span>Ojk</span><strong id="detailJK">1</strong></div></div>
-<div><div class="kv"><span>Block</span><strong id="detailBlock">1</strong></div><div class="kv"><span>Nachbarn (Ebene)</span><strong id="detailNeigh">0</strong></div><div class="kv"><span>Autosave</span><strong id="metricSave">AN</strong></div><div class="kv"><span>Speicher-Key</span><strong>NCOS729</strong></div></div></div>
-<div class="controls" style="margin-top:10px"><button id="exportButton">⬇ EXPORT NCOS729.json</button><label style="cursor:pointer;border:1px solid #38506b;border-radius:8px;padding:9px 11px">⬆ IMPORT JSON <input type="file" id="importFile" accept=".json,application/json" hidden></label><button id="clearButton">↺ Autosave löschen</button><span class="small" id="saveStatus">Autosave bereit.</span></div>
-<div id="jumpLog" class="small" style="margin-top:8px">Bereit.</div></section>
+<div class="card"><div class="stats">
+<div class="stat"><span class="muted">TREFFER</span><b id="s-treffer" data-testid="stat-treffer">0</b></div>
+<div class="stat"><span class="muted">DANEBEN</span><b id="s-daneben" data-testid="stat-daneben">0</b></div>
+<div class="stat"><span class="muted">OFFEN</span><b id="s-offen" data-testid="stat-offen">21</b></div>
+<div class="stat"><span class="muted">BATCH</span><b id="s-batch" data-testid="stat-batch">–</b></div></div>
+<div class="grid" id="grid"></div></div>
 
-<section class="panel"><h2>02 · Die neun Identitäten</h2><div class="scroll" style="max-height:260px"><table><thead><tr><th>#</th><th>Identität</th><th>Operation</th><th>Tiefe</th></tr></thead><tbody id="identityRows"></tbody></table></div></section>
+<div class="card"><div id="output" data-testid="output" role="status" aria-live="polite"><span class="muted">System bereit. BOOT drücken.</span></div></div>
 
-<section class="panel"><h2>03 · 729-Raum — Zellen adressieren</h2><p>Paarprojektionen: Oij=i·j, Oik=i·k, Ojk=j·k. Keine zusätzliche 3D-Gesamtformel.</p>
-<div class="controls"><label>Tiefe i <select id="filterI"><option value="all">Alle</option></select></label><label>Tiefe j <select id="filterJ"><option value="all">Alle</option></select></label><label>Tiefe k <select id="filterK"><option value="all">Alle</option></select></label><button id="clearFilter">Filter zurücksetzen</button></div>
-<p id="cellCount" class="small">729 / 729 Zellen</p><div id="cube"></div><div class="panel" style="margin-top:12px"><h3>Ausgewählte Zelle</h3><div id="selectedCell">Noch keine Zelle ausgewählt.</div></div></section>
+<div class="card"><b>Fehlerliste</b><ul id="errs" data-testid="errors"><li class="muted">noch keine</li></ul></div>
 
-<section class="panel"><h2>04 · 81er-Matrix — Basis + Modulation</h2><div class="controls"><label>3D-Schnitt k <select id="sliceK"></select></label><label>Modulationszeit t <input id="timeT" type="number" step="0.1" value="1" style="width:100px"></label><button class="primary" id="renderMatrix">Matrix berechnen</button></div>
-<p>Basis Oij=i·j. Modulation Oij(t)=i·j + sin(t+i)·sin(t+j) — symmetrisch.</p><div class="scroll"><table id="matrix"></table></div></section>
-
-<section class="panel"><h2>05 · Rechenwerte aus den NC-Notizen</h2><div class="grid"><div><h3>HBT</h3><div id="hbtResult"></div></div><div><h3>NC-Spiegel</h3><div id="mirrorResult"></div></div><div><h3>25-Prüfung</h3><div id="cppResult"></div></div><div><h3>OCTA</h3><div id="octaResult"></div></div></div>
-<p class="small">Modell-/Codeprüfungen mit festen Eingaben. Keine Messung von CPU/RAM/GPU/Strom/Fläche.</p></section>
-
-<section class="panel"><h2>06 · M1 / M2 / M3 — AXIOM</h2><p>M1 · M2 · M3 → Ø → P100 → KONSENS → KOMPETENZ → VERBAUEN / WAIT</p>
-<div class="controls"><button class="primary" id="m123Add">+ NEU</button><button id="m123Export">M1/M2/M3 JSON-Export</button><button id="m123ImportButton">JSON-Import</button><input type="file" id="m123File" accept=".json,application/json" hidden><button id="m123Clear">Alle löschen</button><span class="small" id="m123Count"></span></div>
-<div id="m123Grid" class="grid"></div><p class="small">P100 nur aus den 3 Werten. Key: <code>m123</code>.</p></section>
-
-
-<section class="panel"><h2>08 · Validator</h2><div class="controls"><button class="primary" id="runAudit">Alle Prüfungen ausführen</button><button id="exportBtn">Prüfbericht exportieren</button><button id="backupBtn">Lokales Backup</button><button id="downloadData">Daten JSON exportieren</button><label>JSON importieren (Protokoll wird zusammengeführt (kein unveränderliches Append-only: Import hängt an, archiveClear leert nur per Klick)) <input type="file" id="importFile2" accept="application/json"></label></div>
-<div id="auditSummary" class="small" style="margin:12px 0">Noch kein Audit. Prüfungen nur per Klick.</div><div id="report">Prüfungen (genau diese führt runAudit aus): 729 Adressen · Eindeutigkeit · Koordinaten 1–9 · 81 Basiswerte · Kanon-Formel · HOME/MITTE/ENDE · Paarprojektionen · Modulation symmetrisch · HBT · NC-Spiegel · 25-Summe · OCTA · M1/M2/M3 P100 · M1/M2/M3 Gate.</div></section>
-
-<section class="panel"><h2>09 · Ereignisprotokoll — anhängen, Export, explizites Leeren (kein unveränderliches Append-only)</h2><div class="controls"><button id="saveLog">Protokoll speichern (NC-LOG.txt)</button><button id="archiveExport">1 · Archiv exportieren (NC-LOG-Archiv.txt)</button><button id="archiveClear">2 · Protokoll leeren — nur nach Export, nur per Klick</button><span class="small" id="logCount"></span></div><div id="log" class="small" style="margin-top:10px">Start.</div></section>
-<footer>NC-729 CORE + Mainboard · lokal · keine Cloud · Kanon-Formel gilt für alle Exporte</footer></main>
+<div class="card"><b>729-Testkarte</b> <span class="muted">(Verdichtung 729 → 81 → 9 → 3 → 1)</span><div id="t729" data-testid="card729"></div></div>
+</div>
 <script>
-"use strict";
-const STORE="nc729.core.v1", STORAGE_KEY="NCOS729";
-const IDENTITIES=[["Ursprung","SETZEN"],["Polarität","SPIEGELN"],["Resonanz","VERBINDEN"],["Ordnung","STABILISIEREN"],["Wandel","WECHSELN"],["Verbindung","VERNETZEN"],["Erkenntnis","DURCHDRINGEN"],["Integration","VERSTÄRKEN"],["Vollendung","RÜCKKOPPELN"]];
-const OCTA=[["N","11","BIOS"],["NE","22","VERBUND"],["E","33","RECALL"],["SE","44","PEAK"],["S","55","KAISER_DRACHE"],["SW","66","RAM"],["W","77","CALC"],["NW","88+99","ROM_SYS"]];
 const $=id=>document.getElementById(id);
-const now=()=>new Date().toISOString(), pad=n=>String(n).padStart(2,"0");
-const hms=iso=>{const d=new Date(iso);return pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())};
-const ymd=iso=>new Date(iso).toLocaleDateString("sv-SE");
-let state=loadState(); let position=0, saveTimer=0;
-function loadState(){try{const s=JSON.parse(localStorage.getItem(STORE));return s&&Array.isArray(s.logs)?{logs:s.logs,backups:Array.isArray(s.backups)?s.backups:[],lastAudit:s.lastAudit||null}:{logs:[],backups:[],lastAudit:null}}catch{return{logs:[],backups:[],lastAudit:null}}}
-function persist(){try{localStorage.setItem(STORE,JSON.stringify(state)); const w=$("storageWarn"); if(w) w.hidden=true; return true;}catch(err){const w=$("storageWarn"); if(w){w.hidden=false; w.textContent="Speichern fehlgeschlagen ("+(err&&err.name?err.name:"Speicher voll")+"). Weitere Einträge werden nicht sicher gespeichert. Exportiere das Protokoll und archiviere per Klick — nichts wird automatisch gelöscht.";} return false;}}
-function log(msg){state.logs.push({time:now(),msg});persist();renderLog()}
-const ncMirror=x=>15-x, hbt=(H,B,T)=>{const Q=(H+B+T)/3;return{H,B,T,Q,F:Q/40}}, modValue=(i,j,t)=>i*j+Math.sin(t+i)*Math.sin(t+j);
-// KANON: k außen, i Mitte, j innen — wie Mainboard (gefixt)
-const CELLS=[]; for(let k=1;k<=9;k++) for(let i=1;i<=9;i++) for(let j=1;j<=9;j++) CELLS.push({i,j,k,id:`${i}-${j}-${k}`,ij:i*j,ik:i*k,jk:j*k});
-const cellAt=i=>CELLS[Math.max(0,Math.min(728,i))];
-const cellPosition=(i,j,k)=>(k-1)*81+(i-1)*9+(j-1);
-const blockNumber=c=>Math.floor((c.i-1)/3)*3+Math.floor((c.j-1)/3)+1;
-function neighbors(c){const r=[]; for(let i=Math.max(1,c.i-1);i<=Math.min(9,c.i+1);i++) for(let j=Math.max(1,c.j-1);j<=Math.min(9,c.j+1);j++) if(i!==c.i||j!==c.j) r.push(`${i}-${j}-${c.k}`); return new Set(r);}
-function announce(m){$("jumpLog").textContent=m}
-function saveState(){clearTimeout(saveTimer); saveTimer=setTimeout(()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify({position})); $("saveStatus").textContent=`Gespeichert · Position ${position}`; $("metricSave").textContent="AN";}catch{$("saveStatus").textContent="Speichern nicht möglich."; $("metricSave").textContent="FEHLER";}},100);}
-function loadPos(){try{const s=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null"); if(s&&Number.isInteger(s.position)&&s.position>=0&&s.position<729) position=s.position;}catch{}}
-function gotoPosition(idx,src="Navigation"){if(!Number.isInteger(idx)||idx<0||idx>=729){announce(`✗ Position ungültig: ${idx}. Erlaubt 0 bis 728.`); return false;} position=idx; renderMain(); saveState(); announce(`✓ ${src}: ${cellAt(position).id} · Position ${position}`); return true;}
-function gotoCell(i,j,k,src="Sprung"){if(![i,j,k].every(n=>Number.isInteger(n)&&n>=1&&n<=9)) return false; return gotoPosition(cellPosition(i,j,k),src);}
-function moveAxis(axis,delta){const c=cellAt(position),n={i:c.i,j:c.j,k:c.k}; n[axis]+=delta; if(n[axis]<1||n[axis]>9){announce(`Grenze erreicht: Achse ${axis.toUpperCase()} bleibt 1..9.`); return;} gotoCell(n.i,n.j,n.k,`Achse ${axis.toUpperCase()}`);}
-function drawCorridor(){const cv=$("corridor"); if(!cv) return; const ctx=cv.getContext("2d"); if(!ctx) return; const w=cv.clientWidth,h=cv.clientHeight; ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height); const s=window.devicePixelRatio||1; ctx.setTransform(s,0,0,s,0,0); const mx=12+(position/728)*(w-24),grad=ctx.createLinearGradient(12,0,w-12,0); grad.addColorStop(0,"#79d69b"); grad.addColorStop(1,"#63d7e8"); ctx.strokeStyle=grad; ctx.lineWidth=2; ctx.beginPath(); for(let x=0;x<=w;x+=4){const y=h*.52+Math.sin(x/44+position/26)*22+Math.sin(x/17)*7; x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);} ctx.stroke(); ctx.fillStyle="#ffffff1c"; ctx.fillRect(12,h-19,w-24,5); ctx.fillStyle=grad; ctx.fillRect(12,h-19,Math.max(2,mx-12),5); ctx.strokeStyle="#fff"; ctx.beginPath(); ctx.moveTo(mx,18); ctx.lineTo(mx,h-12); ctx.stroke(); ctx.fillStyle="#dce8f4"; ctx.font="14px system-ui"; ctx.fillText(`0 → ${position} · Zelle ${cellAt(position).id}`,12,20);}
-function fitCanvas(){const cv=$("corridor"),r=cv.getBoundingClientRect(),s=window.devicePixelRatio||1; cv.width=Math.max(1,Math.round(r.width*s)); cv.height=Math.max(1,Math.round(r.height*s)); drawCorridor();}
-// --- 729-Raster als Canvas (statt 81 HTML-Buttons) ---
-// API dieser Datei: position / cellAt(position) / cellPosition(i,j,k) / gotoCell(i,j,k,src) / neighbors(c)
-// Das Snippet wurde auf die API dieser Datei übersetzt (siehe Kommentar oben).
-const gridCanvas=$("gridCanvas");
-const gridCtx=gridCanvas?gridCanvas.getContext("2d"):null;
-function drawGrid(){
-  if(!gridCanvas||!gridCtx) return;
-  const dpr=window.devicePixelRatio||1;
-  const size=gridCanvas.clientWidth;
-  if(!size) return;
-  gridCanvas.width=Math.round(size*dpr);
-  gridCanvas.height=Math.round(size*dpr);
-  const g=gridCtx;
-  g.setTransform(dpr,0,0,dpr,0,0);
-  g.clearRect(0,0,size,size);
-  const gap=Math.max(2,size*0.012);
-  const cell=(size-gap*10)/9;
-  const current=cellAt(position);
-  const neigh=neighbors(current);
-  for(let n=0;n<81;n++){
-    const i=Math.floor(n/9)+1, j=n%9+1;
-    const x=gap+(j-1)*(cell+gap), y=gap+(i-1)*(cell+gap);
-    const id=`${i}-${j}-${current.k}`;
-    const selected=(i===current.i&&j===current.j);
-    const isNeighbor=neigh.has(id);
-    g.fillStyle=selected?"#fff":"#101010";
-    g.fillRect(x,y,cell,cell);
-    g.strokeStyle=selected?"#fff":(isNeighbor?"#56e7ff":"#333");
-    g.lineWidth=selected?2:1;
-    g.strokeRect(x,y,cell,cell);
-    g.fillStyle=selected?"#000":(isNeighbor?"#56e7ff":"#f5f5f5");
-    g.font=`${Math.max(8,Math.min(13,cell*0.24))}px Consolas, monospace`;
-    g.textAlign="center"; g.textBaseline="middle";
-    g.fillText(`${i}-${j}`,x+cell/2,y+cell/2);
-  }
+const FAST=/[?&]fast=1/.test(location.search),D=FAST?5:350;
+const B1={t:[2,4,5,7],d:[1,3,6]},B2={t:[10,11,13,14],d:[8,9,12]};
+const py=Array.from({length:21},()=>"offen");
+let timer=null,running=false;
+function render(){
+  const c=s=>py.filter(x=>x===s).length;
+  $("s-treffer").textContent=c("treffer")+c("korrigiert");$("s-daneben").textContent=c("daneben");$("s-offen").textContent=c("offen");
+  $("grid").innerHTML=py.map((s,i)=>`<div class="cell ${s}">PY ${i+1}</div>`).join("");
+  const e=py.map((s,i)=>s==="daneben"?`<li class="err">PY ${i+1} — DANEBEN</li>`:s==="korrigiert"?`<li class="fixed">PY ${i+1} — DANEBEN → TARGETEER → TREFFER</li>`:"").join("");
+  $("errs").innerHTML=e||'<li class="muted">noch keine</li>';
 }
-function canvasCellFromEvent(e){
-  if(!gridCanvas) return;
-  const rect=gridCanvas.getBoundingClientRect();
-  // In CSS-Pixeln rechnen: clientX-rect.left ist schon CSS-px, kein device-px-Umweg nötig.
-  const x=e.clientX-rect.left, y=e.clientY-rect.top;
-  const gap=Math.max(2,rect.width*0.012);
-  const cell=(rect.width-gap*10)/9;
-  const col=Math.floor((x-gap)/(cell+gap));
-  const row=Math.floor((y-gap)/(cell+gap));
-  if(row<0||row>8||col<0||col>8) return;
-  const c=cellAt(position);
-  gotoCell(row+1,col+1,c.k,"Canvas-Zelle");
+function log(t){const o=$("output");if(o.dataset.fresh!=="0"){o.textContent="";o.dataset.fresh="0";}o.textContent+=t+"\n";o.scrollTop=o.scrollHeight;}
+function plan(){
+  const q=[];
+  const batch=(n,b,fix)=>{
+    q.push(()=>{$("s-batch").textContent=n;log(`BATCH ${n} — 7 PY`);});
+    for(let k=1;k<=7;k++){const i=(n-1)*7+k;q.push(()=>{const ok=b.t.includes(i);py[i-1]=ok?"treffer":"daneben";log(`  PY ${i}: ${ok?"TREFFER":"DANEBEN"}`);render();});}
+    if(fix)q.push(()=>{b.d.forEach(i=>py[i-1]="korrigiert");log("  TARGETEER → 7/7 TREFFER");render();});
+    else q.push(()=>log("  = 4 TREFFER · 3 DANEBEN"));
+  };
+  batch(1,B1,false);batch(2,B2,true);
+  q.push(()=>{$("s-batch").textContent=3;log("BATCH 3 — 7 PY\n  Status: noch offen");});
+  q.push(()=>{log("21 PY · 1 KETTE · HALT = ZIEL");finish();});
+  return q;
 }
-if(gridCanvas){
-  gridCanvas.addEventListener("click",canvasCellFromEvent);
-  new ResizeObserver(()=>drawGrid()).observe(gridCanvas);
-  window.addEventListener("resize",drawGrid);
+function setRun(r){running=r;$("boot").disabled=r;$("halt").disabled=!r;}
+function finish(){clearTimeout(timer);setRun(false);}
+function boot(){
+  py.fill("offen");$("output").dataset.fresh="1";$("s-batch").textContent="–";render();setRun(true);
+  const q=plan();let i=0;
+  (function next(){if(!running||i>=q.length)return;q[i++]();timer=setTimeout(next,D);})();
 }
-function buildMain(){const b=$("blocks"); for(let n=1;n<=9;n++){const btn=document.createElement("button"); btn.className="block"; const bb=document.createElement("b"); bb.textContent="Block "+n; const sm=document.createElement("small"); const row=Math.floor((n-1)/3)+1,col=((n-1)%3)+1; sm.textContent=`Bereich ${row} · ${col}`; btn.append(bb,sm); btn.addEventListener("click",()=>{const sI=(row-1)*3+1,sJ=(col-1)*3+1; gotoCell(sI+1,sJ+1,cellAt(position).k,`Block ${n}`);}); b.appendChild(btn);}
-
-function renderMain(){const c=cellAt(position),neigh=neighbors(c),ab=blockNumber(c);
- $("currentId").textContent=c.id; $("positionBadge").textContent=`Position ${position} / 728`;
- $("detailCoords").textContent=`${c.i} · ${c.j} · ${c.k}`; $("detailIJ").textContent=c.ij; $("detailIK").textContent=c.ik; $("detailJK").textContent=c.jk; $("detailBlock").textContent=ab; $("detailNeigh").textContent=neigh.size;
- [...$("blocks").children].forEach((btn,n)=>btn.classList.toggle("active",n+1===ab));
- drawCorridor(); drawGrid();}
-// --- Rest aus NC FINAL (unverändert in Logik) ---
-function initRest(){
- $("identityRows").innerHTML=IDENTITIES.map((x,n)=>`<tr><td>${n+1}</td><td>${x[0]}</td><td>${x[1]}</td><td>${n+1}</td></tr>`).join("");
- for(let n=1;n<=9;n++){for(const id of ["filterI","filterJ","filterK","sliceK"]){const o=document.createElement("option");o.value=n;o.textContent=n;$(id).append(o)}}
- $("sliceK").value="1";
- for(const id of ["filterI","filterJ","filterK"])$(id).addEventListener("change",renderCube);
- $("clearFilter").onclick=()=>{["filterI","filterJ","filterK"].forEach(id=>$(id).value="all");renderCube()};
- $("renderMatrix").onclick=renderMatrix; $("sliceK").onchange=renderMatrix; $("timeT").onchange=renderMatrix;
- $("runAudit").onclick=runAudit; $("exportBtn").onclick=exportReport; $("backupBtn").onclick=backup; $("downloadData").onclick=downloadData;
- $("importFile2").onchange=importData; $("saveLog").onclick=saveLog;
- renderCube();renderMatrix();renderFacts(); log("NC-729 CORE + Mainboard gestartet. Kanon-Formel aktiv.");
-}
-function renderCube(){const f=(id,v)=>$(id).value==="all"||Number($(id).value)===v; const vis=CELLS.filter(c=>f("filterI",c.i)&&f("filterJ",c.j)&&f("filterK",c.k)); $("cellCount").textContent=`${vis.length} / 729 Zellen sichtbar`; const cube=$("cube"); cube.replaceChildren(); vis.forEach(c=>{const b=document.createElement("button"); b.className="cell"; const bb=document.createElement("b"); bb.textContent=c.id; const sp=document.createElement("span"); sp.textContent=`${c.ij} · ${c.ik} · ${c.jk}`; b.append(bb,sp); b.onclick=()=>selectCell(c.id); cube.appendChild(b);});}
-function selectCell(id){const c=CELLS.find(x=>x.id===id); if(!c) return; const el=$("selectedCell"); el.replaceChildren(); const s=document.createElement("div"); s.innerHTML=""; const t=document.createElement("strong"); t.textContent=c.id; el.append(t, document.createTextNode(` — (i=${c.i}, j=${c.j}, k=${c.k}) — Oij=${c.ij} · Oik=${c.ik} · Ojk=${c.jk}`)); $("cube").querySelectorAll(".cell").forEach(b=>b.classList.toggle("active",b.querySelector("b").textContent===id));}
-function renderMatrix(){const t=Number($("timeT").value),safeT=Number.isFinite(t)?t:0; let h="<thead><tr><th>i/j</th>"+Array.from({length:9},(_,n)=>`<th>${n+1}</th>`).join("")+"</tr></thead><tbody>"; for(let i=1;i<=9;i++){h+=`<tr><th>${i}</th>`; for(let j=1;j<=9;j++){const base=i*j,mod=modValue(i,j,safeT); h+=`<td title="Basis ${base}; Modulation ${mod.toFixed(6)}">${base}<br><span class="small">${mod.toFixed(2)}</span></td>`} h+="</tr>"} $("matrix").innerHTML=h+"</tbody>";}
-function renderFacts(){const r=hbt(40,41,90); $("hbtResult").innerHTML=`H=${r.H}, B=${r.B}, T=${r.T}<br>Q=${r.Q.toFixed(1)}<br>F=${r.F.toFixed(3)}<br>D=3`; const ok=Array.from({length:14},(_,n)=>n+1).every(x=>ncMirror(ncMirror(x))===x); $("mirrorResult").innerHTML=`NC(x)=15−x<br>NC(NC(x))=x<br>Bereich 1–14: ${ok?"OK":"FEHLER"}`; const sum=[1,3,5,7,9].reduce((a,b)=>a+b,0); $("cppResult").innerHTML=`1+3+5+7+9=${sum}<br>5×5=25`; $("octaResult").innerHTML=`${OCTA.length} Richtungen<br>${new Set(OCTA.map(x=>x[1])).size} eindeutige Codes<br>HUB: 00`;}
-function test(name,fn){try{const d=fn(); return{name,ok:d===true,detail:d===true?"bestanden":String(d)}}catch(e){return{name,ok:false,detail:e.message}}}
-const M123_STORE="m123"; function m123Id(){try{const u=globalThis.crypto?.randomUUID?.(); if(typeof u==="string"&&u) return u;}catch{} return `m123-${Date.now()}-${Math.random().toString(16).slice(2)}`}
-function m123Validate(x){return !!x&&typeof x.id==="string"&&["m1","m2","m3"].every(k=>typeof x[k]==="number"&&x[k]>=0&&x[k]<=10)}
-function m123Load(){try{const x=JSON.parse(localStorage.getItem(M123_STORE)||"null"); return Array.isArray(x)&&x.every(m123Validate)?x:[{id:m123Id(),m1:8,m2:7,m3:9}]}catch{return[{id:m123Id(),m1:8,m2:7,m3:9}] }}
-let m123Entries=m123Load();
-function m123P100(a,b,c){const av=(a+b+c)/3; return{average:av,value:av*10}}
-function m123Consensus(a,b,c){if(a===b&&b===c) return{text:"KONSENS",cls:"ok"}; if(a===b||b===c||a===c) return{text:"TEILKONSENS",cls:"warn"}; return{text:"OFFEN",cls:"bad"}}
-function m123Gate(a,b,c){const s=[a,b,c].filter(v=>v>=7).length; return{score:s,build:s===3}}
-function m123Save(){try{localStorage.setItem(M123_STORE,JSON.stringify(m123Entries)); const w=$("storageWarn"); if(w) w.hidden=true;}catch(err){const w=$("storageWarn"); if(w){w.hidden=false; w.textContent="M1/M2/M3 konnte nicht gespeichert werden (Speicher voll / blockiert). Exportiere den Eintrag per Klick.";}}}
-function m123Render(){$("m123Count").textContent=`${m123Entries.length} Einträge · Autosave an`; const g=$("m123Grid"); g.replaceChildren(); m123Entries.forEach((e,idx)=>{const card=document.createElement("article"); card.className="m123-card"; const h=document.createElement("h3"); h.textContent="AXIOM "+(idx+1); card.appendChild(h); ["m1","m2","m3"].forEach((key,i)=>{const row=document.createElement("div"); row.className="m123-slider"; const lab=document.createElement("label"); lab.textContent="M"+(i+1); const inp=document.createElement("input"); inp.type="range"; inp.min=0; inp.max=10; inp.step=1; inp.value=e[key]; inp.oninput=()=>{e[key]=Number(inp.value); out.textContent=inp.value; m123Save(); upd();}; const out=document.createElement("output"); out.textContent=e[key]; row.append(lab,inp,out); card.appendChild(row);}); const avg=document.createElement("div"); avg.className="m123-avg"; const p100=document.createElement("div"); const bar=document.createElement("div"); bar.className="m123-bar"; const fill=document.createElement("div"); fill.className="m123-fill"; bar.appendChild(fill); const st=document.createElement("div"); const gate=document.createElement("div"); function upd(){const p=m123P100(e.m1,e.m2,e.m3),c=m123Consensus(e.m1,e.m2,e.m3),gg=m123Gate(e.m1,e.m2,e.m3); avg.textContent="Ø "+p.average.toFixed(1); p100.textContent="P100 · "+p.value.toFixed(0)+"%"; fill.style.width=p.value+"%"; st.textContent=c.text; st.className=c.cls+" status"; gate.textContent=`KOMPETENZ ${gg.score}/3 · ${gg.build?"VERBAUEN":"WAIT"}`; gate.className=gg.build?"ok":"warn";} upd(); const del=document.createElement("button"); del.textContent="LÖSCHEN"; del.style.marginTop="10px"; del.onclick=()=>{m123Entries.splice(idx,1); m123Save(); m123Render(); log("M1/M2/M3: Eintrag "+(idx+1)+" gelöscht")}; card.append(avg,p100,bar,st,gate,del); g.appendChild(card);});}
-function m123Init(){$("m123Add").onclick=()=>{m123Entries.push({id:m123Id(),m1:5,m2:5,m3:5}); m123Save(); m123Render(); log("M1/M2/M3: neuer Eintrag")}; $("m123Export").onclick=()=>{log("M1/M2/M3 exportiert"); download("m123.json",JSON.stringify(m123Entries,null,2))}; $("m123ImportButton").onclick=()=>$("m123File").click(); $("m123File").onchange=e=>{const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{try{const d=JSON.parse(r.result); if(!Array.isArray(d)||!d.every(m123Validate)) throw Error("Ungültige Struktur"); m123Entries=d; m123Save(); m123Render(); log("M1/M2/M3 importiert ("+d.length+")")}catch(err){log("M1/M2/M3-Import abgelehnt: "+err.message); alert("Importfehler: "+err.message)} finally{e.target.value=""}}; r.readAsText(f)}; $("m123Clear").onclick=()=>{if(confirm("Alle M1/M2/M3-Einträge löschen? (Protokoll bleibt.)")){log("M1/M2/M3: alle gelöscht"); m123Entries=[]; m123Save(); m123Render()}}; m123Render();}
-function runAudit(){const R=[]; R.push(test("729 Zellen",()=>CELLS.length===729)); R.push(test("Eindeutige Adressen",()=>new Set(CELLS.map(c=>c.id)).size===729)); R.push(test("Koordinaten vollständig 1–9",()=>CELLS.every(c=>[c.i,c.j,c.k].every(v=>Number.isInteger(v)&&v>=1&&v<=9)))); R.push(test("81 Basiswerte: jede (i,j) in allen 9 Schnitten gleich",()=>{for(let i=1;i<=9;i++)for(let j=1;j<=9;j++){const v=CELLS.filter(x=>x.i===i&&x.j===j); if(v.length!==9||!v.every(x=>x.ij===i*j)) return `Abweichung bei (${i},${j})`;} return true})); R.push(test("Kanon-Formel: Index = (k-1)*81+(i-1)*9+(j-1)",()=>CELLS.every((c,idx)=>cellPosition(c.i,c.j,c.k)===idx))); R.push(test("HOME 40 = 5-5-1, MITTE 364 = 5-5-5, ENDE 728 = 9-9-9",()=>CELLS[40].id==="5-5-1"&&CELLS[364].id==="5-5-5"&&CELLS[728].id==="9-9-9")); R.push(test("Oij/Oik/Ojk",()=>CELLS.every(c=>c.ij===c.i*c.j&&c.ik===c.i*c.k&&c.jk===c.j*c.k))); R.push(test("Modulation symmetrisch",()=>{for(const t of [0,.5,1,2,3.7,-1,10]) for(let i=1;i<=9;i++) for(let j=1;j<=9;j++) if(Math.abs(modValue(i,j,t)-modValue(j,i,t))>1e-12) return "Abweichung"; return true})); R.push(test("HBT",()=>{const r=hbt(40,41,90); return r.Q===57&&Math.abs(r.F-1.425)<1e-12})); R.push(test("NC-Spiegel",()=>Array.from({length:14},(_,n)=>n+1).every(x=>ncMirror(ncMirror(x))===x))); R.push(test("25-Summe",()=>1+3+5+7+9===25)); R.push(test("OCTA",()=>OCTA.length===8&&new Set(OCTA.map(x=>x[1])).size===8)); R.push(test("M1/M2/M3 P100",()=>{const p=m123P100(8,7,9); return p.average===8&&p.value===80})); R.push(test("M1/M2/M3 Gate",()=>m123Gate(7,7,7).build&&!m123Gate(7,7,6).build)); const pass=R.filter(r=>r.ok).length,ok=pass===R.length; log(`Audit: ${pass}/${R.length} ${ok?"OK":"FEHLER"}`); state.lastAudit={time:now(),pass,all:R.length,ok,results:R}; persist(); $("headlineStatus").textContent=ok?"OK":"FEHLER"; $("headlineStatus").style.color=ok?"var(--green)":"var(--red)"; $("headlineSub").textContent=`${pass}/${R.length} Prüfungen`; $("auditSummary").innerHTML=`<span class="${ok?"ok":"bad"} status">${ok?"ALLE BESTANDEN":"FEHLER"}</span> · ${pass}/${R.length}`; $("report").textContent=R.map(r=>`${r.ok?"[OK]":"[FEHLER]"} ${r.name} — ${r.detail}`).join("\n")+`\n\nERGEBNIS: ${pass}/${R.length} · ${ok?"OK":"FEHLER"}`; log(`Audit: ${pass}/${R.length} ${ok?"OK":"FEHLER"}`);}
-function download(name,content,type="application/json"){const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function exportReport(){if(!state.lastAudit){alert("Zuerst Audit ausführen."); return} log("Prüfbericht exportiert"); download("NC_729_Pruefbericht.json",JSON.stringify(state.lastAudit,null,2))}
-function downloadData(){log("Daten exportiert"); download("NC_729_Daten.json",JSON.stringify({version:1,identities:IDENTITIES,cells:CELLS,state},null,2))}
-function backup(){const copy=JSON.parse(JSON.stringify({logs:state.logs,lastAudit:state.lastAudit})); state.backups.push({time:now(),state:copy}); state.backups=state.backups.slice(-10); log("Lokales Backup erstellt"); download("NC_729_Backup.json",JSON.stringify({version:1,state:copy},null,2))}
-function importData(e){const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{try{const x=JSON.parse(r.result); if(!x||!x.state||!Array.isArray(x.state.logs)) throw Error("Unbekanntes Format"); if(!confirm("Protokoll hinzufügen? (Nichts wird ersetzt.)")) return; const have=new Set(state.logs.map(l=>l.time+"|"+l.msg)); const neu=x.state.logs.filter(l=>!have.has(l.time+"|"+l.msg)); state.logs=state.logs.concat(neu).sort((a,b)=>a.time<b.time?-1:1); persist(); log(`Import: ${neu.length} neue Zeilen`); alert("Import: "+neu.length+" neue Zeilen")}catch(err){log("Import abgelehnt: "+err.message); alert("Import: "+err.message)} finally{e.target.value=""}}; r.readAsText(f);}
-$("archiveExport")&&$("archiveExport").addEventListener("click",()=>{if(!state.logs.length){alert("Protokoll ist leer."); return;} archivieren(); alert("Archiv-Export gestartet. Das Protokoll wird NICHT automatisch geleert. Leeren geht nur mit Button 2 — und nur, wenn das Speichern danach gelingt.");});
-$("archiveClear")&&$("archiveClear").addEventListener("click",()=>{if(!state.logs.length){alert("Protokoll ist bereits leer."); return;} if(!confirm("Protokoll wirklich leeren? Nur klicken, wenn du den Archiv-Export (Button 1) bereits gespeichert hast. Dieser Schritt ist nicht rückgängig zu machen.")) return; const n=state.logs.length; const backup=[...state.logs]; state.logs=[]; if(persist()){renderLog(); log("Protokoll nach Archivierung geleert (per Klick, Speichern bestätigt)."); persist(); alert("Geleert: "+n+" Zeilen. Speichern bestätigt.");} else {state.logs=backup; renderLog(); alert("NICHT geleert: Speichern fehlgeschlagen (Speicher voll / blockiert). Alter Log ist wiederhergestellt.");}});
-function archivieren(){if(!state.logs.length){alert("Protokoll ist leer."); return;} const text=state.logs.map(l=>`${ymd(l.time)} ${hms(l.time)} | ${l.msg}`).join("\n")+"\n"; const _n=state.logs.length; download("NC-LOG-Archiv.txt",text,"text/plain;charset=utf-8"); log(`Archiv-Export gestartet (${_n} Zeilen). Protokoll NICHT geleert.`);}
-function saveLog(){const n=state.logs.length; const t=state.logs.map(l=>`${ymd(l.time)} ${hms(l.time)} | ${l.msg}`).join("\n")+"\n"; download("NC-LOG.txt",t,"text/plain;charset=utf-8"); log("Protokoll gespeichert ("+n+" Zeilen — Datei enthält genau diese "+n+" Zeilen, ohne den Speichereintrag selbst)");}
-function renderLog(){const show=state.logs.slice(-200); $("log").textContent=show.length?show.map(l=>`${hms(l.time)} | ${l.msg}`).join("\n"):"Noch keine Ereignisse."; $("logCount").textContent=`${state.logs.length} Zeilen · Anzeige: letzte ${show.length}`;}
-
-// --- Log-Rollover: NUR per Klick: erst exportieren, dann leeren ---
-// Mainboard-Events
-$("jumpButton").addEventListener("click",()=>{const m=$("jumpInput").value.trim().match(/^([1-9])-([1-9])-([1-9])$/); if(!m){announce(`✗ Nicht gefunden: "${$("jumpInput").value}". Format: i-j-k.`); return;} gotoCell(+m[1],+m[2],+m[3],"SPRUNG");});
-$("jumpInput").addEventListener("keydown",e=>{if(e.key==="Enter") $("jumpButton").click();});
-$("homeButton").addEventListener("click",()=>gotoPosition(40,`HOME 40 · ${cellAt(40).id}`));
-$("middleButton").addEventListener("click",()=>gotoCell(5,5,5,"MITTE"));
-$("endButton").addEventListener("click",()=>gotoCell(9,9,9,"ENDE"));
-document.addEventListener("keydown",e=>{if(e.altKey||e.ctrlKey||e.metaKey) return; if(e.target instanceof HTMLElement&&(e.target.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))) return; const k=e.key.toLowerCase(); const mv={w:["i",-1],arrowup:["i",-1],s:["i",1],arrowdown:["i",1],a:["j",-1],arrowleft:["j",-1],d:["j",1],arrowright:["j",1],q:["k",1],e:["k",-1]}[k]; if(!mv) return; e.preventDefault(); moveAxis(mv[0],mv[1]);});
-$("exportButton").addEventListener("click",()=>{download("NCOS729.json",JSON.stringify({format:"NCOS729",version:1,position,cell:cellAt(position).id,exported:new Date().toISOString()},null,2)); log(`Exportiert: Position ${position}, Zelle ${cellAt(position).id}.`);});
-$("importFile").addEventListener("change",async e=>{const f=e.target.files?.[0]; e.target.value=""; if(!f) return; try{const d=JSON.parse(await f.text()); if("position" in d&&!(Number.isInteger(d.position)&&d.position>=0&&d.position<729)) throw new Error("position vorhanden, aber ungültig (erlaubt: ganze Zahl 0–728). Import abgelehnt."); const hasPos=Number.isInteger(d.position)&&d.position>=0&&d.position<729; let fromCell=null; if(typeof d.cell==="string"){const m=d.cell.match(/^([1-9])-([1-9])-([1-9])$/); if(!m) throw new Error("Ungültige Zell-ID."); fromCell=cellPosition(+m[1],+m[2],+m[3]);} if(!hasPos&&fromCell===null) throw new Error("Datei braucht Position oder Zell-ID."); if(hasPos&&fromCell!==null&&fromCell!==d.position) throw new Error("Position und Zell-ID widersprechen sich — Import abgelehnt."); gotoPosition(hasPos?d.position:fromCell,"IMPORT"); log(`Importiert: ${f.name} · ${cellAt(position).id}.`);}catch(err){announce("✗ Import fehlgeschlagen: "+err.message); log("Import fehlgeschlagen: "+err.message);}});
-$("clearButton").addEventListener("click",()=>{try{clearTimeout(saveTimer); position=0; localStorage.setItem(STORAGE_KEY,JSON.stringify({position})); renderMain(); $("saveStatus").textContent="Autosave zurückgesetzt · Position 0 dauerhaft geschrieben."; announce("Autosave zurückgesetzt."); log("Autosave zurückgesetzt; Position 0 dauerhaft geschrieben.");}catch{$("saveStatus").textContent="Zurücksetzen fehlgeschlagen — Position 0 nicht gespeichert.";}});
-buildMain(); loadPos(); renderMain(); fitCanvas(); initRest(); m123Init();
-$("saveStatus").textContent=`Wiederhergestellt · Position ${position}`;
-window.addEventListener("resize",fitCanvas);
+function halt(){clearTimeout(timer);setRun(false);log("HALT. Stand eingefroren. HALT = ZIEL");}
+$("boot").onclick=boot;$("halt").onclick=halt;
+// Theme (Dark/Light), merkt sich die Wahl
+const root=document.documentElement;
+try{const s=localStorage.getItem("ncos-theme");if(s)root.dataset.theme=s;else if(matchMedia("(prefers-color-scheme: light)").matches)root.dataset.theme="light";}catch{}
+$("theme").onclick=()=>{const t=root.dataset.theme==="dark"?"light":"dark";root.dataset.theme=t;try{localStorage.setItem("ncos-theme",t);}catch{}};
+// 729-Testkarte: jede Zeile wird wirklich gerechnet
+const T=[[729,9,81],[81,9,9],[9,3,3],[3,3,1]];
+$("t729").innerHTML=T.map(([a,b,c])=>{const ok=a/b===c;return`<div class="row"><span>${a} ÷ ${b} = ${c}</span><span class="${ok?"ok":"bad"}">${ok?"✓":"✗"}</span></div>`;}).join("")+
+  `<div class="row"><span>7 + 7 + 7 = 21</span><span class="${7+7+7===21?"ok":"bad"}">${7+7+7===21?"✓":"✗"}</span></div>`;
+render();
 </script></body></html>
