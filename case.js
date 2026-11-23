@@ -6,7 +6,10 @@ const alphaLauf = [
   { file: "2.html", name: "Steckkarten", rolle: "Noise", daten: "SLI · 42%" },
   { file: "3.html", name: "Kernel", rolle: "Centrum", daten: "MB1 · 9 CENTRUM" },
   { file: "4.html", name: "Industry Verified", rolle: "Mouth", daten: "Abmachung" },
-  { file: "5.html", name: "In-Ear Loader", rolle: "Orakel", daten: "In-Ear" },
+
+  // Index-Eintrag für dein Uni-Logbuch in 5.html
+  { file: "5.html", name: "Uni-Logbuch", rolle: "Tracker", daten: "Uni-Eingang · Arbeitsbeginn · Arbeitsende · Uni-Ausgang" },
+
   { file: "6.html", name: "Letzter Tech", rolle: "Alt", daten: "W3" },
   { file: "7.html", name: "11 zu 7", rolle: "SCSI", daten: "7 Geräte" },
   { file: "8.html", name: "Scanner", rolle: "Eye", daten: "1:1-Scan" }
@@ -41,6 +44,13 @@ function pruefeEintrag(eintrag) {
     }
   }
 
+  if (eintrag.file === "5.html" && eintrag.name !== "Uni-Logbuch") {
+    return {
+      ok: false,
+      fehler: ["5.html muss im Index als Uni-Logbuch eingetragen sein"]
+    };
+  }
+
   return { ok: true, fehler: [] };
 }
 
@@ -59,6 +69,7 @@ function pruefeAlphaLauf(eintraege) {
       p.ok = false;
       p.fehler.push(`Datei doppelt: ${datei}`);
     }
+
     if (p.ok) dateien.add(datei);
 
     return {
@@ -68,13 +79,14 @@ function pruefeAlphaLauf(eintraege) {
       meldung: p.ok
         ? datei === "2.html"
           ? "Steckkarten-Daten geprüft; SLI-Wert: 42 %."
-          : "Pflichtfelder geprüft."
+          : datei === "5.html"
+            ? "Uni-Logbuch-Eintrag geprüft."
+            : "Pflichtfelder geprüft."
         : p.fehler.join(" · ")
     };
   });
 }
 
-// Gemeinsamkeiten werden ausdrücklich nur als gleiche Textbegriffe gewertet.
 function begriffe(text) {
   return new Set(
     String(text)
@@ -83,6 +95,7 @@ function begriffe(text) {
   );
 }
 
+// Vergleicht nur identische Wörter, keine Bedeutung oder Synonyme.
 function kohärenz(a, b) {
   const felder = ["name", "rolle", "daten"];
   const gemeinsam = [];
@@ -90,6 +103,7 @@ function kohärenz(a, b) {
   for (const feld of felder) {
     const A = begriffe(a[feld] || "");
     const B = begriffe(b[feld] || "");
+
     for (const wort of A) {
       if (B.has(wort)) gemeinsam.push(`${feld}: ${wort}`);
     }
@@ -109,29 +123,29 @@ function renderAlphaLauf(ergebnisse, ziel = document.body) {
   const section = element("section");
   section.id = "alpha-index";
   section.style.cssText =
-    "font:14px/1.5 Consolas,monospace;color:#f5f5f5;background:#050505;padding:16px";
+    "font:14px/1.5 Consolas,monospace;color:#e6e6e8;background:#0a0a0f;padding:16px";
 
   section.append(
     element("h1", "ALPHA-LAUF · INDEX & KOHÄRENZ"),
     element(
       "p",
-      "Verbindungen zeigen übereinstimmende Wörter in Name, Rolle oder Daten – keine weitergehende Bedeutungsprüfung."
+      "Verbindungen zeigen gleiche Wörter in Name, Rolle oder Daten – keine Bedeutungsprüfung."
     )
   );
 
-  const bereit = ergebnisse.filter(x => x.status === "BEREIT").length;
-  section.append(element(
-    "p",
-    `${bereit}/${ergebnisse.length} Einträge bereit · ${ergebnisse.length - bereit} fehlerhaft`
-  ));
+  const bereit = ergebnisse.filter(e => e.status === "BEREIT").length;
+  section.append(
+    element("p", `${bereit}/${ergebnisse.length} Einträge bereit · ${ergebnisse.length - bereit} fehlerhaft`)
+  );
 
   const table = document.createElement("table");
   table.style.cssText = "border-collapse:collapse;width:100%;font-size:12px";
-  const head = document.createElement("tr");
 
+  const head = document.createElement("tr");
   for (const titel of ["Schritt", "Datei", "Name", "Rolle", "Daten", "Status", "Meldung"]) {
     const th = element("th", titel);
-    th.style.cssText = "text-align:left;padding:6px;border-bottom:1px solid #555;color:#66ccff";
+    th.style.cssText =
+      "text-align:left;padding:6px;border-bottom:1px solid #555;color:#66ccff";
     head.append(th);
   }
   table.append(head);
@@ -142,31 +156,37 @@ function renderAlphaLauf(ergebnisse, ziel = document.body) {
 
     for (const wert of werte) {
       const td = element("td", String(wert ?? ""));
-      td.style.cssText = "padding:6px;border-bottom:1px solid #222;vertical-align:top";
-      if (wert === "BEREIT") td.style.color = "#00ff66";
-      if (wert === "FEHLER") td.style.color = "#ff5555";
+      td.style.cssText =
+        "padding:6px;border-bottom:1px solid #29293a;vertical-align:top";
+
+      if (wert === "BEREIT") td.style.color = "#00ff88";
+      if (wert === "FEHLER") td.style.color = "#ff6868";
+
       tr.append(td);
     }
     table.append(tr);
   }
 
-  section.append(element("h2", "KOHÄRENZSTELLUNGEN"));
-  const liste = document.createElement("ul");
+  section.append(element("h2", "KOHÄRENZSTELLEN"));
 
+  const liste = document.createElement("ul");
   let verbindungen = 0;
+
   for (let i = 0; i < ergebnisse.length; i++) {
     for (let j = i + 1; j < ergebnisse.length; j++) {
       const a = ergebnisse[i];
       const b = ergebnisse[j];
       const gemeinsam = kohärenz(a, b);
+
       if (!gemeinsam.length) continue;
 
       verbindungen++;
-      const li = element(
-        "li",
-        `${a.file} ${a.name} ↔ ${b.file} ${b.name} — ${gemeinsam.join(", ")}`
+      liste.append(
+        element(
+          "li",
+          `${a.file} ${a.name} ↔ ${b.file} ${b.name} — ${gemeinsam.join(", ")}`
+        )
       );
-      liste.append(li);
     }
   }
 
