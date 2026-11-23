@@ -11,7 +11,12 @@ const alphaLauf = [
   { file: "5.html", name: "Uni-Logbuch", rolle: "Tracker", daten: "Uni-Eingang · Arbeitsbeginn · Arbeitsende · Uni-Ausgang" },
 
   { file: "6.html", name: "Letzter Tech", rolle: "Alt", daten: "W3" },
-  { file: "7.html", name: "11 zu 7", rolle: "SCSI", daten: "7 Geräte" },
+ {
+  file: "7.html",
+  name: "NC Mobile Index",
+  rolle: "Knotenübersicht",
+  daten: "94 Knoten · 1 Root · 3 Achsen · 9 Kerne · 81 Zellen"
+},
   { file: "8.html", name: "Scanner", rolle: "Eye", daten: "1:1-Scan" }
 ];
 
