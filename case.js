@@ -6,12 +6,7 @@ const alphaLauf = [
   { file: "2.html", name: "Steckkarten", rolle: "Noise", daten: "SLI · 42%" },
   { file: "3.html", name: "Kernel", rolle: "Centrum", daten: "MB1 · 9 CENTRUM" },
   { file: "4.html", name: "Industry Verified", rolle: "Mouth", daten: "Abmachung" },
-  {
-    file: "5.html",
-    name: "Uni-Logbuch",
-    rolle: "Tracker",
-    daten: "Uni-Eingang · Arbeitsbeginn · Arbeitsende · Uni-Ausgang"
-  },
+  { file: "5.html", name: "Uni-Logbuch", rolle: "Tracker", daten: "…" },
   { file: "6.html", name: "Letzter Tech", rolle: "Alt", daten: "W3" },
   {
     file: "7.html",
@@ -19,7 +14,8 @@ const alphaLauf = [
     rolle: "Knotenübersicht",
     daten: "94 Knoten · 1 Root · 3 Achsen · 9 Kerne · 81 Zellen"
   },
-  { file: "8.html", name: "Scanner", rolle: "Eye", daten: "1:1-Scan" }
+  { file: "8.html", name: "Scanner", rolle: "Eye", daten: "1:1-Scan" },
+  { file: "9.html", name: "ZOOM · WHIRL", rolle: "Bewegung", daten: "3 · 9 · 81" }
 ];
 
 function pruefeEintrag(eintrag) {
@@ -258,8 +254,10 @@ function renderAlphaLauf(ergebnisse, ziel = document.body) {
 const ergebnisse = pruefeAlphaLauf(alphaLauf);
 
 if (typeof document !== "undefined") {
-  const ziel = document.getElementById("alpha-index");
-  if (ziel) renderAlphaLauf(ergebnisse, ziel);
+  const alteAusgabe = document.getElementById("alpha-index");
+  if (alteAusgabe) alteAusgabe.remove();
+
+  renderAlphaLauf(ergebnisse);
 } else {
   for (const eintrag of ergebnisse) {
     console.log(
