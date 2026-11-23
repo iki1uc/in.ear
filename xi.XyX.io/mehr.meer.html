@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NC.OS ROOT · MEER MEHR</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#080c12;color:#e6edf3;font:14px system-ui,sans-serif}
+  header{padding:12px;background:#101720;border-bottom:1px solid #293747}
+  h1{margin:0;color:#46ff88;font-size:17px}
+  #crumb{padding:9px 12px;color:#ffd700;overflow-wrap:anywhere}
+  #info{padding:0 12px 8px;color:#9fb0c3;font-size:12px}
+  main{padding:0 10px}
+  canvas{display:block;width:100%;height:min(68vh,560px);min-height:300px;
+    background:#05080c;border:1px solid #293747;border-radius:10px;touch-action:none}
+  nav{display:flex;gap:7px;padding:10px}
+  button{flex:1;min-height:42px;border:1px solid #35465a;border-radius:8px;
+    background:#17212d;color:#e6edf3;font:inherit}
+  button:active{border-color:#46ff88;color:#46ff88}
+  #log{padding:0 12px 12px;color:#9fb0c3;font-size:11px}
+</style>
+</head>
+<body>
+<header><h1>NC.OS ROOT · MEER MEHR</h1></header>
+<div id="crumb">ROOT</div>
+<div id="info"></div>
+<main><canvas id="matrixCanvas" aria-label="3-mal-3-Navigation"></canvas></main>
+<nav>
+  <button id="backBtn">← Zurück</button>
+  <button id="zoomBtn">9 · MEER</button>
+  <button id="haltBtn">HALT AUS</button>
+</nav>
+<div id="log">Bereit.</div>
+
+<script>
+"use strict";
+
+const canvas = document.getElementById("matrixCanvas");
+const ctx = canvas.getContext("2d");
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+const state = {
+  version: "NC.OS ROOT",
+  halt: false,
+  seek: 0,
+  currentId: 1,
+  path: ["ROOT"],
+  zone: "XI",
+  clarity: "CLEAR",
+  viewport: {x: 0, y: 0, zoom: 1},
+  tree: null,
+  log: []
+};
+
+let nextId = 1;
+function buildTree(level = 0, path = "ROOT") {
+  const node = {
+    id: nextId++,
+    level,
+    path,
+    children: []
+  };
+  if (level < 6) {
+    for (let pos = 0; pos < 3; pos++) {
+      node.children.push(buildTree(level + 1, `${path}.${pos}`));
+    }
+  }
+  return node;
+}
+
+state.tree = buildTree();
+
+const registry = Object.create(null);
+function register(node) {
+  registry[node.id] = node;
+  node.children.forEach(register);
+}
+register(state.tree);
+
+let dirty = true;
+
+function log(message) {
+  state.log.push(message);
+  if (state.log.length > 30) state.log.shift();
+  document.getElementById("log").textContent = message;
+}
+
+function enter(pos) {
+  if (state.halt) return;
+  const parent = registry[state.currentId];
+  const node = parent?.children[pos];
+  if (!node) return;
+
+  state.currentId = node.id;
+  state.path.push(String(pos));
+  state.seek++;
+  dirty = true;
+}
+
+function goBack() {
+  if (state.path.length <= 1) return;
+  state.path.pop();
+
+  let node = state.tree;
+  for (const part of state.path.slice(1)) {
+    node = node.children[Number(part)];
+  }
+  state.currentId = node.id;
+  dirty = true;
+}
+
+function drawMatrix() {
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  ctx.clearRect(0, 0, width, height);
+  ctx.save();
+  ctx.translate(state.viewport.x, state.viewport.y);
+  ctx.scale(state.viewport.zoom, state.viewport.zoom);
+
+  const size = Math.min(width - 40, height - 100, 360);
+  const cell = size / 3;
+  const gap = 8;
+  const grid = cell * 3 + gap * 2;
+  const left = (width - grid) / 2;
+  const top = Math.max(60, (height - grid) / 2);
+
+  for (let pos = 0; pos < 9; pos++) {
+    const row = Math.floor(pos / 3);
+    const col = pos % 3;
+    const x = left + col * (cell + gap);
+    const y = top + row * (cell + gap);
+
+    ctx.fillStyle = pos === 4 ? "#193426" : "#111923";
+    ctx.strokeStyle = pos === 4 ? "#ffd700" : "#46ff88";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(x, y, cell, cell, 9);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "#e6edf3";
+    ctx.font = "bold 20px monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(String(pos), x + cell / 2, y + cell / 2 - 9);
+
+    const label = `${row},${col}${pos === 4 ? " · MITTE" : ""}`;
+    ctx.fillStyle = "#9fb0c3";
+    ctx.font = "11px monospace";
+    ctx.fillText(label, x + cell / 2, y + cell / 2 + 14);
+  }
+
+  ctx.restore();
+}
+
+function drawHud() {
+  const node = registry[state.currentId];
+  document.getElementById("crumb").textContent =
+    state.path.map((part, i) => i === 0 ? part : part).join(" > ");
+
+  document.getElementById("info").textContent =
+    `LEVEL ${node.level} · ZOOM ${state.viewport.zoom.toFixed(2)} · ` +
+    `NODE ${node.id} · ZONE ${state.zone} · KLAR ${state.clarity} · SEEK ${state.seek}`;
+
+  document.getElementById("haltBtn").textContent =
+    state.halt ? "HALT AN" : "HALT AUS";
+}
+
+function render() {
+  drawMatrix();
+  drawHud();
+}
+
+function loop() {
+  if (dirty) {
+    render();
+    dirty = false;
+  }
+  requestAnimationFrame(loop);
+}
+
+function resize() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.round(rect.width * DPR);
+  canvas.height = Math.round(rect.height * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  dirty = true;
+}
+
+canvas.addEventListener("click", event => {
+  const rect = canvas.getBoundingClientRect();
+  const x = (event.clientX - rect.left - state.viewport.x) / state.viewport.zoom;
+  const y = (event.clientY - rect.top - state.viewport.y) / state.viewport.zoom;
+
+  const size = Math.min(rect.width - 40, rect.height - 100, 360);
+  const cell = size / 3;
+  const gap = 8;
+  const grid = cell * 3 + gap * 2;
+  const left = (rect.width - grid) / 2;
+  const top = Math.max(60, (rect.height - grid) / 2);
+  const col = Math.floor((x - left) / (cell + gap));
+  const row = Math.floor((y - top) / (cell + gap));
+
+  if (row < 0 || row > 2 || col < 0 || col > 2) return;
+  const localX = x - left - col * (cell + gap);
+  const localY = y - top - row * (cell + gap);
+  if (localX > cell || localY > cell) return;
+
+  enter(row * 3 + col);
+});
+
+canvas.addEventListener("wheel", event => {
+  event.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  const oldZoom = state.viewport.zoom;
+  const newZoom = Math.max(0.5, Math.min(3, oldZoom * (event.deltaY < 0 ? 1.1 : 0.9)));
+
+  state.viewport.x = x - (x - state.viewport.x) * newZoom / oldZoom;
+  state.viewport.y = y - (y - state.viewport.y) * newZoom / oldZoom;
+  state.viewport.zoom = newZoom;
+  dirty = true;
+}, {passive: false});
+
+document.getElementById("backBtn").onclick = goBack;
+document.getElementById("zoomBtn").onclick = () => {
+  state.viewport.zoom = Math.min(3, state.viewport.zoom * 1.25);
+  dirty = true;
+  log("9 · ZOOM / MEER");
+};
+document.getElementById("haltBtn").onclick = () => {
+  state.halt = !state.halt;
+  dirty = true;
+};
+
+window.addEventListener("resize", resize);
+resize();
+loop();
+</script>
+</body>
+</html>
