@@ -258,7 +258,8 @@ function renderAlphaLauf(ergebnisse, ziel = document.body) {
 const ergebnisse = pruefeAlphaLauf(alphaLauf);
 
 if (typeof document !== "undefined") {
-  renderAlphaLauf(ergebnisse);
+  const ziel = document.getElementById("alpha-index");
+  if (ziel) renderAlphaLauf(ergebnisse, ziel);
 } else {
   for (const eintrag of ergebnisse) {
     console.log(
