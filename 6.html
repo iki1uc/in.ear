@@ -68,4 +68,14 @@ $("check").onclick=async()=>{
 };
 $("save").onclick=()=>{L("LOG SPEICHERN geklickt");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([zeilen.join("\n")+"\n"],{type:"text/plain;charset=utf-8"}));a.download="SETUP-LOG.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
 zeilen.forEach(z=>{$("log").textContent+=z+"\n";});L("SETUP-INDEX geöffnet. Kein Auto-Start.");
-</script></body></html>
+<script src="setup-data.js"></script>
+
+<script>
+// dein bisheriger JavaScript-Code bleibt hier:
+zeilen.forEach(z => {
+  $("log").textContent += z + "\n";
+});
+L("SETUP-INDEX geöffnet. Kein Auto-Start.");
+</script>
+</body>
+</html>
