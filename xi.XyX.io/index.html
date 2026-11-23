@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>NC.OS ROOT · Mobile</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#000;--panel:#0f141b;--panel2:#151c25;--text:#e6edf3;
+  --muted:#9fb0c3;--border:#283344;--green:#46ff88;--gold:#ffd700;
+  --blue:#4da3ff;--red:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font:15px/1.45 system-ui,sans-serif}
+body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit}
+button{min-height:44px;padding:9px 12px;color:var(--text);background:#202731;
+  border:1px solid var(--border);border-radius:10px;touch-action:manipulation}
+button:active{background:#303b49}
+button.primary{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+button.active{color:var(--gold);border-color:var(--gold)}
+header{position:sticky;top:0;z-index:10;padding:10px 12px;background:#080c10;
+  border-bottom:1px solid var(--border)}
+h1{margin:0;color:var(--green);font-size:18px}
+.sub{color:var(--muted);font-size:12px}
+#breadcrumb{position:sticky;top:57px;z-index:9;padding:8px 12px;background:#111820;
+  border-bottom:1px solid var(--border);overflow:auto;white-space:nowrap;font-size:13px}
+#status{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  padding:8px 12px;background:#0c1117;border-bottom:1px solid var(--border);
+  color:var(--muted);font-size:12px}
+main{max-width:900px;margin:auto;padding:10px}
+.panel{margin:10px 0;padding:12px;background:var(--panel);
+  border:1px solid var(--border);border-radius:12px}
+.panel h2{margin:0 0 8px;font-size:15px}
+.hint{color:var(--muted);font-size:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+input,select,textarea{width:100%;margin:5px 0;padding:11px;color:var(--text);
+  background:#080c10;border:1px solid var(--border);border-radius:10px}
+textarea{min-height:120px;resize:vertical}
+#editorText{height:42vh;font-size:16px;line-height:1.5}
+#matrixCanvas{display:block;width:100%;height:min(58vh,520px);min-height:300px;
+  background:#050708;border:1px solid var(--border);border-radius:12px;
+  touch-action:none}
+.tab{display:none}.tab.on{display:block}
+#bottomNav{position:fixed;z-index:20;left:0;right:0;bottom:0;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  padding-bottom:env(safe-area-inset-bottom);
+  background:#111820;border-top:1px solid var(--border)}
+#bottomNav button{height:56px;border:0;border-radius:0;background:transparent}
+#bottomNav button.on{color:var(--gold);background:#202731}
+#logView{max-height:50vh;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;
+  font:12px/1.5 ui-monospace,monospace}
+.result{margin:8px 0;padding:10px;background:var(--panel2);
+  border:1px solid var(--border);border-radius:10px}
+.badge{padding:3px 7px;border:1px solid var(--border);border-radius:999px;font-size:11px}
+#toast{position:fixed;left:50%;bottom:76px;z-index:30;transform:translateX(-50%);
+  display:none;max-width:90vw;padding:10px 14px;background:#202731;
+  border:1px solid var(--border);border-radius:10px}
+@media(min-width:760px){
+  main{padding:16px}
+  #editorText{height:48vh}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>NC.OS · ROOT</h1>
+  <div class="sub">Mobile Canvas · lokal gespeichert · Imports bleiben zunächst unverändert</div>
+</header>
+
+<div id="breadcrumb">ROOT</div>
+<div id="status">
+  <span id="treeCount">Baum: —</span>
+  <span id="levelLabel">Ebene 0</span>
+  <span id="nodeLabel">Knoten #1</span>
+  <span id="haltLabel">HALT AUS</span>
+  <span>SEEK <b id="seekLabel">0</b></span>
+  <span>ZOOM <b id="zoomLabel">1.00</b></span>
+</div>
+
+<main>
+  <section class="tab on" id="matrixTab">
+    <div class="panel">
+      <h2>MATRIX · Canvas-Baum</h2>
+      <div class="hint">Tippen öffnet einen Kindknoten · Ziehen verschiebt · Pinch/Mausrad zoomt · Doppeltippen geht zurück.</div>
+      <canvas id="matrixCanvas" aria-label="Interaktive Knotenmatrix"></canvas>
+      <div class="row" style="margin-top:8px">
+        <button id="backBtn">← Zurück</button>
+        <button id="rootBtn">ROOT</button>
+        <button id="haltBtn">HALT AUS</button>
+      </div>
+      <div class="row">
+        <input id="gotoInput" type="number" min="1" placeholder="Knoten-ID öffnen">
+        <button id="gotoBtn">Öffnen</button>
+      </div>
+      <div class="hint">Ternärer Baum: 1.093 Knoten insgesamt, davon 729 auf Ebene 6.</div>
+    </div>
+    <div class="panel">
+      <h2>Verdichtung · Auswahl, keine automatische Zusammenfassung</h2>
+      <button class="primary" id="pipelineBtn">Pipeline-Vorschau erstellen</button>
+      <pre id="pipelineOut" class="hint">Noch nicht ausgeführt.</pre>
+    </div>
+  </section>
+
+  <section class="tab" id="editorTab">
+    <div class="panel">
+      <h2>Editor</h2>
+      <select id="formatSelect">
+        <option>PLAIN</option><option>NOTE</option><option>RULE</option><option>CODE</option>
+        <option>HTML</option><option>JS</option><option>PQ</option><option>PC</option>
+        <option>NODE</option><option>CHAIN</option><option>STORY</option><option>EXPORT</option>
+      </select>
+      <textarea id="editorText" placeholder="Text für den ausgewählten Knoten"></textarea>
+      <div class="row">
+        <button id="saveBtn">Im Knoten speichern</button>
+        <button id="appendBtn">Text ans Log anhängen</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Import / Export</h2>
+      <p class="hint">Import wird vollständig geprüft, bevor der aktuelle Zustand ersetzt wird. Export enthält Baum, Knoten und Log.</p>
+      <input id="importFile" type="file" accept="application/json,.json">
+      <div class="row">
+        <button id="importBtn">JSON importieren</button>
+        <button id="exportBtn">JSON exportieren</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab" id="searchTab">
+    <div class="panel">
+      <h2>Suche</h2>
+      <input id="searchInput" type="search" placeholder="Text, Format, Pfad oder ID">
+      <div id="searchResults"></div>
+    </div>
+  </section>
+
+  <section class="tab" id="logTab">
+    <div class="panel">
+      <h2>Log · Append-only in der Oberfläche</h2>
+      <div id="logView">Noch keine Einträge.</div>
+      <button id="logAppendBtn">Editor-Text ans Log anhängen</button>
+    </div>
+  </section>
+</main>
+
+<nav id="bottomNav" aria-label="Hauptnavigation">
+  <button class="on" data-tab="matrix">◼ Matrix</button>
+  <button data-tab="editor">✎ Editor</button>
+  <button data-tab="search">⌕ Suche</button>
+  <button data-tab="log">☰ Log</button>
+</nav>
+<div id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+const STORAGE_KEY = "NC_OS_ROOT_V1";
+const MAX_LEVEL = 6;
+const FORMATS = new Set([
+  "PLAIN","NOTE","RULE","CODE","HTML","JS","PQ","PC","NODE","CHAIN","STORY","EXPORT"
+]);
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+const $ = id => document.getElementById(id);
+
+function createNode(id, level, path) {
+  return {
+    id, level, path, title:"", text:"", format:"PLAIN",
+    reality:"VIRTUAL", life:"NONLIVING", clarity:"CLEAR",
+    children:[]
+  };
+}
+
+let nextId = 1;
+function buildTree(level=0, path="ROOT") {
+  const node = createNode(nextId++, level, path);
+  if (level < MAX_LEVEL) {
+    for (let i=1; i<=3; i++) {
+      node.children.push(buildTree(level+1, `${path}.${i}`));
+    }
+  }
+  return node;
+}
+
+function makeInitialState() {
+  nextId = 1;
+  const tree = buildTree();
+  return {
+    version:"NC.OS ROOT",
+    schemaVersion:1,
+    halt:false,
+    seek:0,
+    currentId:1,
+    path:[1],
+    viewport:{x:0,y:0,zoom:1},
+    tree,
+    log:[]
+  };
+}
+
+let state = makeInitialState();
+let registry = new Map();
+
+function rebuildRegistry(root) {
+  const map = new Map();
+  const stack = [root];
+  while (stack.length) {
+    const node = stack.pop();
+    map.set(node.id, node);
+    for (const child of node.children) stack.push(child);
+  }
+  return map;
+}
+registry = rebuildRegistry(state.tree);
+
+const canvas = $("matrixCanvas");
+const ctx = canvas.getContext("2d", {alpha:false});
+let dirty = true;
+let toastTimer;
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.style.display="none", 2600);
+}
+function requestRender() { dirty = true; }
+
+function nodeCountAtLevel(root, level) {
+  let count = 0;
+  const stack = [root];
+  while (stack.length) {
+    const node = stack.pop();
+    if (node.level === level) count++;
+    for (const c of node.children) stack.push(c);
+  }
+  return count;
+}
+function allNodes() { return [...registry.values()]; }
+
+function currentNode() { return registry.get(state.currentId); }
+
+function pathForNode(id) {
+  const node = registry.get(id);
+  if (!node) return null;
+  const ids = [];
+  let cur = node;
+  while (cur) {
+    ids.push(cur.id);
+    if (cur.id === 1) break;
+    const parentId = Math.floor((cur.id - 2) / 3) + 1;
+    cur = registry.get(parentId);
+  }
+  return ids.reverse();
+}
+function updateUI() {
+  const node = currentNode();
+  if (!node) return;
+  state.path = pathForNode(node.id) || [1];
+  $("breadcrumb").textContent = ["ROOT", ...state.path.slice(1).map(String)].join(" > ");
+  $("levelLabel").textContent = `Ebene ${node.level}`;
+  $("nodeLabel").textContent = `Knoten #${node.id}`;
+  $("haltLabel").textContent = state.halt ? "HALT AN" : "HALT AUS";
+  $("haltBtn").textContent = state.halt ? "HALT AN · fortsetzen" : "HALT AUS · anhalten";
+  $("seekLabel").textContent = state.seek;
+  $("zoomLabel").textContent = state.viewport.zoom.toFixed(2);
+  $("treeCount").textContent =
+    `Baum ${registry.size} · Ebene 6: ${nodeCountAtLevel(state.tree,6)}`;
+  if (document.activeElement !== $("editorText")) $("editorText").value = node.text || "";
+  $("formatSelect").value = node.format || "PLAIN";
+  renderLog();
+  requestRender();
+}
+
+function showTab(tab) {
+  document.querySelectorAll(".tab").forEach(el => el.classList.toggle("on", el.id === `${tab}Tab`));
+  document.querySelectorAll("#bottomNav button").forEach(el => el.classList.toggle("on", el.dataset.tab === tab));
+  if (tab === "matrix") requestAnimationFrame(resizeCanvas);
+  if (tab === "search") runSearch();
+}
+$("bottomNav").addEventListener("click", e => {
+  const button = e.target.closest("button[data-tab]");
+  if (button) showTab(button.dataset.tab);
+});
+
+function appendLog(text) {
+  state.seek++;
+  state.log.push({
+    seek:state.seek,
+    time:new Date().toISOString(),
+    text:String(text).slice(0,20000)
+  });
+  updateUI();
+  scheduleSave();
+}
+function renderLog() {
+  const entries = state.log.slice(-50);
+  $("logView").textContent = entries.length
+    ? entries.map(x => `[${x.seek}] ${x.time}\n${x.text}`).join("\n\n")
+    : "Noch keine Einträge.";
+}
+function saveCurrentNode() {
+  if (state.halt) return toast("HALT ist aktiv: Speichern gestoppt.");
+  const node = currentNode();
+  if (!node) return;
+  node.text = $("editorText").value;
+  node.format = $("formatSelect").value;
+  appendLog(`Knoten #${node.id} aktualisiert (${node.format}).`);
+  runSearch();
+}
+function appendEditorText() {
+  appendLog($("editorText").value.trim() || "(leerer Log-Eintrag)");
+}
+function toggleHalt() {
+  state.halt = !state.halt;
+  appendLog(`HALT ${state.halt ? "AN" : "AUS"}.`);
+}
+$("haltBtn").addEventListener("click", toggleHalt);
+$("saveBtn").addEventListener("click", saveCurrentNode);
+$("appendBtn").addEventListener("click", appendEditorText);
+$("logAppendBtn").addEventListener("click", appendEditorText);
+
+function enterNode(id) {
+  const node = registry.get(Number(id));
+  if (!node) return toast("Knoten nicht gefunden.");
+  state.currentId = node.id;
+  updateUI();
+  scheduleSave();
+}
+function goBack() {
+  const path = pathForNode(state.currentId);
+  if (!path || path.length < 2) return;
+  enterNode(path[path.length-2]);
+}
+function goRoot() { enterNode(1); }
+$("backBtn").addEventListener("click", goBack);
+$("rootBtn").addEventListener("click", goRoot);
+$("gotoBtn").addEventListener("click", () => $("gotoInput").value && enterNode($("gotoInput").value));
+$("gotoInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") $("gotoBtn").click();
+});
+
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  canvas.width = Math.round(rect.width * DPR);
+  canvas.height = Math.round(rect.height * DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  requestRender();
+}
+window.addEventListener("resize", resizeCanvas);
+if ("ResizeObserver" in window) new ResizeObserver(resizeCanvas).observe(canvas);
+
+function drawMatrix() {
+  const node = currentNode();
+  if (!node) return;
+  ctx.save();
+  ctx.translate(state.viewport.x, state.viewport.y);
+  ctx.scale(state.viewport.zoom, state.viewport.zoom);
+
+  const cw = canvas.clientWidth, ch = canvas.clientHeight;
+  const cell = Math.max(58, Math.min(92, (Math.min(cw,ch)-48)/3));
+  const gap = 10, grid = 3*cell+2*gap;
+  const ox = Math.max(12,(cw-grid)/2), oy = Math.max(105,(ch-grid)/2);
+  const children = node.children;
+
+  for (let i=0;i<9;i++) {
+    const row = Math.floor(i/3), col = i%3;
+    const x=ox+col*(cell+gap), y=oy+row*(cell+gap);
+    const child=children[i];
+    ctx.fillStyle=child?"#111a1e":"#101318";
+    ctx.strokeStyle=child?"#46ff88":"#37404b";
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.roundRect(x,y,cell,cell,10);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle=child?"#e6edf3":"#7e8995";
+    ctx.font="bold 17px system-ui";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(child ? String(i+1) : "·", x+cell/2, y+cell/2-8);
+    ctx.font="10px system-ui";
+    ctx.fillStyle="#9fb0c3";
+    ctx.fillText(child ? `#${child.id}` : "Ende", x+cell/2, y+cell/2+15);
+  }
+  ctx.restore();
+}
+function drawHud() {
+  ctx.fillStyle="#46ff88"; ctx.font="13px system-ui"; ctx.textAlign="left";
+  ctx.fillText(`KNOTEN #${state.currentId} · EBENE ${currentNode()?.level ?? 0}`,12,22);
+  ctx.fillStyle="#9fb0c3";
+  ctx.fillText(`${state.halt ? "HALT AN" : "HALT AUS"} · ZOOM ${state.viewport.zoom.toFixed(2)}`,12,42);
+}
+function drawMinimap() {
+  const size=94, pad=10, x=canvas.clientWidth-size-pad, y=canvas.clientHeight-size-pad;
+  ctx.fillStyle="rgba(0,0,0,.86)"; ctx.fillRect(x,y,size,size);
+  ctx.strokeStyle="#46ff88"; ctx.lineWidth=1; ctx.strokeRect(x,y,size,size);
+  ctx.fillStyle="#ffd700"; ctx.beginPath();
+  ctx.arc(x+size/2,y+size/2,4,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#9fb0c3"; ctx.font="9px system-ui"; ctx.textAlign="center";
+  ctx.fillText(`L${currentNode()?.level ?? 0}`,x+size/2,y+size-8);
+}
+function render() {
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  ctx.fillStyle="#050708"; ctx.fillRect(0,0,w,h);
+  drawMatrix(); drawHud(); drawMinimap();
+}
+function frame() {
+  if (dirty && $("matrixTab").classList.contains("on")) {
+    render(); dirty=false;
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* Touch / Maus: Pointer-Capture, ein Finger pannt; zwei Finger zoomen
+   um den Mittelpunkt des Pinchs. */
+const pointers=new Map();
+let gesture=null;
+function distance(a,b) { return Math.hypot(a.x-b.x,a.y-b.y); }
+function midpoint(a,b) { return {x:(a.x+b.x)/2,y:(a.y+b.y)/2}; }
+function zoomAt(screenX,screenY,nextZoom) {
+  const old=state.viewport.zoom;
+  const z=Math.max(0.35,Math.min(4,nextZoom));
+  state.viewport.x=screenX-(screenX-state.viewport.x)*(z/old);
+  state.viewport.y=screenY-(screenY-state.viewport.y)*(z/old);
+  state.viewport.zoom=z;
+  $("zoomLabel").textContent=z.toFixed(2);
+  requestRender();
+}
+canvas.addEventListener("pointerdown",e=>{
+  canvas.setPointerCapture(e.pointerId);
+  const r=canvas.getBoundingClientRect();
+  pointers.set(e.pointerId,{x:e.clientX-r.left,y:e.clientY-r.top,
+    startX:e.clientX-r.left,startY:e.clientY-r.top});
+  if (pointers.size===1) {
+    const p=pointers.get(e.pointerId);
+    gesture={type:"pan",id:e.pointerId,lastX:p.x,lastY:p.y,moved:false};
+  } else if (pointers.size===2) {
+    const [a,b]=[...pointers.values()];
+    gesture={type:"pinch",distance:Math.max(1,distance(a,b)),
+      zoom:state.viewport.zoom,mid:midpoint(a,b),moved:true};
+  }
+});
+canvas.addEventListener("pointermove",e=>{
+  if (!pointers.has(e.pointerId)) return;
+  const r=canvas.getBoundingClientRect();
+  pointers.set(e.pointerId,{...pointers.get(e.pointerId),x:e.clientX-r.left,y:e.clientY-r.top});
+  if (pointers.size>=2) {
+    const [a,b]=[...pointers.values()], mid=midpoint(a,b);
+    if (gesture?.type!=="pinch") {
+      gesture={type:"pinch",distance:Math.max(1,distance(a,b)),zoom:state.viewport.zoom,mid,moved:true};
+      return;
+    }
+    const ratio=distance(a,b)/gesture.distance;
+    zoomAt(mid.x,mid.y,gesture.zoom*ratio);
+    state.viewport.x += mid.x-gesture.mid.x;
+    state.viewport.y += mid.y-gesture.mid.y;
+    gesture.mid=mid;
+    gesture.moved=true;
+  } else if (gesture?.type==="pan" && gesture.id===e.pointerId) {
+    const p=pointers.get(e.pointerId);
+    const dx=p.x-gesture.lastX,dy=p.y-gesture.lastY;
+    if (Math.abs(p.x-p.startX)+Math.abs(p.y-p.startY)>6) gesture.moved=true;
+    state.viewport.x+=dx; state.viewport.y+=dy;
+    gesture.lastX=p.x; gesture.lastY=p.y;
+    requestRender();
+  }
+});
+function finishPointer(e) {
+  const p=pointers.get(e.pointerId);
+  if (p && pointers.size===1 && gesture?.type==="pan" && !gesture.moved) {
+    handleCanvasTap(p.x,p.y);
+  }
+  pointers.delete(e.pointerId);
+  if (pointers.size===1) {
+    const [id,one]=[...pointers.entries()][0];
+    gesture={type:"pan",id,lastX:one.x,lastY:one.y,startX:one.x,startY:one.y,moved:true};
+  } else if (!pointers.size) gesture=null;
+}
+canvas.addEventListener("pointerup",finishPointer);
+canvas.addEventListener("pointercancel",e=>{pointers.delete(e.pointerId); if(!pointers.size)gesture=null;});
+canvas.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect();
+  zoomAt(e.clientX-r.left,e.clientY-r.top,state.viewport.zoom*(e.deltaY<0?1.1:0.9));
+},{passive:false});
+let lastTap=0;
+canvas.addEventListener("click",e=>{
+  const now=Date.now();
+  if (now-lastTap<300) goBack();
+  lastTap=now;
+});
+function handleCanvasTap(sx,sy) {
+  const x=(sx-state.viewport.x)/state.viewport.zoom;
+  const y=(sy-state.viewport.y)/state.viewport.zoom;
+  const cw=canvas.clientWidth,ch=canvas.clientHeight;
+  const cell=Math.max(58,Math.min(92,(Math.min(cw,ch)-48)/3));
+  const gap=10,grid=3*cell+2*gap;
+  const ox=Math.max(12,(cw-grid)/2),oy=Math.max(105,(ch-grid)/2);
+  const col=Math.floor((x-ox)/(cell+gap)),row=Math.floor((y-oy)/(cell+gap));
+  if(col<0||col>2||row<0||row>2)return;
+  const lx=(x-ox)-col*(cell+gap),ly=(y-oy)-row*(cell+gap);
+  if(lx>cell||ly>cell)return;
+  const child=currentNode()?.children[row*3+col];
+  if(child) enterNode(child.id);
+}
+
+/* Suche: Ausgabe ausschließlich über DOM-Text, nicht über HTML-Interpolation. */
+function runSearch() {
+  const q=$("searchInput").value.trim().toLocaleLowerCase();
+  const results=allNodes().filter(n =>
+    `${n.id} ${n.path} ${n.format} ${n.title} ${n.text}`.toLocaleLowerCase().includes(q)
+  ).slice(0,40);
+  const root=$("searchResults");
+  root.replaceChildren();
+  if(!results.length) {
+    const div=document.createElement("div"); div.className="result";
+    div.textContent="Keine Treffer."; root.append(div); return;
+  }
+  for(const n of results) {
+    const card=document.createElement("div"); card.className="result";
+    const title=document.createElement("b"); title.textContent=`#${n.id} · Ebene ${n.level}`;
+    const path=document.createElement("div"); path.textContent=n.path;
+    const excerpt=document.createElement("div"); excerpt.className="hint";
+    excerpt.textContent=`${n.format} · ${(n.text||"").slice(0,160)}`;
+    const button=document.createElement("button"); button.textContent="Öffnen";
+    button.addEventListener("click",()=>{enterNode(n.id);showTab("matrix");});
+    card.append(title,path,excerpt,button); root.append(card);
+  }
+}
+$("searchInput").addEventListener("input",runSearch);
+
+/* Vorschau ist ausdrücklich keine semantische Zusammenfassung. */
+$("pipelineBtn").addEventListener("click",()=>{
+  const levels=[6,5,4,3,2,1,0];
+  const counts=levels.map(level=>`${nodeCountAtLevel(state.tree,level)} Knoten auf Ebene ${level}`);
+  $("pipelineOut").textContent=
+    `Baumübersicht (keine automatische Inhaltsverdichtung):\n${counts.join("\n")}`;
+  appendLog("Pipeline-/Baumübersicht erstellt.");
+});
+
+/* JSON-Schema- und Strukturvalidierung; Import übernimmt nur bekannte Felder. */
+function isPlainObject(x) {
+  return x !== null && typeof x === "object" && !Array.isArray(x);
+}
+function validateNodeTree(root) {
+  if (!isPlainObject(root)) throw new Error("tree muss ein Objekt sein.");
+  const seen=new Set(), stack=[{node:root,level:0,path:"ROOT"}];
+  let count=0;
+  while(stack.length) {
+    const {node,level,path}=stack.pop();
+    if(!isPlainObject(node)) throw new Error("Ein Knoten ist kein Objekt.");
+    if(!Number.isSafeInteger(node.id)||node.id<1) throw new Error("Ungültige Knoten-ID.");
+    if(seen.has(node.id)) throw new Error(`Doppelte Knoten-ID ${node.id}.`);
+    seen.add(node.id); count++;
+    if(node.level!==level) throw new Error(`Ebene stimmt bei Knoten ${node.id} nicht.`);
+    if(node.path!==path) throw new Error(`Pfad stimmt bei Knoten ${node.id} nicht.`);
+    if(typeof node.text!=="string"||typeof node.title!=="string") {
+      throw new Error(`Text/Titel von Knoten ${node.id} muss String sein.`);
+    }
+    if(!FORMATS.has(node.format)) throw new Error(`Ungültiges Format bei Knoten ${node.id}.`);
+    if(!Array.isArray(node.children)) throw new Error(`children von Knoten ${node.id} muss ein Array sein.`);
+    if(level===MAX_LEVEL && node.children.length!==0) throw new Error("Baum überschreitet Ebene 6.");
+    if(level<MAX_LEVEL && node.children.length!==3) throw new Error(`Knoten ${node.id} muss genau 3 Kinder besitzen.`);
+    node.children.forEach((child,i)=>stack.push({
+      node:child,level:level+1,path:`${path}.${i+1}`
+    }));
+  }
+  if(count!==1093) throw new Error(`Baumgröße ${count}; erwartet werden 1.093 Knoten.`);
+}
+function validateImport(data) {
+  if(!isPlainObject(data)) throw new Error("JSON-Wurzel muss ein Objekt sein.");
+  if(data.version!=="NC.OS ROOT") throw new Error("Unbekannte Version.");
+  if(data.schemaVersion!==1) throw new Error("Nicht unterstützte schemaVersion.");
+  if(typeof data.halt!=="boolean") throw new Error("halt muss boolean sein.");
+  if(!Number.isSafeInteger(data.seek)||data.seek<0) throw new Error("seek muss eine nichtnegative Ganzzahl sein.");
+  if(!Number.isSafeInteger(data.currentId)||data.currentId<1) throw new Error("currentId ungültig.");
+  if(!isPlainObject(data.viewport)||
+      !Number.isFinite(data.viewport.x)||!Number.isFinite(data.viewport.y)||
+      !Number.isFinite(data.viewport.zoom)||data.viewport.zoom<0.35||data.viewport.zoom>4) {
+    throw new Error("viewport ungültig.");
+  }
+  validateNodeTree(data.tree);
+  const nodes=rebuildRegistry(data.tree);
+  if(!nodes.has(data.currentId)) throw new Error("currentId existiert nicht im Baum.");
+  if(!Array.isArray(data.log)) throw new Error("log muss ein Array sein.");
+  if(data.log.length>100000) throw new Error("Log ist zu groß.");
+  let previous=0;
+  for(const entry of data.log) {
+    if(!isPlainObject(entry)||!Number.isSafeInteger(entry.seek)||entry.seek<1||
+      typeof entry.time!=="string"||typeof entry.text!=="string") {
+      throw new Error("Ungültiger Log-Eintrag.");
+    }
+    if(entry.seek<=previous) throw new Error("Log-SEEK-Werte müssen streng steigen.");
+    previous=entry.seek;
+  }
+  if(data.log.length && data.seek<data.log[data.log.length-1].seek) {
+    throw new Error("seek darf nicht kleiner als der letzte Log-Eintrag sein.");
+  }
+  return nodes;
+}
+$("importBtn").addEventListener("click",async()=>{
+  const file=$("importFile").files[0];
+  if(!file) return toast("Bitte zuerst eine JSON-Datei auswählen.");
+  if(file.size>10*1024*1024) return toast("Datei zu groß (Limit 10 MB).");
+  try {
+    const parsed=JSON.parse(await file.text());
+    const newRegistry=validateImport(parsed);
+    // Erst nach vollständiger Validierung übernehmen; nur definierte Felder.
+    state={
+      version:"NC.OS ROOT",schemaVersion:1,halt:parsed.halt,seek:parsed.seek,
+      currentId:parsed.currentId,
+      path:pathForImported(parsed.tree,parsed.currentId),
+      viewport:{x:parsed.viewport.x,y:parsed.viewport.y,zoom:parsed.viewport.zoom},
+      tree:parsed.tree,log:parsed.log
+    };
+    registry=newRegistry;
+    updateUI(); runSearch(); scheduleSave();
+    toast("Import geprüft und geladen.");
+  } catch(err) {
+    toast(`Import abgelehnt: ${err.message}`);
+  }
+});
+function pathForImported(root,id) {
+  const map=rebuildRegistry(root), node=map.get(id), ids=[];
+  let cur=node;
+  while(cur) {
+    ids.push(cur.id);
+    if(cur.id===1)break;
+    cur=map.get(Math.floor((cur.id-2)/3)+1);
+  }
+  return ids.reverse();
+}
+$("exportBtn").addEventListener("click",()=>{
+  const payload={
+    version:state.version,schemaVersion:state.schemaVersion,halt:state.halt,
+    seek:state.seek,currentId:state.currentId,viewport:state.viewport,
+    tree:state.tree,log:state.log
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="nc-os-root.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
+let saveTimer;
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try {
+      localStorage.setItem(STORAGE_KEY,JSON.stringify({
+        version:state.version,schemaVersion:state.schemaVersion,halt:state.halt,
+        seek:state.seek,currentId:state.currentId,viewport:state.viewport,
+        tree:state.tree,log:state.log
+      }));
+    } catch { toast("Lokaler Speicher nicht verfügbar oder voll."); }
+  },500);
+}
+function restore() {
+  try {
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return;
+    const data=JSON.parse(raw), map=validateImport(data);
+    state={
+      version:"NC.OS ROOT",schemaVersion:1,halt:data.halt,seek:data.seek,
+      currentId:data.currentId,path:pathForImported(data.tree,data.currentId),
+      viewport:{x:data.viewport.x,y:data.viewport.y,zoom:data.viewport.zoom},
+      tree:data.tree,log:data.log
+    };
+    registry=map;
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    toast("Lokaler Speicher war ungültig; leerer Zustand gestartet.");
+  }
+}
+$("editorText").addEventListener("input",()=>{
+  const node=currentNode();
+  if(node){node.text=$("editorText").value;scheduleSave();}
+});
+$("formatSelect").addEventListener("change",()=>{
+  const node=currentNode();
+  if(node){node.format=$("formatSelect").value;scheduleSave();}
+});
+
+restore();
+updateUI();
+runSearch();
+resizeCanvas();
+appendLog("ROOT START · mobile Canvas-Engine bereit.");
+</script>
+</body>
+</html>
