@@ -6,17 +6,19 @@ const alphaLauf = [
   { file: "2.html", name: "Steckkarten", rolle: "Noise", daten: "SLI · 42%" },
   { file: "3.html", name: "Kernel", rolle: "Centrum", daten: "MB1 · 9 CENTRUM" },
   { file: "4.html", name: "Industry Verified", rolle: "Mouth", daten: "Abmachung" },
-
-  // Index-Eintrag für dein Uni-Logbuch in 5.html
-  { file: "5.html", name: "Uni-Logbuch", rolle: "Tracker", daten: "Uni-Eingang · Arbeitsbeginn · Arbeitsende · Uni-Ausgang" },
-
+  {
+    file: "5.html",
+    name: "Uni-Logbuch",
+    rolle: "Tracker",
+    daten: "Uni-Eingang · Arbeitsbeginn · Arbeitsende · Uni-Ausgang"
+  },
   { file: "6.html", name: "Letzter Tech", rolle: "Alt", daten: "W3" },
- {
-  file: "7.html",
-  name: "NC Mobile Index",
-  rolle: "Knotenübersicht",
-  daten: "94 Knoten · 1 Root · 3 Achsen · 9 Kerne · 81 Zellen"
-},
+  {
+    file: "7.html",
+    name: "NC Mobile Index",
+    rolle: "Knotenübersicht",
+    daten: "94 Knoten · 1 Root · 3 Achsen · 9 Kerne · 81 Zellen"
+  },
   { file: "8.html", name: "Scanner", rolle: "Eye", daten: "1:1-Scan" }
 ];
 
@@ -31,7 +33,10 @@ function pruefeEintrag(eintrag) {
   );
 
   if (fehlt.length) {
-    return { ok: false, fehler: [`Fehlende Felder: ${fehlt.join(", ")}`] };
+    return {
+      ok: false,
+      fehler: [`Fehlende Felder: ${fehlt.join(", ")}`]
+    };
   }
 
   if (eintrag.file === "2.html") {
@@ -67,27 +72,29 @@ function pruefeAlphaLauf(eintraege) {
   const dateien = new Set();
 
   return eintraege.map((eintrag, index) => {
-    const p = pruefeEintrag(eintrag);
+    const pruefung = pruefeEintrag(eintrag);
     const datei = eintrag?.file;
 
-    if (p.ok && dateien.has(datei)) {
-      p.ok = false;
-      p.fehler.push(`Datei doppelt: ${datei}`);
+    if (pruefung.ok && dateien.has(datei)) {
+      pruefung.ok = false;
+      pruefung.fehler.push(`Datei doppelt: ${datei}`);
     }
 
-    if (p.ok) dateien.add(datei);
+    if (pruefung.ok) {
+      dateien.add(datei);
+    }
 
     return {
       ...eintrag,
       schritt: index + 1,
-      status: p.ok ? "BEREIT" : "FEHLER",
-      meldung: p.ok
+      status: pruefung.ok ? "BEREIT" : "FEHLER",
+      meldung: pruefung.ok
         ? datei === "2.html"
           ? "Steckkarten-Daten geprüft; SLI-Wert: 42 %."
           : datei === "5.html"
             ? "Uni-Logbuch-Eintrag geprüft."
             : "Pflichtfelder geprüft."
-        : p.fehler.join(" · ")
+        : pruefung.fehler.join(" · ")
     };
   });
 }
@@ -100,17 +107,19 @@ function begriffe(text) {
   );
 }
 
-// Vergleicht nur identische Wörter, keine Bedeutung oder Synonyme.
+// Vergleicht nur identische Wörter, keine Bedeutungen oder Synonyme.
 function kohärenz(a, b) {
   const felder = ["name", "rolle", "daten"];
   const gemeinsam = [];
 
   for (const feld of felder) {
-    const A = begriffe(a[feld] || "");
-    const B = begriffe(b[feld] || "");
+    const wörterA = begriffe(a[feld] || "");
+    const wörterB = begriffe(b[feld] || "");
 
-    for (const wort of A) {
-      if (B.has(wort)) gemeinsam.push(`${feld}: ${wort}`);
+    for (const wort of wörterA) {
+      if (wörterB.has(wort)) {
+        gemeinsam.push(`${feld}: ${wort}`);
+      }
     }
   }
 
@@ -119,8 +128,15 @@ function kohärenz(a, b) {
 
 function element(tag, text, klasse) {
   const el = document.createElement(tag);
-  if (text != null) el.textContent = text;
-  if (klasse) el.className = klasse;
+
+  if (text != null) {
+    el.textContent = text;
+  }
+
+  if (klasse) {
+    el.className = klasse;
+  }
+
   return el;
 }
 
@@ -140,38 +156,72 @@ function renderAlphaLauf(ergebnisse, ziel = document.body) {
 
   const bereit = ergebnisse.filter(e => e.status === "BEREIT").length;
   section.append(
-    element("p", `${bereit}/${ergebnisse.length} Einträge bereit · ${ergebnisse.length - bereit} fehlerhaft`)
+    element(
+      "p",
+      `${bereit}/${ergebnisse.length} Einträge bereit · ${ergebnisse.length - bereit} fehlerhaft`
+    )
   );
 
   const table = document.createElement("table");
-  table.style.cssText = "border-collapse:collapse;width:100%;font-size:12px";
+  table.style.cssText =
+    "border-collapse:collapse;width:100%;font-size:12px";
 
   const head = document.createElement("tr");
-  for (const titel of ["Schritt", "Datei", "Name", "Rolle", "Daten", "Status", "Meldung"]) {
+  const überschriften = [
+    "Schritt",
+    "Datei",
+    "Name",
+    "Rolle",
+    "Daten",
+    "Status",
+    "Meldung"
+  ];
+
+  for (const titel of überschriften) {
     const th = element("th", titel);
     th.style.cssText =
       "text-align:left;padding:6px;border-bottom:1px solid #555;color:#66ccff";
     head.append(th);
   }
+
   table.append(head);
 
   for (const e of ergebnisse) {
     const tr = document.createElement("tr");
-    const werte = [e.schritt, e.file, e.name, e.rolle, e.daten, e.status, e.meldung];
+    const werte = [
+      e.schritt,
+      e.file,
+      e.name,
+      e.rolle,
+      e.daten,
+      e.status,
+      e.meldung
+    ];
 
-    for (const wert of werte) {
-      const td = element("td", String(wert ?? ""));
+    for (const [index, wert] of werte.entries()) {
+      const td = element("td");
       td.style.cssText =
         "padding:6px;border-bottom:1px solid #29293a;vertical-align:top";
+
+      if (index === 1 && e.status === "BEREIT") {
+        const link = element("a", String(wert ?? ""));
+        link.href = e.file;
+        link.style.color = "#66ccff";
+        td.append(link);
+      } else {
+        td.textContent = String(wert ?? "");
+      }
 
       if (wert === "BEREIT") td.style.color = "#00ff88";
       if (wert === "FEHLER") td.style.color = "#ff6868";
 
       tr.append(td);
     }
+
     table.append(tr);
   }
 
+  section.append(table);
   section.append(element("h2", "KOHÄRENZSTELLEN"));
 
   const liste = document.createElement("ul");
@@ -196,7 +246,9 @@ function renderAlphaLauf(ergebnisse, ziel = document.body) {
   }
 
   if (!verbindungen) {
-    liste.append(element("li", "Keine übereinstimmenden Begriffe gefunden."));
+    liste.append(
+      element("li", "Keine übereinstimmenden Begriffe gefunden.")
+    );
   }
 
   section.append(liste);
