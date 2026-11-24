@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050805">
+  <title>NC.OS · ID</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050805;
+      --panel: #0b120d;
+      --line: #294832;
+      --green: #4ade80;
+      --gold: #ffd700;
+      --text: #e1ebe3;
+      --muted: #9aaa9e;
+      --red: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.5 system-ui, sans-serif;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: max(14px, env(safe-area-inset-top)) 16px 12px;
+      background: #050805ed;
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-size: 18px;
+    }
+
+    main {
+      width: min(100%, 760px);
+      margin: auto;
+      padding: 16px 14px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .card {
+      margin-bottom: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .val {
+      margin: 4px 0 0;
+      font-size: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .mono { font-family: ui-monospace, Consolas, monospace; }
+    .green { color: var(--green); font-weight: 700; }
+    .gold { color: var(--gold); font-weight: 700; }
+    .red { color: var(--red); font-weight: 700; }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .row:last-of-type { border-bottom: 0; }
+
+    button {
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #102016;
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:hover { border-color: var(--green); }
+
+    input {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    a { color: var(--green); }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>NC.OS · ID</h1>
+    <p class="small" style="margin:4px 0 0">Keine Geräte-ID. Kein Tracking. Nur diese Seite.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="label">SESSION-ID · TEMPORÄR</div>
+      <p class="val mono" id="sid">—</p>
+      <p class="small">
+        Die ID liegt nur im Arbeitsspeicher dieser Seite. Sie wird nicht gespeichert
+        oder gesendet. Beim Neuladen oder Schließen geht sie verloren.
+      </p>
+      <div class="buttons">
+        <button id="neu" type="button">Neue Session-ID</button>
+        <button id="kill" type="button">Session beenden</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="label">STATUS</div>
+      <div class="row"><span>PRIV</span><span id="priv" class="green">AN</span></div>
+      <div class="row"><span>ANONYM</span><span id="anon" class="green">AN</span></div>
+      <div class="row"><span>18+</span><span id="adult" class="red">FAIL · CLOSED</span></div>
+
+      <p class="small">
+        PRIV und ANONYM sind lokale Anzeigen-Schalter, keine technischen
+        Datenschutzgarantien. 18+ bleibt FAIL · CLOSED: Diese Datei prüft keine
+        Verifier-Token und bestätigt kein Alter.
+      </p>
+
+      <div class="buttons">
+        <button id="tPriv" type="button">PRIV umschalten</button>
+        <button id="tAnon" type="button">ANONYM umschalten</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="label">AUTH · LOKAL</div>
+      <p class="small">
+        Demo-Schalter: KEY mit mindestens 8 Zeichen, nur im Arbeitsspeicher.
+        Läuft nach einer Stunde ab. Das ist keine echte Zugangskontrolle und
+        schützt keine weiteren Funktionen oder Daten.
+      </p>
+      <input id="key" type="password" placeholder="KEY · mindestens 8 Zeichen"
+             autocomplete="off">
+      <div class="buttons">
+        <button id="auth" type="button">AUTH setzen</button>
+        <button id="logout" type="button">AUTH lösen</button>
+      </div>
+      <p class="small" id="authMsg" aria-live="polite">AUTH: AUS</p>
+    </section>
+
+    <section class="card">
+      <div class="label">NAVIGATION</div>
+      <p class="small">
+        <a href="index.html">← Zurück zu Master Mobile</a>
+        · <a href="6.html">CORE · NEU</a>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    const $ = id => document.getElementById(id);
+
+    let sid = "";
+    let priv = true;
+    let anon = true;
+    let tmpKey = null;
+    let tmpBis = 0;
+    let expiryTimer = null;
+
+    function neueId() {
+      const bytes = new Uint8Array(12);
+
+      if (globalThis.crypto?.getRandomValues) {
+        crypto.getRandomValues(bytes);
+      } else {
+        for (let i = 0; i < bytes.length; i++) {
+          bytes[i] = Math.floor(Math.random() * 256);
+        }
+      }
+
+      return "NC-" + Array.from(bytes, b =>
+        b.toString(16).padStart(2, "0")
+      ).join("").toUpperCase();
+    }
+
+    function render() {
+      $("sid").textContent = sid || "— BEENDET —";
+
+      $("priv").textContent = priv ? "AN" : "AUS";
+      $("priv").className = priv ? "green" : "red";
+
+      $("anon").textContent = anon ? "AN" : "AUS";
+      $("anon").className = anon ? "green" : "red";
+
+      // Ohne externe, echte Verifikation immer geschlossen.
+      $("adult").textContent = "FAIL · CLOSED";
+      $("adult").className = "red";
+
+      const authAktiv = Boolean(tmpKey) && Date.now() < tmpBis;
+      $("authMsg").textContent = authAktiv
+        ? "AUTH: AN · TMP bis " + new Date(tmpBis).toLocaleTimeString("de-DE")
+        : "AUTH: AUS";
+    }
+
+    function authAblaufen() {
+      tmpKey = null;
+      tmpBis = 0;
+      expiryTimer = null;
+      render();
+    }
+
+    $("neu").addEventListener("click", () => {
+      sid = neueId();
+      render();
+    });
+
+    $("kill").addEventListener("click", () => {
+      sid = "";
+      tmpKey = null;
+      tmpBis = 0;
+
+      if (expiryTimer !== null) {
+        clearTimeout(expiryTimer);
+        expiryTimer = null;
+      }
+
+      $("key").value = "";
+      render();
+    });
+
+    $("tPriv").addEventListener("click", () => {
+      priv = !priv;
+      render();
+    });
+
+    $("tAnon").addEventListener("click", () => {
+      anon = !anon;
+      render();
+    });
+
+    $("auth").addEventListener("click", () => {
+      const key = $("key").value;
+      $("key").value = "";
+
+      if (key.length < 8) {
+        $("authMsg").textContent = "KEY zu kurz. Mindestens 8 Zeichen.";
+        return;
+      }
+
+      if (expiryTimer !== null) clearTimeout(expiryTimer);
+
+      tmpKey = key;
+      tmpBis = Date.now() + 60 * 60 * 1000;
+      expiryTimer = setTimeout(authAblaufen, 60 * 60 * 1000);
+      render();
+    });
+
+    $("logout").addEventListener("click", () => {
+      if (expiryTimer !== null) {
+        clearTimeout(expiryTimer);
+        expiryTimer = null;
+      }
+
+      tmpKey = null;
+      tmpBis = 0;
+      render();
+    });
+
+    sid = neueId();
+    render();
+  </script>
+</body>
+</html>
