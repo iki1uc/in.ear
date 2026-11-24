@@ -1,332 +1,361 @@
-<!DOCTYPE html>
-<html lang="de" data-theme="dark">
+<!doctype html>
+<html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NC.OS · PY-Batches + Kompetenz</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NC.OS · 6 · GRUNDLAGEN</title>
 <style>
 :root{color-scheme:dark;--bg:#070f16;--card:#0d1822;--fg:#e6edf7;--muted:#8aa0b4;--ok:#4ade80;--bad:#f87171;--warn:#f59e0b;--line:#1f3444;--accent:#c9ff2e}
-:root[data-theme="light"]{color-scheme:light;--bg:#f4f7fa;--card:#fff;--fg:#10202e;--muted:#5b6f80;--ok:#15803d;--bad:#b91c1c;--warn:#b45309;--line:#cfd9e2;--accent:#4d7c0f}
 *{box-sizing:border-box}
-body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font-family:Consolas,monospace}
-.wrap{max-width:900px;margin:0 auto}
-h1{font-size:16px;letter-spacing:2px;margin:0 0 4px}
-h2{font-size:13px;letter-spacing:2px;color:var(--muted);margin:0 0 10px}
-.sub{color:var(--muted);margin:0 0 12px;font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
-.controls{display:flex;gap:8px;flex-wrap:wrap}
-button{min-height:40px;padding:8px 16px;border:1px solid var(--ok);border-radius:6px;background:var(--card);color:var(--ok);font:inherit;cursor:pointer}
-button:hover:not(:disabled){background:var(--ok);color:var(--bg)}
-button:disabled{opacity:.4;cursor:not-allowed}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--warn);outline-offset:3px}
-button.chip{border-color:var(--line);color:var(--muted)}
-button.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:transparent}
-.muted{color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.stat{border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
-.stat b{display:block;font-size:24px}
-.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
-.cell{border:1px solid var(--line);border-radius:6px;padding:6px 0;text-align:center;font-size:12px;cursor:default}
-.cell.daneben{cursor:pointer}
-.cell.treffer{background:var(--ok);color:var(--bg);border-color:var(--ok)}
-.cell.daneben{background:var(--bad);color:var(--bg);border-color:var(--bad)}
-.cell.korrigiert{background:var(--warn);color:var(--bg);border-color:var(--warn)}
-#output{min-height:100px;max-height:220px;overflow:auto;white-space:pre-wrap;font-size:13px}
-ul{margin:6px 0 0;padding-left:20px}
-li.fixed{color:var(--warn)}
-li.err{color:var(--bad)}
-.row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0}
-.ok{color:var(--ok)}
-.bad{color:var(--bad)}
-.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.filters{display:flex;flex-wrap:wrap;gap:6px}
-.search,.add-name,.add-cat{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit}
-.search{width:min(100%,260px)}
-.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.kcard{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
-.kcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.kcard h3{margin:10px 0 4px;font-size:14px}
-.kcard p{margin:0;color:var(--muted);font-size:12px}
-.rank{color:var(--accent);font-weight:700;font-size:12px}
-.bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
-.addform{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.empty{display:none;padding:20px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);text-align:center}
-@media(max-width:560px){.controls{flex-direction:column}button{width:100%;min-height:48px}.stats{grid-template-columns:repeat(2,1fr)}.kgrid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(4,1fr)}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:14px Consolas,monospace}
+.wrap{max-width:720px;margin:auto}
+h1{font-size:16px;letter-spacing:1px;margin:0 0 6px}
+.muted{color:var(--muted);font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+button,input,select{font:inherit}
+button{padding:8px 14px;border:1px solid var(--ok);border-radius:6px;background:var(--card);color:var(--ok);cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+input,select{padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stat{border:1px solid var(--line);border-radius:7px;padding:8px;text-align:center}
+.stat span{color:var(--muted);font-size:11px}
+.stat b{display:block;font-size:20px;margin-top:3px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+.cell{padding:7px 2px;border:1px solid var(--line);border-radius:5px;font-size:12px}
+.cell.daneben{background:var(--bad);color:#070f16;cursor:pointer}
+.cell.treffer{background:var(--ok);color:#070f16}
+.cell.korrigiert{background:var(--warn);color:#070f16}
+.cell:disabled{opacity:1}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);font-size:12px}
+.bar{width:120px;height:6px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.elo-fields{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.elo-fields label{font-size:12px;color:var(--muted)}
+.elo-fields input{width:90px}
+.log{max-height:120px;overflow:auto;white-space:pre-wrap;font-size:12px;line-height:1.5}
+canvas{display:block;width:100%;max-width:280px;height:auto;margin:auto}
+@media(max-width:560px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:repeat(4,1fr)}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-<h1>NC.OS · PY-BATCHES + KOMPETENZ</h1>
-<p class="sub">3 × 7 = 21 PY · Treffer füttern den RANG der Kategorie · Kompetenzen erweiterbar</p>
+<main class="wrap">
+  <h1>NC.OS · 6 · GRUNDLAGEN</h1>
+  <p class="muted">Einfach. Nur Regeln, die gelten.</p>
 
-<div class="card">
-<div class="controls">
-<button id="boot" data-testid="boot-btn" type="button">BOOT</button>
-<button id="halt" data-testid="halt-btn" type="button" disabled>HALT</button>
-<button id="theme" data-testid="theme-btn" type="button">THEME</button>
-</div>
-</div>
+  <section class="card" aria-label="Regeln">
+    <b>REGELN</b>
+    <div class="muted">
+      <div>1. XP: +1 pro Treffer, +1 pro Klick auf Daneben.</div>
+      <div>2. Level = ⌊XP ÷ 4⌋, maximal Level 5.</div>
+      <div>3. BOOT setzt PY und XP zurück. Elo bleibt erhalten.</div>
+      <div>4. Batch 3 bleibt offen, bis Treffer festgelegt sind.</div>
+      <div>5. Elo ist getrennt und ändert nie XP.</div>
+    </div>
+  </section>
 
-<div class="card">
-<div class="stats">
-<div class="stat"><span class="muted">TREFFER</span><b id="s-treffer">0</b></div>
-<div class="stat"><span class="muted">DANEBEN</span><b id="s-daneben">0</b></div>
-<div class="stat"><span class="muted">OFFEN</span><b id="s-offen">21</b></div>
-<div class="stat"><span class="muted">BATCH</span><b id="s-batch">–</b></div>
-<div class="stat"><span class="muted">RANG Σ</span><b id="s-rang">0</b></div>
-</div>
-<div class="grid" id="grid"></div>
-<p class="muted" style="font-size:12px">DANEBEN-Zelle anklicken = TARGETEER: korrigiert sie und gibt +1 XP an ihre Kategorie.</p>
-</div>
+  <section class="card">
+    <button id="boot" type="button">BOOT</button>
+    <button id="halt" type="button" disabled>HALT</button>
+    <span class="muted">Auto-Start beim Öffnen.</span>
+  </section>
 
-<div class="card">
-<h2>KOMPETENZEN · RANG WÄCHST MIT TREFFERN</h2>
-<div class="toolbar">
-<div class="filters" role="group" aria-label="Nach Kategorie filtern">
-<button class="chip" type="button" data-filter="Alle" aria-pressed="true">Alle</button>
-<button class="chip" type="button" data-filter="Technik" aria-pressed="false">Technik</button>
-<button class="chip" type="button" data-filter="Kreativ" aria-pressed="false">Kreativ</button>
-<button class="chip" type="button" data-filter="Zusammenarbeit" aria-pressed="false">Zusammenarbeit</button>
-</div>
-<input class="search" id="search" type="search" placeholder="Kompetenz suchen …">
-</div>
-<p class="muted" id="summary" aria-live="polite"></p>
-<div class="kgrid" id="kgrid"></div>
-<p class="empty" id="empty">Keine passenden Kompetenzen gefunden.</p>
-<form class="addform" id="addform">
-<input class="add-name" id="add-name" maxlength="60" placeholder="Neue Kompetenz, z. B. Logik" required>
-<select class="add-cat" id="add-cat">
-<option>Technik</option><option>Kreativ</option><option>Zusammenarbeit</option>
-</select>
-<button type="submit">＋ Kompetenz erweitern</button>
-</form>
-</div>
+  <section class="card">
+    <div class="stats" aria-live="polite">
+      <div class="stat"><span>TREFFER</span><b id="s-t">0</b></div>
+      <div class="stat"><span>DANEBEN</span><b id="s-d">0</b></div>
+      <div class="stat"><span>OFFEN</span><b id="s-o">21</b></div>
+      <div class="stat"><span>BATCH</span><b id="s-b">–</b></div>
+      <div class="stat"><span>LEVEL Σ</span><b id="s-l">0</b></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="muted">Daneben anklicken = +1 XP.</p>
+  </section>
 
-<div class="card"><div id="output" role="status" aria-live="polite"><span class="muted">System bereit. BOOT drücken.</span></div></div>
+  <section class="card">
+    <b>LEVEL</b>
+    <div id="levels"></div>
+  </section>
 
-<div class="card"><b>Fehlerliste</b><ul id="errs"><li class="muted">noch keine</li></ul></div>
+  <section class="card">
+    <b>ELO</b>
+    <div class="elo-fields" style="margin-top:10px">
+      <label for="elo-me">Eigene</label>
+      <input id="elo-me" type="number" min="100" max="3000" step="0.1">
+      <label for="elo-opp">Gegner</label>
+      <input id="elo-opp" type="number" min="100" max="3000" step="1" value="1200">
+      <label for="elo-k">K</label>
+      <select id="elo-k">
+        <option value="10">10</option><option value="20">20</option>
+        <option value="32" selected>32</option><option value="40">40</option>
+      </select>
+      <select id="elo-result" aria-label="Partieergebnis">
+        <option value="1">Sieg</option>
+        <option value="0.5">Remis</option>
+        <option value="0">Niederlage</option>
+      </select>
+      <button id="elo-go" type="button">WERTEN</button>
+    </div>
+    <p class="muted" id="elo-out" aria-live="polite"></p>
+    <p class="muted">E = 1 / (1 + 10<sup>((Gegner − Du)/400)</sup>) · Rneu = Ralt + K × (Ergebnis − E)</p>
+  </section>
 
-<div class="card"><b>729-Testkarte</b><span class="muted"> (Verdichtung 729 → 81 → 9 → 3 → 1)</span><div id="t729"></div></div>
-</div>
+  <section class="card">
+    <b>RADAR · 3 ACHSEN</b>
+    <canvas id="radar" width="280" height="280" aria-label="Radar für Technik, Kreativität und Zusammenarbeit"></canvas>
+    <p class="muted" id="radar-t" style="text-align:center"></p>
+  </section>
+
+  <section class="card">
+    <b>LOG</b>
+    <div class="log" id="out" aria-live="polite"></div>
+  </section>
+
+  <section class="card">
+    <b>729</b>
+    <div id="t729"></div>
+  </section>
+</main>
 
 <script>
 "use strict";
+
 const $ = id => document.getElementById(id);
-const FAST = new URLSearchParams(location.search).get("fast") === "1";
-const DELAY = FAST ? 5 : 350;
-
-/* Batches: B1 → Technik, B2 → Kreativ, B3 → Zusammenarbeit (bleibt offen, wie im Original). */
-const BATCHES = [
-  { n: 1, cat: "Technik", treffer: [2,4,5,7], daneben: [1,3,6], korrigieren: false },
-  { n: 2, cat: "Kreativ", treffer: [10,11,13,14], daneben: [8,9,12], korrigieren: true },
-  { n: 3, cat: "Zusammenarbeit", treffer: [], daneben: [], korrigieren: false }
+const categories = ["Technik", "Kreativ", "Zusammenarbeit"];
+const batches = [
+  {number:1, category:"Technik", hits:[2,4,5,7]},
+  {number:2, category:"Kreativ", hits:[10,11,13,14]},
+  {number:3, category:"Zusammenarbeit", hits:null}
 ];
-const BATCH_OF = {};
-BATCHES.forEach(b => { for (let i = 1; i <= 7; i++) BATCH_OF[(b.n - 1) * 7 + i] = b; });
-
 const py = Array(21).fill("offen");
-const cats = { Technik: { xp: 0 }, Kreativ: { xp: 0 }, Zusammenarbeit: { xp: 0 } };
-const rankOf = cat => Math.min(5, Math.floor(cats[cat].xp / 4));
-const rankSum = () => Object.keys(cats).reduce((s, c) => s + rankOf(c), 0);
+const xp = {Technik:0, Kreativ:0, Zusammenarbeit:0};
+const batchByPy = {};
 
-const competencies = [
-  { name: "Webentwicklung", category: "Technik", level: "Fortgeschritten", icon: "⌘", description: "Responsive Oberflächen und moderne Web-Erlebnisse umsetzen." },
-  { name: "Künstliche Intelligenz", category: "Technik", level: "Praxiswissen", icon: "✳", description: "KI-Werkzeuge sinnvoll in Arbeitsabläufe integrieren." },
-  { name: "Datenanalyse", category: "Technik", level: "Mittelstufe", icon: "⌁", description: "Daten strukturieren, Muster erkennen und Ergebnisse vermitteln." },
-  { name: "Visuelles Design", category: "Kreativ", level: "Fortgeschritten", icon: "◈", description: "Klare visuelle Systeme und konsistente Benutzeroberflächen gestalten." },
-  { name: "Konzeption", category: "Kreativ", level: "Fortgeschritten", icon: "✎", description: "Ideen in verständliche Konzepte und umsetzbare Schritte verwandeln." },
-  { name: "Kommunikation", category: "Zusammenarbeit", level: "Stark", icon: "↗", description: "Komplexe Themen verständlich und zielgruppengerecht erklären." },
-  { name: "Teamarbeit", category: "Zusammenarbeit", level: "Stark", icon: "◎", description: "Gemeinsam an Lösungen arbeiten und Wissen teilen." },
-  { name: "Projektplanung", category: "Zusammenarbeit", level: "Praxiswissen", icon: "◷", description: "Aufgaben priorisieren, strukturieren und verlässlich koordinieren." },
-  { name: "Problemlösung", category: "Technik", level: "Stark", icon: "⌕", description: "Ursachen erkennen und pragmatische Lösungen entwickeln." }
-];
-
-let timer = null, running = false, runId = 0, activeCategory = "Alle";
-const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-function gainXP(cat, amount, why) {
-  const before = rankOf(cat);
-  cats[cat].xp += amount;
-  const after = rankOf(cat);
-  log("  RANG " + cat + ": +" + amount + " XP (" + why + ") → XP " + cats[cat].xp + " · RANG " + after + "/5");
-  if (after > before) log("  ★ " + cat + " steigt auf RANG " + after + "!");
+for (const batch of batches) {
+  for (let i=1; i<=7; i++) batchByPy[(batch.number-1)*7+i] = batch;
 }
 
-function render() {
-  const count = state => py.filter(v => v === state).length;
-  $("s-treffer").textContent = count("treffer") + count("korrigiert");
-  $("s-daneben").textContent = count("daneben");
-  $("s-offen").textContent = count("offen");
-  $("s-rang").textContent = rankSum();
-  $("grid").innerHTML = py.map((state, i) =>
-    "<div class=\"cell " + state + "\" data-py=\"" + (i + 1) + "\">PY " + (i + 1) + "</div>"
-  ).join("");
-  const errors = py.map((state, i) => {
-    if (state === "daneben") return "<li class=\"err\">PY " + (i + 1) + " — DANEBEN</li>";
-    if (state === "korrigiert") return "<li class=\"fixed\">PY " + (i + 1) + " — DANEBEN → TARGETEER → TREFFER</li>";
-    return "";
-  }).join("");
-  $("errs").innerHTML = errors || "<li class=\"muted\">noch keine</li>";
-  renderK();
-}
+const level = category => Math.min(5, Math.floor(xp[category]/4));
+const levelSum = () => categories.reduce((sum, category) => sum+level(category), 0);
 
-function renderK() {
-  const query = $("search").value.trim().toLocaleLowerCase("de");
-  const visible = competencies.filter(item => {
-    const matchesCat = activeCategory === "Alle" || item.category === activeCategory;
-    const matchesSearch = (item.name + " " + item.category + " " + item.description).toLocaleLowerCase("de").includes(query);
-    return matchesCat && matchesSearch;
-  });
-  $("kgrid").innerHTML = visible.map(item => {
-    const r = rankOf(item.category), xp = cats[item.category].xp;
-    return "<article class=\"kcard\"><div class=\"top\"><span aria-hidden=\"true\">" + esc(item.icon) +
-      "</span><span class=\"rank\">RANG " + r + "/5</span></div><h3>" + esc(item.name) +
-      "</h3><p>" + esc(item.description) + "</p><p>" + esc(item.category) + " · " + esc(item.level) +
-      " · " + xp + " XP</p><div class=\"bar\"><i style=\"width:" + ((xp % 4) / 4 * 100) + "%\"></i></div></article>";
-  }).join("");
-  $("summary").textContent = visible.length + (visible.length === 1 ? " Kompetenz" : " Kompetenzen") +
-    " angezeigt · RANG Σ " + rankSum() + " · Technik " + rankOf("Technik") + " / Kreativ " + rankOf("Kreativ") +
-    " / Zusammenarbeit " + rankOf("Zusammenarbeit");
-  $("empty").style.display = visible.length ? "none" : "block";
-}
+let elo = {rating:1200, games:0};
+try {
+  const saved = JSON.parse(localStorage.getItem("ncos-elo"));
+  if (saved && Number.isFinite(saved.rating) && Number.isInteger(saved.games)
+      && saved.rating >= 100 && saved.rating <= 3000 && saved.games >= 0) {
+    elo = saved;
+  }
+} catch {}
 
-function log(text) {
-  const output = $("output");
-  if (output.dataset.fresh !== "0") { output.textContent = ""; output.dataset.fresh = "0"; }
-  output.textContent += text + "\n";
+let timer = null;
+let running = false;
+let runId = 0;
+
+function log(message) {
+  const output = $("out");
+  output.textContent += message + "\n";
   output.scrollTop = output.scrollHeight;
 }
 
-function setRunning(value) {
-  running = value;
-  $("boot").disabled = value;
-  $("halt").disabled = !value;
+function awardXP(category, reason) {
+  const oldLevel = level(category);
+  xp[category]++;
+  log(`+1 XP · ${category} · ${reason} · ${xp[category]} XP · Level ${level(category)}/5`);
+  if (level(category) > oldLevel) log(`LEVEL-UP · ${category} → ${level(category)}`);
 }
 
-function finish() {
-  clearTimeout(timer);
-  timer = null;
-  setRunning(false);
+function render() {
+  const count = status => py.filter(value => value === status).length;
+  $("s-t").textContent = count("treffer") + count("korrigiert");
+  $("s-d").textContent = count("daneben");
+  $("s-o").textContent = count("offen");
+  $("s-l").textContent = levelSum();
+
+  $("grid").innerHTML = py.map((status, index) =>
+    `<button type="button" class="cell ${status}" data-py="${index+1}" ${status === "daneben" ? "" : "disabled"}>PY ${index+1}</button>`
+  ).join("");
+
+  $("levels").innerHTML = categories.map(category => {
+    const points = xp[category];
+    const currentLevel = level(category);
+    const progress = currentLevel >= 5 ? 100 : (points % 4) * 25;
+    return `<div class="row"><span>${category} · ${points} XP · Level ${currentLevel}/5</span><span class="bar"><i style="width:${progress}%"></i></span></div>`;
+  }).join("");
+
+  drawRadar();
+}
+
+function drawRadar() {
+  const canvas = $("radar");
+  const ctx = canvas.getContext("2d");
+  const center = 140, radius = 88;
+  const values = categories.map(category => level(category) * 2);
+  const angles = values.map((_, i) => -Math.PI/2 + i*2*Math.PI/3);
+
+  ctx.clearRect(0, 0, 280, 280);
+  ctx.strokeStyle = "#1f3444";
+  for (let ring=1; ring<=5; ring++) {
+    ctx.beginPath();
+    angles.forEach((angle, i) => {
+      const r = radius * ring / 5;
+      const x = center + Math.cos(angle)*r;
+      const y = center + Math.sin(angle)*r;
+      i ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+    });
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  values.forEach((value, i) => {
+    const r = radius * value / 10;
+    const x = center + Math.cos(angles[i])*r;
+    const y = center + Math.sin(angles[i])*r;
+    i ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = "rgba(201,255,46,.2)";
+  ctx.fill();
+  ctx.strokeStyle = "#c9ff2e";
+  ctx.stroke();
+
+  ctx.fillStyle = "#e6edf7";
+  ctx.font = "11px Consolas";
+  ctx.textAlign = "center";
+  categories.forEach((category, i) => {
+    ctx.fillText(category, center + Math.cos(angles[i])*116, center + Math.sin(angles[i])*116);
+  });
+
+  $("radar-t").textContent = categories
+    .map((category, i) => `${category} ${values[i]}/10`).join(" · ");
+}
+
+function finishRun() {
+  running = false;
+  $("boot").disabled = false;
+  $("halt").disabled = true;
 }
 
 function boot() {
   clearTimeout(timer);
-  runId++;
-  const thisRun = runId;
+  const thisRun = ++runId;
   py.fill("offen");
-  Object.keys(cats).forEach(c => cats[c].xp = 0);
-  $("output").dataset.fresh = "1";
-  $("s-batch").textContent = "–";
+  for (const category of categories) xp[category] = 0;
+
+  $("out").textContent = "";
+  $("s-b").textContent = "–";
   render();
-  setRunning(true);
+  running = true;
+  $("boot").disabled = true;
+  $("halt").disabled = false;
+  log(`BOOT · PY + XP zurück · Elo bleibt: ${elo.rating.toFixed(1)}`);
+
   const steps = [];
-  BATCHES.forEach(batch => {
-    steps.push(() => { $("s-batch").textContent = batch.n; log("BATCH " + batch.n + " — 7 PY · " + batch.cat); });
-    for (let offset = 1; offset <= 7; offset++) {
-      const index = (batch.n - 1) * 7 + offset;
+  for (const batch of batches) {
+    steps.push(() => {
+      $("s-b").textContent = String(batch.number);
+      log(`BATCH ${batch.number} · ${batch.category}`);
+    });
+
+    for (let offset=1; offset<=7; offset++) {
+      const index = (batch.number-1)*7 + offset;
       steps.push(() => {
-        if (!batch.treffer.length) { log("  PY " + index + ": offen (Batch 3 wartet)"); return; }
-        const hit = batch.treffer.includes(index);
-        py[index - 1] = hit ? "treffer" : "daneben";
-        log("  PY " + index + ": " + (hit ? "TREFFER" : "DANEBEN"));
+        if (batch.hits === null) {
+          log(`PY ${index} · OFFEN`);
+          return;
+        }
+        const hit = batch.hits.includes(index);
+        py[index-1] = hit ? "treffer" : "daneben";
+        if (hit) {
+          log(`PY ${index} · TREFFER`);
+          awardXP(batch.category, `PY ${index}`);
+        } else {
+          log(`PY ${index} · DANEBEN · Klick = +1 XP`);
+        }
         render();
       });
     }
-    if (batch.korrigieren) {
-      steps.push(() => {
-        batch.daneben.forEach(index => { py[index - 1] = "korrigiert"; });
-        log("  TARGETEER → 7/7 TREFFER");
-        gainXP(batch.cat, 7, "Batch " + batch.n + " korrigiert");
-        render();
-      });
-    } else if (batch.treffer.length) {
-      steps.push(() => {
-        log("  = 4 TREFFER · 3 DANEBEN");
-        gainXP(batch.cat, 4, "Batch " + batch.n);
-        render();
-      });
-    }
+  }
+
+  steps.push(() => {
+    $("s-b").textContent = "3 · OFFEN";
+    log("Batch 3 offen · Treffer noch nicht festgelegt.");
   });
-  steps.push(() => { $("s-batch").textContent = "3"; log("BATCH 3 — 7 PY\n  Status: noch offen"); });
-  steps.push(() => { log("21 PY · 1 KETTE · HALT = ZIEL"); finish(); });
-  let index = 0;
-  (function next() {
+
+  let step = 0;
+  function next() {
     if (!running || thisRun !== runId) return;
-    if (index >= steps.length) { finish(); return; }
-    steps[index++]();
-    if (running && thisRun === runId) timer = setTimeout(next, DELAY);
-  })();
+    if (step >= steps.length) {
+      log("Fertig.");
+      finishRun();
+      return;
+    }
+    steps[step++]();
+    if (running) timer = setTimeout(next, 300);
+  }
+  next();
 }
 
-function halt() {
-  if (!running) return;
-  clearTimeout(timer);
-  timer = null;
-  runId++;
-  setRunning(false);
-  log("HALT. Stand eingefroren. HALT = ZIEL");
-}
+$("grid").addEventListener("click", event => {
+  const button = event.target.closest("[data-py]");
+  if (!button) return;
 
-/* TARGETEER per Klick: DANEBEN → korrigiert, +1 XP an die Batch-Kategorie. */
-$("grid").addEventListener("click", e => {
-  const cell = e.target.closest("[data-py]");
-  if (!cell) return;
-  const index = Number(cell.dataset.py);
-  if (py[index - 1] !== "daneben") return;
-  py[index - 1] = "korrigiert";
-  const batch = BATCH_OF[index];
-  log("TARGETEER · PY " + index + " korrigiert");
-  gainXP(batch.cat, 1, "PY " + index + " per Klick");
+  const index = Number(button.dataset.py);
+  if (py[index-1] !== "daneben") return;
+
+  py[index-1] = "korrigiert";
+  const batch = batchByPy[index];
+  log(`KORRIGIERT · PY ${index} · +1 XP`);
+  awardXP(batch.category, `PY ${index} Klick`);
   render();
 });
 
 $("boot").addEventListener("click", boot);
-$("halt").addEventListener("click", halt);
+$("halt").addEventListener("click", () => {
+  clearTimeout(timer);
+  runId++;
+  finishRun();
+  log("HALT.");
+});
 
-document.querySelectorAll("[data-filter]").forEach(b => b.addEventListener("click", () => {
-  activeCategory = b.dataset.filter;
-  document.querySelectorAll("[data-filter]").forEach(f => f.setAttribute("aria-pressed", String(f === b)));
-  renderK();
-}));
-$("search").addEventListener("input", renderK);
-$("addform").addEventListener("submit", e => {
-  e.preventDefault();
-  const name = $("add-name").value.trim();
-  if (!name) return;
-  const category = $("add-cat").value;
-  if (competencies.some(c => c.name.toLocaleLowerCase("de") === name.toLocaleLowerCase("de"))) {
-    log("Kompetenz gibt es schon: " + name);
+function saveElo() {
+  $("elo-me").value = elo.rating.toFixed(1);
+  $("elo-out").textContent = `Stand ${elo.rating.toFixed(1)} · ${elo.games} Partie(n).`;
+}
+
+$("elo-go").addEventListener("click", () => {
+  const current = Number($("elo-me").value);
+  const opponent = Number($("elo-opp").value);
+  const k = Number($("elo-k").value);
+  const result = Number($("elo-result").value);
+
+  if (!Number.isFinite(current) || current < 100 || current > 3000 ||
+      !Number.isFinite(opponent) || opponent < 100 || opponent > 3000) {
+    $("elo-out").textContent = "Bitte Elo-Werte zwischen 100 und 3000 eingeben.";
     return;
   }
-  competencies.push({ name, category, level: "Neu", icon: "✦", description: "Neu hinzugefügt — wächst mit den Treffern ihrer Kategorie." });
-  $("add-name").value = "";
-  log("Kompetenz erweitert: " + name + " → " + category);
-  renderK();
+
+  const expected = 1 / (1 + 10 ** ((opponent-current)/400));
+  const change = k * (result-expected);
+  elo = {rating:current+change, games:elo.games+1};
+
+  try { localStorage.setItem("ncos-elo", JSON.stringify(elo)); } catch {}
+  saveElo();
+  $("elo-out").textContent += ` · E=${expected.toFixed(3)} · ${change >= 0 ? "+" : ""}${change.toFixed(1)} · XP unverändert.`;
+  log(`ELO · ${elo.rating.toFixed(1)} · ${elo.games} Partie(n)`);
 });
 
-const root = document.documentElement;
-try {
-  const savedTheme = localStorage.getItem("ncos-theme");
-  if (savedTheme === "dark" || savedTheme === "light") root.dataset.theme = savedTheme;
-  else if (window.matchMedia("(prefers-color-scheme: light)").matches) root.dataset.theme = "light";
-} catch {}
-$("theme").addEventListener("click", () => {
-  const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
-  root.dataset.theme = nextTheme;
-  try { localStorage.setItem("ncos-theme", nextTheme); } catch {}
-});
-
-const tests = [[729, 9, 81], [81, 9, 9], [9, 3, 3], [3, 3, 1]];
-$("t729").innerHTML = tests.map(([a, b, c]) => {
-  const valid = a / b === c;
-  return "<div class=\"row\"><span>" + a + " ÷ " + b + " = " + c + "</span><span class=\"" + (valid ? "ok" : "bad") + "\">" + (valid ? "✓" : "✗") + "</span></div>";
-}).join("") + (() => {
-  const valid = 7 + 7 + 7 === 21;
-  return "<div class=\"row\"><span>7 + 7 + 7 = 21</span><span class=\"" + (valid ? "ok" : "bad") + "\">" + (valid ? "✓" : "✗") + "</span></div>";
-})();
+$("t729").innerHTML = [
+  [729,9,81], [81,9,9], [9,3,3], [3,3,1]
+].map(([a,b,c]) =>
+  `<div class="row"><span>${a} ÷ ${b} = ${c}</span><span>${a/b === c ? "✓" : "✗"}</span></div>`
+).join("") + '<div class="row"><span>7 + 7 + 7 = 21</span><span>✓</span></div>';
 
 render();
+saveElo();
+boot();
 </script>
 </body>
 </html>
