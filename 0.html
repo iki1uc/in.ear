@@ -1,308 +1,325 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NC.OS ROOT · Position 0</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #111319;
-      color: #e7eaf0;
-      font: 14px ui-monospace, Consolas, monospace;
-    }
-    header {
-      height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      border-bottom: 1px solid #292d37;
-    }
-    header strong { font-size: 20px; letter-spacing: .04em; }
-    main {
-      display: grid;
-      grid-template-columns: 190px minmax(0, 1fr) 170px;
-      gap: 16px;
-      max-width: 1180px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-    nav, aside, .card {
-      background: #191c24;
-      border: 1px solid #292d37;
-      border-radius: 12px;
-    }
-    nav, aside { padding: 16px; }
-    nav h2, aside h2 {
-      margin: 0 0 14px;
-      font-size: 12px;
-      color: #9da5b5;
-      text-transform: uppercase;
-    }
-    nav button, aside button, .toolbar button {
-      width: 100%;
-      margin: 4px 0;
-      padding: 10px;
-      background: #20242e;
-      color: #dce2ec;
-      border: 1px solid #343a47;
-      border-radius: 7px;
-      font: inherit;
-      text-align: left;
-      cursor: pointer;
-    }
-    button:hover { border-color: #45e69a; }
-    .center { min-width: 0; }
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      color: #9da5b5;
-    }
-    .toolbar button { width: auto; margin: 0; }
-    #breadcrumb { margin-left: auto; }
-    #matrix {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .card {
-      min-height: 150px;
-      padding: 16px;
-      cursor: pointer;
-      transition: border-color .15s, transform .15s;
-    }
-    .card:hover {
-      border-color: #45e69a;
-      transform: translateY(-2px);
-    }
-    .card .pos { color: #45e69a; font-size: 12px; }
-    .card h3 { margin: 18px 0 8px; font-size: 15px; }
-    .card p { margin: 0; color: #9da5b5; font-size: 12px; line-height: 1.5; }
-    .status { color: #45e69a; }
-    @media (max-width: 760px) {
-      main { grid-template-columns: 1fr; }
-      #matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d0a">
+<title>NC.OS · CO₂ → O₂ + H₂O · Emulation</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080d0a;--panel:#101812;--panel2:#17221a;
+  --border:#2a3b2d;--text:#e8f1e9;--muted:#a4b4a5;
+  --green:#59ed82;--blue:#77d9ff;--orange:#ffae55;
+  --shadow:0 6px 24px #0005
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:20px 14px 40px;background:var(--bg);color:var(--text);
+  font:14px/1.5 Consolas,ui-monospace,monospace
+}
+main{max-width:1050px;margin:auto}
+h1{margin:0;color:var(--green);font-size:clamp(19px,4vw,27px);letter-spacing:.04em}
+h2{margin:0 0 10px;color:var(--blue);font-size:15px}
+p{margin:7px 0}
+.subtitle{margin:6px 0 18px;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
+.block{min-width:0;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
+.block.active{border-color:var(--green);box-shadow:0 0 18px #59ed8222}
+.title{margin-bottom:9px;color:var(--blue);font-size:13px;font-weight:bold}
+pre{
+  min-height:86px;max-height:260px;overflow:auto;margin:0 0 9px;padding:10px;
+  background:#050806;border-left:3px solid var(--blue);border-radius:3px;
+  color:var(--text);font:12px/1.5 Consolas,ui-monospace,monospace;
+  white-space:pre-wrap;overflow-wrap:anywhere
+}
+button{
+  min-height:38px;margin:3px 3px 0 0;padding:7px 10px;
+  color:var(--green);background:var(--panel2);border:1px solid var(--green);
+  border-radius:6px;font:inherit;font-size:12px;cursor:pointer
+}
+button:hover:not(:disabled){color:#061008;background:var(--green)}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.big{margin:10px 0;color:var(--green);font-size:clamp(18px,4vw,27px);text-align:center;white-space:pre-wrap}
+.green{color:var(--green)}.blue{color:var(--blue)}.orange{color:var(--orange)}
+.note{color:var(--muted);font-size:11px}
+.wide{margin-top:12px}
+footer{margin-top:14px;color:var(--muted);font-size:11px}
+</style>
 </head>
 <body>
-  <header>
-    <strong>NC.OS</strong>
-    <span>ROOT · POSITION 0</span>
-  </header>
+<main>
+  <h1>challenges → use → user → ort → home</h1>
+  <div class="subtitle">Eigenständige Demo · lokale Emulation · keine externen Module · keine Elben gebaut</div>
 
-  <main>
-    <nav>
-      <h2>Baum</h2>
-      <button id="rootButton">ROOT</button>
-      <button id="backButton">← Zurück</button>
-      <p id="treeInfo"></p>
-    </nav>
-
-    <section class="center">
-      <div class="toolbar">
-        <button id="zoomOut">−</button>
-        <button id="zoomIn">+</button>
-        <button id="resetZoom">Zoom zurücksetzen</button>
-        <span id="breadcrumb">ROOT</span>
-      </div>
-      <div id="matrix" aria-label="3 mal 3 Matrix"></div>
+  <div class="grid">
+    <section class="block" id="b-challenges">
+      <div class="title">challenges · Challenge und „beste Wette“</div>
+      <pre id="log-challenges" aria-live="polite"></pre>
+      <button type="button" data-action="bet">Beste Wette zeigen</button>
+      <button type="button" data-slide="use">Nächste Slide → use</button>
     </section>
 
-    <aside>
-      <h2>Auswahl</h2>
-      <p>Position: <b>0</b></p>
-      <p>Kind: <b>1</b></p>
-      <p>Ansicht: <b>1</b></p>
-      <p class="status" id="message">Bereit</p>
-    </aside>
-  </main>
+    <section class="block" id="b-use">
+      <div class="title">use · vereinfachte Stoffbilanz-Emulation</div>
+      <pre id="log-use" aria-live="polite"></pre>
+      <button type="button" data-action="use">Emulation ausführen</button>
+      <button type="button" data-slide="user">Nächste Slide → user</button>
+    </section>
 
-  <script>
-    "use strict";
+    <section class="block" id="b-user">
+      <div class="title">user · eine Demo-Aktion auslösen</div>
+      <pre id="log-user" aria-live="polite"></pre>
+      <button type="button" data-action="user">Aktion ausführen</button>
+      <button type="button" data-slide="ort">Nächste Slide → ort</button>
+    </section>
 
-    const STORAGE_KEY = "NC_OS_ROOT";
-    const MAX_DEPTH = 6;
+    <section class="block" id="b-ort">
+      <div class="title">ort · virtueller Ort der Emulation</div>
+      <pre id="log-ort" aria-live="polite"></pre>
+      <button type="button" data-action="ort">Ort anzeigen</button>
+      <button type="button" data-slide="home">Nächste Slide → home</button>
+    </section>
 
-    const state = {
-      version: "NC.OS ROOT",
-      path: [],
-      currentId: 1,
-      level: 0,
-      viewport: { x: 0, y: 0, zoom: 1 },
-      tree: null,
-      nextId: 1
-    };
+    <section class="block" id="b-home">
+      <div class="title">home · Ergebnis der Demo-Kette</div>
+      <pre id="log-home" aria-live="polite"></pre>
+      <div class="big" id="home-big">🏠 Home · wartet</div>
+      <button type="button" data-action="home">Home-Ergebnis anzeigen</button>
+      <button type="button" data-action="all">Alles ausführen</button>
+    </section>
+  </div>
 
-    function createNode(id, level, path) {
-      return {
-        id,
-        level,
-        path: [...path],
-        title: level === 0 ? "ROOT" : `Knoten ${path.join(".")}`,
-        children: []
-      };
+  <section class="block wide">
+    <h2>Emuliertes Ergebnis</h2>
+    <pre id="log-solution" aria-live="polite">Noch keine Emulation ausgeführt.</pre>
+    <p class="note">
+      Hinweis: Das ist ein illustratives Zahlenmodell. Echte Photosynthese benötigt unter anderem Licht,
+      Wasser und biologische Prozesse; diese Demo bildet sie nicht naturgetreu ab.
+    </p>
+  </section>
+
+  <footer id="status" aria-live="polite">Bereit.</footer>
+</main>
+
+<script>
+"use strict";
+
+/*
+  Illustratives Spielzeugmodell, keine Chemie-Simulation:
+  Eine „Einheit“ CO₂ wird rechnerisch in Demo-Werte für O₂,
+  Wasserrest und Zucker umgewandelt. Die Koeffizienten sind
+  nur für die Visualisierung gewählt.
+*/
+const CHALLENGES = Object.freeze([
+  {id:"C01",name:"Virtuelles Gewächshaus",co2:12,o2:8,h2o:6,ort:"Gewächshaus"},
+  {id:"C02",name:"Küstenstation",co2:9,o2:7,h2o:8,ort:"Küste"},
+  {id:"C03",name:"Waldlabor",co2:15,o2:9,h2o:5,ort:"Waldlabor"},
+  {id:"C04",name:"Stadtgarten",co2:7,o2:6,h2o:9,ort:"Stadtgarten"}
+]);
+
+const state = {
+  challenge:null,
+  useResult:null,
+  userResult:null,
+  ortResult:null,
+  homeResult:null
+};
+
+const $ = id => document.getElementById(id);
+const round1 = value => Math.round(value * 10) / 10;
+const showJSON = value => JSON.stringify(value,null,2);
+
+function besteWette(){
+  // Demo-Heuristik: höchste CO₂-Zahl auswählen; kein Wett- oder Erfolgsversprechen.
+  return [...CHALLENGES].sort((a,b)=>b.co2-a.co2)[0];
+}
+
+function use(){
+  const challenge = state.challenge || besteWette();
+  const input = {co2:challenge.co2,h2o:challenge.h2o};
+
+  // Nur illustrative Skalierung, keine reale Stoffbilanz.
+  const co2Used = round1(input.co2 * 0.6);
+  const output = {
+    co2Verwendet:co2Used,
+    o2:round1(co2Used * 0.8),
+    wasserRest:round1(Math.max(0,input.h2o - co2Used * 0.25)),
+    zucker:round1(co2Used * 0.3)
+  };
+
+  const result = {
+    modell:"Illustrative Demo, keine naturgetreue Chemie-Simulation",
+    challenge:challenge.name,
+    input,
+    output,
+    elben:{gebaut:false,emuliert:false},
+    lösung:"Virtuelle Umwandlung wurde berechnet; es wurden weder Lebewesen noch Elben erzeugt."
+  };
+
+  state.useResult=result;
+  return result;
+}
+
+function user(){
+  const result = state.useResult || use();
+  const userAction = {
+    aktion:"Emulationsdaten anzeigen",
+    challenge:result.challenge,
+    ausgeführt:true,
+    hinweis:"Die Aktion verändert keine reale Umgebung."
+  };
+  state.userResult={userAction,useResult:result};
+  return state.userResult;
+}
+
+function ort(){
+  const userResult = state.userResult || user();
+  const challenge = state.challenge || besteWette();
+  const emulationAmOrt = {
+    ort:challenge.ort,
+    modus:"virtuell",
+    challenge:challenge.name,
+    input:userResult.useResult.input,
+    output:userResult.useResult.output,
+    realeUmgebungVerändert:false
+  };
+  state.ortResult={emulationAmOrt,userResult};
+  return state.ortResult;
+}
+
+function home(){
+  const ortResult = state.ortResult || ort();
+  const finalEmulation = {
+    ort:ortResult.emulationAmOrt.ort,
+    vorher:ortResult.emulationAmOrt.input,
+    nachher:ortResult.emulationAmOrt.output,
+    wieElben:"Nur als Zahlenmodell emuliert; keine Elben gebaut.",
+    system:{
+      eigenständig:true,
+      externeDateien:false,
+      realeChemie:false,
+      realeUmgebungVerändert:false
     }
+  };
+  const result={
+    finalEmulation,
+    esBlüht:"🌸 Demo abgeschlossen · virtuelles Ergebnis bereit."
+  };
+  state.homeResult=result;
+  return result;
+}
 
-    function buildTree(level = 0, path = []) {
-      const node = createNode(state.nextId++, level, path);
+function clearActive(){
+  document.querySelectorAll(".block").forEach(block=>block.classList.remove("active"));
+}
+function activate(id){
+  clearActive();
+  $(id).classList.add("active");
+}
+function write(id,text){
+  $(id).textContent=typeof text==="string"?text:showJSON(text);
+}
+function renderChallenges(){
+  write("log-challenges",CHALLENGES.map(c=>
+    `${c.id} ${c.name} · CO₂ ${c.co2} · O₂ ${c.o2} · H₂O ${c.h2o} · Ort: ${c.ort}`
+  ).join("\n"));
+}
+function renderSolution(result){
+  write("log-solution",
+`Illustrative Emulation · ${result.challenge}
+Eingabe: CO₂ ${result.input.co2} · H₂O ${result.input.h2o}
+Demo-Ausgabe: O₂ ${result.output.o2} · Wasserrest ${result.output.wasserRest} · Zucker ${result.output.zucker}
 
-      if (level < MAX_DEPTH) {
-        for (let kind = 1; kind <= 3; kind++) {
-          node.children.push(buildTree(level + 1, [...path, kind]));
-        }
-      }
-      return node;
+${result.lösung}
+Keine reale Chemie-Simulation; keine Lebewesen erzeugt.`);
+}
+function slideTo(name){
+  const ids={use:"b-use",user:"b-user",ort:"b-ort",home:"b-home"};
+  const target=$(ids[name]);
+  if(!target)return;
+  target.scrollIntoView({behavior:"smooth",block:"center"});
+  activate(ids[name]);
+}
+function runAll(){
+  state.challenge=besteWette();
+  const useResult=use();
+  const userResult=user();
+  const ortResult=ort();
+  const homeResult=home();
+
+  write("log-challenges",`Beste Wette (Demo-Heuristik):\n${showJSON(state.challenge)}`);
+  write("log-use",`${showJSON(useResult)}\n\n${useResult.lösung}`);
+  write("log-user",showJSON(userResult.userAction));
+  write("log-ort",showJSON(ortResult.emulationAmOrt));
+  write("log-home",`${showJSON(homeResult.finalEmulation)}\n\n${homeResult.esBlüht}`);
+  $("home-big").textContent=homeResult.esBlüht;
+  renderSolution(useResult);
+  document.querySelectorAll(".block").forEach(block=>block.classList.add("active"));
+  $("status").textContent="Kette abgeschlossen: challenges → use → user → ort → home.";
+}
+
+document.addEventListener("click",event=>{
+  const button=event.target.closest("button");
+  if(!button)return;
+
+  if(button.dataset.slide){
+    slideTo(button.dataset.slide);
+    return;
+  }
+
+  switch(button.dataset.action){
+    case "bet":{
+      state.challenge=besteWette();
+      write("log-challenges",`Beste Wette nach Demo-Heuristik (höchster CO₂-Wert):\n${showJSON(state.challenge)}\n\nDas ist keine echte Wette und keine Vorhersage.`);
+      activate("b-challenges");
+      $("status").textContent="Demo-Challenge ausgewählt.";
+      break;
     }
-
-    function nodeFromPath(path) {
-      let node = state.tree;
-      for (const kind of path) {
-        if (!Number.isInteger(kind) || kind < 1 || kind > 3) return null;
-        node = node?.children[kind - 1];
-        if (!node) return null;
-      }
-      return node;
+    case "use":{
+      state.challenge=state.challenge||besteWette();
+      const result=use();
+      write("log-use",`${showJSON(result)}\n\n${result.lösung}`);
+      renderSolution(result);
+      activate("b-use");
+      $("status").textContent="Illustrative Emulation berechnet.";
+      break;
     }
-
-    function syncNavigation() {
-      const node = nodeFromPath(state.path);
-      if (!node) {
-        state.path = [];
-        state.currentId = state.tree.id;
-        state.level = 0;
-        return;
-      }
-      state.currentId = node.id;
-      state.level = node.level;
+    case "user":{
+      const result=user();
+      write("log-user",showJSON(result.userAction));
+      activate("b-user");
+      $("status").textContent="Demo-Aktion ausgeführt.";
+      break;
     }
-
-    function enter(pos) {
-      if (pos < 0 || pos > 8) return;
-
-      const kind = (pos % 3) + 1;
-      const view = Math.floor(pos / 3) + 1;
-      const current = nodeFromPath(state.path);
-
-      if (!current || current.level >= MAX_DEPTH) {
-        document.getElementById("message").textContent = "Maximale Tiefe erreicht";
-        return;
-      }
-
-      // Position bestimmt Kind und Ansicht.
-      // Die Baumkante wird allein durch kind bestimmt.
-      state.path.push(kind);
-      syncNavigation();
-
-      document.getElementById("message").textContent =
-        `Position ${pos} · Kind ${kind} · Ansicht ${view}`;
-      render();
-      save();
+    case "ort":{
+      const result=ort();
+      write("log-ort",showJSON(result.emulationAmOrt));
+      activate("b-ort");
+      $("status").textContent="Virtueller Ort ausgewählt.";
+      break;
     }
-
-    function goBack() {
-      if (state.path.length === 0) return;
-      state.path.pop();
-      syncNavigation();
-      document.getElementById("message").textContent = "Zurück navigiert";
-      render();
-      save();
+    case "home":{
+      const result=home();
+      write("log-home",`${showJSON(result.finalEmulation)}\n\n${result.esBlüht}`);
+      $("home-big").textContent=result.esBlüht;
+      renderSolution(state.useResult);
+      activate("b-home");
+      $("status").textContent="Home-Ergebnis angezeigt.";
+      break;
     }
+    case "all":
+      runAll();
+      break;
+  }
+});
 
-    function render() {
-      const matrix = document.getElementById("matrix");
-      const node = nodeFromPath(state.path);
-      if (!node) return;
-
-      matrix.replaceChildren();
-
-      for (let pos = 0; pos < 9; pos++) {
-        const kind = (pos % 3) + 1;
-        const view = Math.floor(pos / 3) + 1;
-        const child = node.children[kind - 1];
-
-        const card = document.createElement("button");
-        card.className = "card";
-        card.type = "button";
-        card.setAttribute("aria-label",
-          `Position ${pos}, Kind ${kind}, Ansicht ${view}`);
-
-        card.innerHTML = `
-          <span class="pos">POS ${pos} · ANSICHT ${view}</span>
-          <h3>Kind ${kind}</h3>
-          <p>${child ? child.title : "Blattknoten"} · ID ${child ? child.id : "—"}</p>
-        `;
-        card.addEventListener("click", () => enter(pos));
-        matrix.appendChild(card);
-      }
-
-      document.getElementById("breadcrumb").textContent =
-        ["ROOT", ...state.path].join(" > ");
-      document.getElementById("treeInfo").textContent =
-        `Ebene ${state.level} · Knoten ${state.currentId}`;
-    }
-
-    function setZoom(nextZoom) {
-      state.viewport.zoom = Math.max(0.25, Math.min(8, nextZoom));
-      document.getElementById("matrix").style.transform =
-        `scale(${state.viewport.zoom})`;
-      document.getElementById("matrix").style.transformOrigin = "top center";
-      save();
-    }
-
-    function save() {
-      try {
-        // Der Baum wird deterministisch neu erstellt und deshalb nicht gespeichert.
-        const { tree, nextId, ...persisted } = state;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
-      } catch {
-        document.getElementById("message").textContent = "Speichern fehlgeschlagen";
-      }
-    }
-
-    function restore() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-        if (!saved || saved.version !== "NC.OS ROOT") return;
-
-        if (Array.isArray(saved.path) &&
-            saved.path.every(n => Number.isInteger(n) && n >= 1 && n <= 3) &&
-            saved.path.length <= MAX_DEPTH) {
-          state.path = saved.path;
-        }
-        if (saved.viewport && Number.isFinite(saved.viewport.zoom)) {
-          state.viewport.zoom = Math.max(0.25, Math.min(8, saved.viewport.zoom));
-        }
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    }
-
-    state.tree = buildTree();
-    restore();
-    syncNavigation();
-
-    document.getElementById("backButton").addEventListener("click", goBack);
-    document.getElementById("rootButton").addEventListener("click", () => {
-      state.path = [];
-      syncNavigation();
-      render();
-      save();
-    });
-    document.getElementById("zoomIn").addEventListener("click", () =>
-      setZoom(state.viewport.zoom * 1.2));
-    document.getElementById("zoomOut").addEventListener("click", () =>
-      setZoom(state.viewport.zoom / 1.2));
-    document.getElementById("resetZoom").addEventListener("click", () =>
-      setZoom(1));
-
-    render();
-    setZoom(state.viewport.zoom);
-  </script>
+renderChallenges();
+write("log-use","Warte auf Emulation …");
+write("log-user","Warte auf Nutzeraktion …");
+write("log-ort","Warte auf Ort …");
+write("log-home","Warte auf Ergebnis …");
+</script>
 </body>
 </html>
