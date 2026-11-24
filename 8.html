@@ -1,224 +1,876 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#071019">
-<title>8 · NC.OS · Kompetenz & Rang</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EIN OS · v4 · ZOOM + BIO.TEL</title>
 <style>
-:root{
-  color-scheme:dark;--bg:#071019;--panel:#0d1a24;--line:#203542;
-  --text:#eef7f2;--muted:#9ab0ad;--accent:#c9ff2e;--cyan:#55dfea;
-  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)
+:root{--bg:#02060a;--surface:#0a1220;--border:#1c2f4a;--gold:#ffd700;--cyan:#00ccff;--green:#39ff88;--red:#ff5a5f;--orange:#ff7a18;--violet:#a855f7;--smaragd:#00ffaa;--text:#e8ebf5;--dim:#6b7f99;--dim2:#8899aa;--c:#00ccff}
+*{box-sizing:border-box;font-family:"JetBrains Mono",ui-monospace,monospace}
+html,body{margin:0;background:var(--bg);color:var(--text);min-height:100vh}
+button{cursor:pointer;font-family:inherit}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border)}
+.tabbar{display:flex;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:2000}
+.tabbar b{color:var(--gold);margin-right:8px;font-size:13px}
+.tabbar button{font-size:12px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim2)}
+.tabbar button:hover{color:var(--text)}
+.tabbar button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.tabbar button[aria-selected="true"]{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700}
+.view{display:none}.view.on{display:block}
+#header{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 10px;background:rgba(2,6,10,.98);border-bottom:1px solid var(--c);min-height:52px}
+.logo{font-size:10px;font-weight:900;letter-spacing:.15em;color:var(--c);padding:4px 8px;border:1px solid var(--c);border-radius:4px}
+.title{font-size:11px;font-weight:700;letter-spacing:.1em}.title small{font-size:8px;color:var(--dim);margin-left:6px;font-weight:400}
+.vital{display:flex;align-items:center;gap:4px;font-size:10px;padding:3px 7px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.4)}
+.vital b{font-weight:700}.vital .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.atem-bar{width:60px;height:4px;background:#000;border-radius:2px;overflow:hidden}.atem-fill{height:100%;background:var(--c);transition:width 1s linear}
+.hb-btn{padding:4px 8px;font-size:9px;font-weight:700;letter-spacing:.08em;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--text)}
+.hb-btn.on{background:var(--gold);border-color:var(--gold);color:#000}
+#weg{display:flex;gap:3px;padding:6px 10px;background:rgba(2,6,10,.92);border-bottom:1px solid var(--border);overflow-x:auto}
+.weg-btn{flex:1;min-width:100px;padding:5px 8px;font-size:9px;font-weight:700;letter-spacing:.06em;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.4);color:var(--dim2);display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:left}
+.weg-btn.active{border-color:var(--wc);background:rgba(255,255,255,.03);color:var(--wc);box-shadow:0 0 8px var(--wc)}
+.weg-btn small{font-size:7px;opacity:.7;font-weight:400}.weg-btn:hover{border-color:var(--dim2);color:var(--text)}
+#axioms{display:flex;gap:2px;padding:4px 10px;background:rgba(2,6,10,.88);border-bottom:1px solid var(--border);overflow-x:auto}
+.axiom-btn{flex:1;min-width:60px;padding:4px 6px;font-size:8px;font-weight:700;letter-spacing:.05em;border:1px solid var(--ax);border-radius:3px;background:rgba(0,0,0,.5);color:var(--ax)}
+.axiom-btn.sealed{background:var(--ax);color:#000;box-shadow:0 0 10px var(--ax)}
+.axiom-btn small{display:block;font-size:6px;opacity:.6;font-weight:400;margin-top:1px}
+#desk{position:relative;min-height:calc(100vh - 300px);overflow:hidden;background:radial-gradient(600px 400px at 50% 50%,rgba(0,204,255,.06),transparent),var(--bg);padding:8px}
+#bio-pulse{position:absolute;left:0;right:0;top:0;height:60px;pointer-events:none;opacity:.4}
+#pulse-canvas{width:100%;height:100%;display:block}
+.win{position:absolute;background:rgba(8,14,22,.96);border:1px solid var(--c);border-radius:8px;display:flex;flex-direction:column;box-shadow:0 0 20px rgba(0,204,255,.15);max-height:calc(100% - 8px);min-width:200px}
+.win-head{height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-size:10px;font-weight:700;background:linear-gradient(90deg,rgba(0,204,255,.15),transparent);border-bottom:1px solid var(--border);cursor:move;user-select:none;flex-shrink:0}
+.win-head .actions{display:flex;gap:3px}
+.win-head button{width:18px;height:18px;border:1px solid rgba(255,255,255,.15);border-radius:50%;background:rgba(255,255,255,.05);color:var(--text);font-size:11px;display:grid;place-items:center;padding:0}
+.win-head button:hover{background:rgba(255,90,95,.5);border-color:var(--red)}
+.win-body{flex:1;overflow:auto;padding:8px;min-height:0;font-size:10px;line-height:1.4}
+#dock{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:6px 10px;background:rgba(2,6,10,.94);border-top:1px solid var(--c)}
+.dock-btn{height:32px;padding:0 10px;font-size:9px;font-weight:700;letter-spacing:.06em;border:1px solid var(--border);border-radius:5px;background:rgba(0,0,0,.5);color:var(--dim2);white-space:nowrap}
+.dock-btn.open{background:var(--c);color:#000;border-color:var(--c);box-shadow:0 0 8px var(--c)}
+.dock-btn:hover{border-color:var(--dim2);color:var(--text)}
+.dock-spacer{flex:1;min-width:10px}.dock-info{font-size:8px;opacity:.5;letter-spacing:.08em}
+#tel-log{max-height:0;overflow:hidden;background:rgba(2,6,10,.96);border-top:1px solid var(--border);transition:max-height .2s}
+#tel-log.open{max-height:140px}
+.tel-inner{padding:6px 10px;font-size:9px;line-height:1.5;overflow-y:auto;max-height:140px}
+.tel-line{display:flex;gap:8px;padding:1px 0;border-bottom:1px dotted rgba(28,47,74,.3)}
+.tel-line .ts{color:var(--dim);min-width:50px;font-size:8px}.tel-line .from{color:var(--cyan);min-width:60px;font-weight:700;font-size:8px}.tel-line .msg{flex:1;color:var(--dim2)}
+.axes{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:4px 0}
+.axis{aspect-ratio:1;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.5);color:var(--dim2);font-size:8px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:2px}
+.axis.center{border-color:var(--green);background:rgba(57,255,136,.08);color:var(--green)}
+.axis small{font-size:6px;opacity:.6}
+.vital-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.vital-item{border:1px solid var(--border);border-radius:4px;padding:4px;background:rgba(0,0,0,.3)}
+.vital-item .k{font-size:7px;color:var(--dim);letter-spacing:.1em}.vital-item .v{font-size:11px;font-weight:700;color:var(--gold);margin-top:1px}
+.axiom-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.axiom-card{aspect-ratio:1;border:1px solid var(--ax);border-radius:4px;background:rgba(0,0,0,.4);color:var(--ax);font-size:7px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;text-align:center;gap:1px}
+.axiom-card.sealed{background:var(--ax);color:#000;box-shadow:0 0 8px var(--ax)}
+.axiom-card small{font-size:6px;opacity:.6}
+.prism{display:flex;height:20px;gap:1px;margin:4px 0}.prism-bar{flex:1;border-radius:2px;opacity:.4}
+.pyr{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0}.pyr-svg{width:100%;height:100px}
+.bus{display:grid;grid-template-columns:1fr 30px 1fr;gap:4px;align-items:center;padding:6px 0}
+.bus-cpu,.bus-cocpu{border:1px solid;border-radius:4px;padding:6px;text-align:center;font-size:8px;font-weight:700}
+.bus-cpu{border-color:var(--cyan);color:var(--cyan);background:rgba(0,204,255,.08)}
+.bus-cocpu{border-color:var(--violet);color:var(--violet);background:rgba(168,85,247,.08)}
+.bus-arrow{font-size:12px;color:var(--c);text-align:center}
+.bus-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:4px;font-size:7px}
+.bus-stat{border:1px solid var(--border);border-radius:3px;padding:3px;text-align:center}
+.bus-stat.on{border-color:var(--green);color:var(--green);background:rgba(57,255,136,.1)}
+.tri{display:flex;flex-direction:column;gap:4px}
+.tri-slider{display:grid;grid-template-columns:60px 1fr 40px;gap:4px;align-items:center;font-size:8px}
+.tri-slider b{color:var(--gold);font-size:9px;text-align:right}
+input[type=range]{width:100%;height:4px;accent-color:var(--c)}
+.station-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:2px;margin:4px 0}
+.station{aspect-ratio:1;border:1px solid var(--border);border-radius:2px;background:rgba(0,0,0,.4);font-size:6px;display:grid;place-items:center;color:var(--dim);cursor:pointer}
+.station.on{background:var(--sc);color:#000;border-color:var(--sc);box-shadow:0 0 4px var(--sc)}
+.term-box{background:#000;border:1px solid var(--border);border-radius:4px;padding:6px;font-size:9px;line-height:1.4;max-height:200px;overflow-y:auto;white-space:pre-wrap;color:var(--green)}
+.term-in{display:flex;gap:4px;margin-top:4px}
+.term-in input{flex:1;background:rgba(0,0,0,.5);border:1px solid var(--border);color:var(--text);padding:3px 6px;font-size:9px;border-radius:3px}
+.term-in button{background:var(--c);color:#000;border:none;border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700}
+.magma-canvas,.player-canvas,.paint-canvas{width:100%;background:#05080c;border:1px solid var(--border);border-radius:4px;display:block}
+.magma-canvas{height:120px}.player-canvas{height:60px}.paint-canvas{height:140px;cursor:crosshair;touch-action:none}
+.player-sel{width:100%;background:rgba(0,0,0,.5);color:var(--text);border:1px solid var(--border);padding:4px;font-size:9px;border-radius:3px}
+.todo-list{display:flex;flex-direction:column;gap:2px;max-height:200px;overflow-y:auto}
+.todo-item{display:flex;gap:4px;align-items:center;font-size:9px;padding:2px 4px;border:1px solid var(--border);border-radius:3px}
+.todo-item.done{opacity:.4;text-decoration:line-through}.todo-item b{font-size:7px;color:var(--c)}.todo-item span{flex:1}
+.todo-item input[type=checkbox]{accent-color:var(--c)}
+.kal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.kal-day{aspect-ratio:1;border:1px solid var(--border);border-radius:2px;font-size:8px;display:grid;place-items:center;background:rgba(0,0,0,.3)}
+.kal-day.today{border-color:var(--c);color:var(--c)}
+#seal-overlay{position:fixed;inset:0;background:rgba(255,255,255,0);pointer-events:none;z-index:3000;opacity:0;transition:opacity .3s}
+#seal-overlay.active{opacity:1;background:rgba(255,255,255,.15);animation:flash 1s ease-in-out}
+@keyframes flash{50%{background:rgba(255,255,255,.35)}}
+.zhead{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:8px 10px;border-bottom:1px solid rgba(74,222,128,.25)}
+.zt{margin-right:auto;color:#4ade80;font-weight:bold;letter-spacing:2px;font-size:12px}
+.zhead button,.zhead input{background:#111827;color:#4ade80;border:1px solid #4ade80;border-radius:6px;padding:5px 10px;font:inherit;font-size:12px}
+.zhead button{cursor:pointer}.zhead button.on{background:#4ade80;color:#071018}
+.zhead input{width:180px;color:#e6edf7}.zhead input::placeholder{color:#8292a3}
+#cv{width:100%;height:calc(100vh - 130px);min-height:320px;display:block}
+#info{padding:7px;text-align:center;color:#f59e0b;font-size:12px;border-top:1px solid rgba(74,222,128,.15);white-space:pre-line}
+@media(max-width:700px){
+  #header{position:static;flex-wrap:wrap}
+  #desk{min-height:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
+  .win{position:relative !important;width:100% !important;height:auto !important;left:auto !important;top:auto !important;max-height:none !important;min-width:0 !important;margin:0}
+  .win-body{max-height:280px}
+  #bio-pulse{position:static;height:40px;margin-bottom:8px}
+  .zt{width:100%}.zhead input{flex:1;min-width:130px}
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input{font:inherit}
-button{min-height:42px;padding:9px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);cursor:pointer}
-button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-button:hover{border-color:var(--accent)}
-button:disabled{opacity:.45;cursor:not-allowed}
-.wrap{width:min(100% - 28px,760px);margin:auto;padding:calc(18px + var(--safe-top)) 0 calc(28px + var(--safe-bottom))}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
-.brand{font-weight:850;letter-spacing:.12em}.brand b{color:var(--accent)}
-.pill,.category{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted);font-size:11px}
-h1{font-size:clamp(27px,8vw,40px);line-height:1.04;letter-spacing:-.04em;margin:12px 0 6px}
-.muted{color:var(--muted)}
-.card{padding:14px;margin:11px 0;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
-.card h2{margin:0 0 10px;font-size:12px;letter-spacing:.12em;color:var(--cyan)}
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-.stat{padding:10px 7px;text-align:center;background:#08131b;border:1px solid var(--line);border-radius:11px}
-.stat strong{display:block;color:var(--accent);font-size:20px}.stat span{font-size:10px;color:var(--muted)}
-.bar{height:7px;margin:9px 0;background:#1a2931;border-radius:99px;overflow:hidden}
-.bar i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));transition:width .2s}
-canvas{display:block;width:100%;height:auto;aspect-ratio:1.35;border:1px solid var(--line);border-radius:12px;background:#071019;touch-action:manipulation}
-.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
-.primary{background:var(--accent);color:#101807;border-color:var(--accent);font-weight:800}
-.toolbar{display:flex;gap:8px;margin:9px 0}
-input[type=search]{min-width:0;flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#08131b;color:var(--text)}
-.filters{display:flex;gap:6px;overflow:auto;padding-bottom:3px}
-.filters button{min-height:36px;padding:6px 11px;white-space:nowrap;color:var(--muted)}
-.filters button[aria-pressed=true]{border-color:var(--accent);color:var(--accent);background:#c9ff2e12}
-.skills{display:grid;grid-template-columns:1fr;gap:7px}
-.skill{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:11px;border:1px solid var(--line);border-radius:11px;background:#08131b}
-.skill strong{display:block;font-size:13px}
-.skill small{display:block;color:var(--muted);font-size:11px}
-.skill button{min-height:36px;padding:6px 10px;color:var(--accent)}
-.empty{text-align:center;padding:18px;color:var(--muted)}
-#status{min-height:20px;color:var(--muted);font-size:12px}
-@media(min-width:560px){.skills{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 </style>
 </head>
 <body>
-<main class="wrap">
-<header>
-  <div class="brand"><b>8</b> · NC.OS</div>
-  <span class="pill" id="rankPill">RANG · ROOKIE</span>
+<nav class="tabbar" role="tablist" aria-label="Ansichten">
+  <b>iki1uc</b>
+  <button role="tab" id="tab-os" aria-selected="true" data-view="os">EIN OS · v4 · BIO.TEL</button>
+  <button role="tab" id="tab-zoom" aria-selected="false" data-view="zoom">ZOOM · WHIRL 3→9→81→9→3</button>
+</nav>
+
+<section id="view-os" class="view on">
+<header id="header">
+  <div class="logo">) (</div>
+  <div class="title">EIN OS v4 · <span style="color:var(--c)">BIO.TEL</span> PRISMATIC + ZOOM<small>5 WEG · 8 AXIOME · 2268 → 4TEL 567</small></div>
+  <div class="vital" style="color:var(--c)"><span class="dot"></span><span>ATEM</span><b id="atem-phase">HALTEN</b><div class="atem-bar"><div class="atem-fill" id="atem-fill" style="width: 37.5%;"></div></div><span id="atem-count" style="font-size:8px;opacity:.6">6/16</span></div>
+  <div class="vital" style="color:var(--red)"><span class="dot"></span><span>CO₂</span><b id="v-co2">415</b><span style="font-size:8px;opacity:.6">ppm</span></div>
+  <div class="vital" style="color:var(--cyan)"><span class="dot"></span><span>MEER</span><b id="v-sea">-57.6</b><span style="font-size:8px;opacity:.6">m</span></div>
+  <div class="vital" style="color:var(--green)"><span class="dot"></span><span>O₂</span><b id="v-o2">20.93</b><span style="font-size:8px;opacity:.6">%</span></div>
+  <div class="vital" style="color:var(--gold)"><span class="dot"></span><span>Σ</span><b id="v-sum" style="color: var(--smaragd);">2268</b><span style="font-size:8px;opacity:.6">/2268</span></div>
+  <div class="vital" style="color:var(--smaragd)"><span class="dot"></span><span>4TEL</span><b id="v-4tel">567</b></div>
+  <button class="hb-btn" id="hb-btn">H↔B · B 1×</button>
+  <button class="hb-btn" id="log-btn" style="background:rgba(0,0,0,.5)">▤ TEL</button>
 </header>
-
-<section aria-labelledby="title">
-  <div class="pill">KOMPETENZ · LEVEL · SKILL</div>
-  <h1 id="title">Wachsen durch Können.</h1>
-  <p class="muted">Kompetenzen auswählen, üben und den Fortschritt lokal speichern.</p>
+<nav id="weg"></nav>
+<nav id="axioms"></nav>
+<main id="desk"></main>
+<div id="dock"></div>
+<div id="tel-log"><div class="tel-inner" id="tel-inner"></div></div>
 </section>
 
-<section class="card" aria-label="Fortschritt">
-  <div class="summary">
-    <div class="stat"><strong id="level">1</strong><span>LEVEL</span></div>
-    <div class="stat"><strong id="xp">0</strong><span>XP</span></div>
-    <div class="stat"><strong id="points">0</strong><span>SKILLPUNKTE</span></div>
-  </div>
-  <div class="bar" aria-label="Fortschritt zum nächsten Level"><i id="progress"></i></div>
-  <div class="muted" id="progressText">0 / 100 XP bis zum nächsten Level</div>
+<section id="view-zoom" class="view" aria-label="ZOOM WHIRL">
+<header class="zhead">
+  <span class="zt">ZOOM · WHIRL</span>
+  <button data-l="3" class="on">3</button>
+  <button data-l="9">9</button>
+  <button data-l="81">81</button>
+  <button id="cyc" class="on">ZYKLUS 3→9→81→9→3</button>
+  <button id="wh" class="on">WHIRL</button>
+  <button id="rw" title="Einen Schritt zurück">⏮</button>
+  <button id="st" title="Einen Schritt vor">⏭</button>
+  <input id="cmd" placeholder="sam: whirl, stop, gong…" autocomplete="off">
+</header>
+<canvas id="cv"></canvas>
+<footer id="info"></footer>
 </section>
 
-<section class="card">
-  <h2>SKILL-MAP · ANTIPPEN ZUM FOKUSSIEREN</h2>
-  <canvas id="map" aria-label="Interaktive Kompetenzkarte"></canvas>
-  <div class="controls">
-    <button id="train" class="primary" type="button">＋ Üben · +20 XP</button>
-    <button id="reset" type="button">Zurücksetzen</button>
-  </div>
-  <p id="status" role="status" aria-live="polite">Kompetenzkarte bereit.</p>
-</section>
-
-<section class="card">
-  <h2>KOMPETENZEN · ERWEITERBAR</h2>
-  <div class="toolbar">
-    <input id="search" type="search" placeholder="Kompetenz suchen …" aria-label="Kompetenz suchen">
-  </div>
-  <div class="filters" role="group" aria-label="Kategorie filtern" id="filters"></div>
-  <p class="muted" id="count" aria-live="polite"></p>
-  <div class="skills" id="skills"></div>
-  <p class="empty" id="empty" hidden>Keine passenden Kompetenzen gefunden.</p>
-</section>
-</main>
-
+<div id="seal-overlay"></div>
 <script>
-(()=>{
-"use strict";
-const KEY="ncos.competence.8";
-const initial=[
- {name:"Webentwicklung",category:"Technik",description:"Responsive Oberflächen und interaktive Web-Erlebnisse bauen.",icon:"⌘"},
- {name:"Datenanalyse",category:"Technik",description:"Informationen ordnen, Muster erkennen und Ergebnisse erklären.",icon:"⌁"},
- {name:"KI-Werkzeuge",category:"Technik",description:"KI verantwortungsvoll in praktische Arbeitsabläufe einbinden.",icon:"✳"},
- {name:"Problemlösung",category:"Technik",description:"Ursachen finden und nachvollziehbare Lösungen entwickeln.",icon:"⌕"},
- {name:"Visuelles Design",category:"Kreativ",description:"Klare visuelle Systeme und gut lesbare Oberflächen gestalten.",icon:"◈"},
- {name:"Konzeption",category:"Kreativ",description:"Ideen in konkrete Ziele und umsetzbare Schritte übersetzen.",icon:"✎"},
- {name:"Kommunikation",category:"Zusammenarbeit",description:"Komplexe Inhalte verständlich und passend vermitteln.",icon:"↗"},
- {name:"Teamarbeit",category:"Zusammenarbeit",description:"Wissen teilen und gemeinsam Lösungen entwickeln.",icon:"◎"},
- {name:"Projektplanung",category:"Zusammenarbeit",description:"Aufgaben priorisieren, strukturieren und koordinieren.",icon:"◷"}
+
+const WEG = [
+  {id:"os", num:"01", title:"OS · KANSAS", sub:"Dorothy · BIOS", color:"#39ff88"},
+  {id:"nc", num:"02", title:"NC · NEURAL", sub:"Scarecrow · brain.eye", color:"#ffd700"},
+  {id:"sc", num:"03", title:"SC · CORE", sub:"Tin Man · eye.brain", color:"#00ccff"},
+  {id:"for", num:"04", title:"FOR ALL · LION", sub:"Lion · vulkan", color:"#ff7a18"},
+  {id:"oz", num:"05", title:"OZ · WIZARD", sub:"Wizard · bio.tel REAL", color:"#ffffff"}
 ];
-const $=id=>document.getElementById(id);
-function fresh(){return{xp:0,points:0,focused:0,skills:initial.map(x=>({...x,rank:0}))}}
-function load(){
- try{
-  const s=JSON.parse(localStorage.getItem(KEY));
-  if(!s||!Array.isArray(s.skills))return fresh();
-  const base=fresh();
-  base.xp=Math.max(0,Math.floor(Number(s.xp)||0));
-  base.points=Math.max(0,Math.floor(Number(s.points)||0));
-  base.focused=Math.max(0,Math.min(s.skills.length-1,Number(s.focused)||0));
-  base.skills=s.skills.filter(x=>x&&typeof x.name==="string").map(x=>({
-   name:x.name.slice(0,60),category:String(x.category||"Eigene").slice(0,32),
-   description:String(x.description||"").slice(0,180),icon:String(x.icon||"•").slice(0,4),
-   rank:Math.max(0,Math.floor(Number(x.rank)||0))
-  }));
-  if(!base.skills.length)base.skills=base.skills.concat(initial.map(x=>({...x,rank:0})));
-  return base;
- }catch{return fresh()}
+const AXIOMS = [
+  {id:"weg", name:"WEG", color:"#ff0055", group:"α"},
+  {id:"ausweg", name:"AUSWEG", color:"#ff7a00", group:"α"},
+  {id:"einweg", name:"EINWEG", color:"#ffd700", group:"α"},
+  {id:"cpu", name:"CPU", color:"#00ccff", group:"β"},
+  {id:"cocpu", name:"Co-CPU", color:"#00ffaa", group:"β"},
+  {id:"bus", name:"BUS", color:"#a855f7", group:"β"},
+  {id:"prisma", name:"PRISMA", color:"#ffffff", group:"γ"},
+  {id:"pyra", name:"PYRA", color:"#ffcc33", group:"γ"}
+];
+const ORGANS = [
+  {id:"VECTOR", title:"VECTOR · bio", icon:"⌖", w:340, h:340},
+  {id:"PRISMATIC", title:"PRISMATIC · 8 Ax", icon:"◈", w:340, h:340},
+  {id:"PYRAMIDE", title:"PYRAMIDE · Atom", icon:"▲", w:340, h:300},
+  {id:"CPUCO", title:"CPU ↔ Co-CPU", icon:"⚙", w:340, h:260},
+  {id:"3TEL", title:"3TEL · αβγ → 2268", icon:"∑", w:340, h:320},
+  {id:"ENERGIE", title:"ENERGIE · Burst", icon:"⚡", w:300, h:240},
+  {id:"MAGMA", title:"MAGMA · Vulkan", icon:"◎", w:340, h:260},
+  {id:"PLAYER", title:"PLAYER · 8 Beats", icon:"▶", w:320, h:260},
+  {id:"9x9", title:"9×9 · 81 Stationen", icon:"⊞", w:340, h:360},
+  {id:"TERMINAL", title:"TERMINAL · bio.tel", icon:"▤", w:360, h:300},
+  {id:"TODO", title:"TODO · Log", icon:"≡", w:300, h:300},
+  {id:"KALENDER", title:"KALENDER · QI", icon:"▦", w:280, h:300},
+  {id:"PAINT", title:"PAINT · 8 Colors", icon:"✦", w:340, h:300},
+  {id:"ZOOM", title:"ZOOM · WHIRL", icon:"◉", w:340, h:240}
+];
+const S = {
+  atem: 0, atemPhase: "EIN", co2: 415, activeWeg: "os", axioms: {},
+  hb: false, windows: {}, tel: [], zCounter: 100,
+  triAlpha: 702, triBeta: 1030, triGamma: 536, sum: 2268, paintColor: "#00ccff"
+};
+const Anim = {
+  ids: {},
+  start(name, fn) {
+    this.stop(name);
+    const loop = () => {
+      this.ids[name] = requestAnimationFrame(loop);
+      try { fn(); } catch(e) { this.stop(name); }
+    };
+    this.ids[name] = requestAnimationFrame(loop);
+  },
+  stop(name) { if (this.ids[name]) { cancelAnimationFrame(this.ids[name]); this.ids[name] = null; } },
+  stopAll() { Object.keys(this.ids).forEach(k => this.stop(k)); }
+};
+const $ = id => document.getElementById(id);
+const now = () => new Date().toTimeString().slice(0, 8);
+const fmt = (n, d = 1) => (+n).toFixed(d);
+const getSea = () => -60 + (S.co2 - 400) / 400 * 65;
+const getO2 = () => 20.95 - (S.co2 - 400) / 400 * 0.65;
+const fourTel = () => Math.round(S.sum / 4);
+const sealedCount = () => Object.values(S.axioms).filter(Boolean).length;
+function tel(from, msg) {
+  S.tel.unshift({ts: now(), from, msg});
+  if (S.tel.length > 100) S.tel.length = 100;
+  renderTel();
 }
-let state=load(),category="Alle",hits=[];
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}}
-function level(){return Math.floor(state.xp/100)+1}
-function rankName(){const names=["ROOKIE","SCOUT","ADEPT","SPECIALIST","VETERAN","ELITE","MASTER","ACE"];return names[Math.min(names.length-1,Math.floor((level()-1)/3))]}
-function render(){
- const lv=level(),partial=state.xp%100;
- $("level").textContent=lv;$("xp").textContent=state.xp;$("points").textContent=state.points;
- $("rankPill").textContent="RANG · "+rankName();
- $("progress").style.width=partial+"%";
- $("progressText").textContent=`${partial} / 100 XP bis zum nächsten Level`;
- renderFilters();renderSkills();draw();
+function renderTel() {
+  const box = $("tel-inner");
+  if (!box) return;
+  box.innerHTML = S.tel.slice(0, 40).map(t =>
+    `<div class="tel-line"><span class="ts">${t.ts}</span><span class="from">[${t.from}]</span><span class="msg">${t.msg}</span></div>`
+  ).join("") || `<div style="color:var(--dim);padding:20px;text-align:center">bio.tel · keine Signale</div>`;
 }
-function renderFilters(){
- const cats=["Alle",...new Set(state.skills.map(s=>s.category))];
- if(!cats.includes(category))category="Alle";
- const host=$("filters");host.replaceChildren();
- cats.forEach(c=>{
-  const b=document.createElement("button");b.type="button";b.textContent=c;
-  b.setAttribute("aria-pressed",String(c===category));
-  b.addEventListener("click",()=>{category=c;renderSkills();renderFilters()});
-  host.append(b);
- });
+function initState() {
+  AXIOMS.forEach(a => S.axioms[a.id] = false);
+  ORGANS.forEach((o, i) => {
+    S.windows[o.id] = { open: ["VECTOR", "PRISMATIC", "3TEL"].includes(o.id), x: 20 + (i % 4) * 40, y: 20 + Math.floor(i / 4) * 30, z: 10 + i, min: false };
+  });
 }
-function renderSkills(){
- const q=$("search").value.trim().toLocaleLowerCase("de");
- const list=state.skills.map((s,i)=>({...s,index:i})).filter(s=>
-  (category==="Alle"||s.category===category)&&
-  `${s.name} ${s.category} ${s.description}`.toLocaleLowerCase("de").includes(q)
- );
- const host=$("skills");host.replaceChildren();
- list.forEach(s=>{
-  const row=document.createElement("article");row.className="skill";
-  const info=document.createElement("div"),title=document.createElement("strong"),desc=document.createElement("small");
-  title.textContent=`${s.icon} ${s.name}`;
-  desc.textContent=`${s.category} · Rang ${s.rank} · ${s.description}`;
-  info.append(title,desc);
-  const b=document.createElement("button");b.type="button";b.textContent="＋ Skill";
-  b.disabled=state.points<1;b.setAttribute("aria-label",`${s.name} verbessern`);
-  b.addEventListener("click",()=>{if(!state.points)return;state.points--;state.skills[s.index].rank++;save();render();$("status").textContent=`${s.name}: Rang ${state.skills[s.index].rank}.`});
-  row.append(info,b);host.append(row);
- });
- $("count").textContent=`${list.length} von ${state.skills.length} Kompetenzen`;
- $("empty").hidden=list.length!==0;
+function renderHeader() {
+  const weg = WEG.find(w => w.id === S.activeWeg);
+  if (weg) document.documentElement.style.setProperty("--c", weg.color);
+  $("v-co2").textContent = S.co2;
+  $("v-sea").textContent = fmt(getSea());
+  $("v-o2").textContent = fmt(getO2(), 2);
+  $("v-sum").textContent = S.sum;
+  $("v-4tel").textContent = fourTel();
+  $("v-sum").style.color = S.sum >= 2268 ? "var(--smaragd)" : "var(--gold)";
 }
-function draw(){
- const c=$("map"),rect=c.getBoundingClientRect();if(!rect.width)return;
- const dpr=Math.min(devicePixelRatio||1,2),w=rect.width,h=Math.round(w/1.35);
- c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);c.style.height=h+"px";
- const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
- ctx.clearRect(0,0,w,h);ctx.fillStyle="#071019";ctx.fillRect(0,0,w,h);
- const cx=w/2,cy=h/2,r=Math.min(w*.39,h*.38),n=state.skills.length;
- hits=[];
- ctx.strokeStyle="#55dfea26";ctx.lineWidth=1;
- ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
- state.skills.forEach((s,i)=>{
-  const a=(i/n)*Math.PI*2-Math.PI/2,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
-  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle="#203542";ctx.stroke();
-  const selected=i===state.focused,rad=selected?9:Math.min(7,4+s.rank);
-  ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);
-  ctx.fillStyle=selected?"#c9ff2e":s.rank?"#55dfea":"#668078";ctx.fill();
-  if(selected){ctx.beginPath();ctx.arc(x,y,rad+6,0,Math.PI*2);ctx.strokeStyle="#c9ff2e88";ctx.stroke()}
-  hits.push({x,y,r:Math.max(16,rad+8),i});
- });
- ctx.beginPath();ctx.arc(cx,cy,19,0,Math.PI*2);ctx.fillStyle="#c9ff2e";ctx.fill();
- ctx.fillStyle="#071019";ctx.font="bold 11px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("8",cx,cy);
- ctx.fillStyle="#9ab0ad";ctx.font="11px system-ui";ctx.textBaseline="alphabetic";
- ctx.fillText(`${state.skills.length} SKILLS · LEVEL ${level()}`,cx,h-9);
+function renderWeg() {
+  $("weg").innerHTML = WEG.map(w =>
+    `<button class="weg-btn${w.id === S.activeWeg ? " active" : ""}" data-weg="${w.id}" style="--wc:${w.color}"><span>${w.num} · ${w.title}</span><small>${w.sub}</small></button>`
+  ).join("");
+  document.querySelectorAll("[data-weg]").forEach(b => {
+    b.onclick = () => { S.activeWeg = b.dataset.weg; tel("WEG", "→ " + b.dataset.weg.toUpperCase()); renderWeg(); renderHeader(); };
+  });
 }
-$("map").addEventListener("pointerup",e=>{
- const r=$("map").getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
- let best=null,dist=Infinity;
- for(const t of hits){const d=Math.hypot(x-t.x,y-t.y);if(d<t.r&&d<dist){best=t;dist=d}}
- if(best){state.focused=best.i;save();render();$("status").textContent=`Fokus: ${state.skills[best.i].name}.`}
+function renderAxioms() {
+  $("axioms").innerHTML = AXIOMS.map(a => {
+    const on = S.axioms[a.id];
+    return `<button class="axiom-btn${on ? " sealed" : ""}" data-ax="${a.id}" style="--ax:${a.color}">${a.name}<small>${a.group} · ${on ? "SEALED" : "open"}</small></button>`;
+  }).join("");
+  document.querySelectorAll("[data-ax]").forEach(b => { b.onclick = () => toggleAxiom(b.dataset.ax); });
+}
+function toggleAxiom(id) {
+  S.axioms[id] = !S.axioms[id];
+  const a = AXIOMS.find(x => x.id === id);
+  tel(a.id.toUpperCase(), S.axioms[id] ? "sealed" : "unsealed");
+  if (sealedCount() === 8) triggerSeal();
+  renderAxioms(); renderHeader(); renderDesk();
+}
+function triggerSeal() {
+  $("seal-overlay").classList.add("active");
+  setTimeout(() => $("seal-overlay").classList.remove("active"), 1500);
+  tel("PRISMATIC", "◈ SEALED · 8 Axiome · Σ " + S.sum + " · 4TEL " + fourTel());
+}
+function renderWindow(o) {
+  const w = S.windows[o.id];
+  if (!w.open) return "";
+  if (w.min) {
+    return `<div class="win" style="left:${w.x}px;top:${w.y}px;z-index:${w.z};width:200px" data-win="${o.id}"><div class="win-head"><span>${o.icon} ${o.title} · min</span><div class="actions"><button data-act="min" data-id="${o.id}">□</button><button data-act="close" data-id="${o.id}">×</button></div></div></div>`;
+  }
+  return `<div class="win" style="left:${w.x}px;top:${w.y}px;z-index:${w.z};width:${o.w}px;height:${o.h}px" data-win="${o.id}"><div class="win-head"><span>${o.icon} ${o.title}</span><div class="actions"><button data-act="min" data-id="${o.id}">—</button><button data-act="close" data-id="${o.id}">×</button></div></div><div class="win-body">${renderOrganBody(o.id)}</div></div>`;
+}
+function renderOrganBody(id) {
+  switch(id) {
+    case "VECTOR": return bodyVector();
+    case "PRISMATIC": return bodyPrismatic();
+    case "PYRAMIDE": return bodyPyramide();
+    case "CPUCO": return bodyCpuco();
+    case "3TEL": return body3TEL();
+    case "ENERGIE": return bodyEnergie();
+    case "MAGMA": return bodyMagma();
+    case "PLAYER": return bodyPlayer();
+    case "9x9": return body9x9();
+    case "TERMINAL": return bodyTerminal();
+    case "TODO": return bodyTodo();
+    case "KALENDER": return bodyKalender();
+    case "PAINT": return bodyPaint();
+    case "ZOOM": return bodyZoom();
+    default: return "—";
+  }
+}
+function bodyVector() {
+  const axes = ["AH", "Q1", "HA", "Q4", "NC", "Q2", "ÄH", "Q3", "HÄ"];
+  return `<div style="font-size:8px;opacity:.6;margin-bottom:4px">NC · 4 Achsen · M5 STABIL</div><div class="axes">` +
+    axes.map(a => `<button class="axis${a === "NC" ? " center" : ""}">${a}<small>${a === "NC" ? "1·1" : "0.2·0.8"}</small></button>`).join("") +
+    `</div><div class="vital-grid" style="margin-top:6px"><div class="vital-item"><div class="k">M5</div><div class="v">0.618</div></div><div class="vital-item"><div class="k">Grad</div><div class="v">7.72</div></div><div class="vital-item"><div class="k">Dom</div><div class="v">0.21</div></div><div class="vital-item"><div class="k">Lage</div><div class="v">62/-15</div></div></div>` +
+    `<div class="prism" style="margin-top:6px">` + AXIOMS.map(a => `<div class="prism-bar" style="background:${a.color};color:${a.color}"></div>`).join("") + `</div>`;
+}
+function bodyPrismatic() {
+  return `<div style="font-size:9px;margin-bottom:6px">8 Axiome · αβγ · 2268</div><div class="axiom-grid">` +
+    AXIOMS.map(a => `<button class="axiom-card${S.axioms[a.id] ? " sealed" : ""}" data-ax="${a.id}" style="--ax:${a.color}">${a.name}<small>${a.group}</small></button>`).join("") +
+    `</div><div style="margin-top:6px;padding:4px;border:1px solid var(--border);border-radius:3px;background:rgba(0,0,0,.3);font-size:8px"><div style="opacity:.6">SUMME</div><div style="color:${S.sum >= 2268 ? "var(--smaragd)" : "var(--gold)"};font-size:14px;font-weight:700">${S.sum} / 2268</div><div style="color:var(--smaragd)">4TEL = ${fourTel()}</div></div>`;
+}
+function bodyPyramide() {
+  return `<div class="pyr"><svg class="pyr-svg" viewBox="0 0 200 100"><polygon points="100,20 40,70 160,70" fill="rgba(255,204,51,.15)" stroke="#ffcc33" stroke-width="1.5"/><polygon points="100,80 40,70 160,70" fill="rgba(0,204,255,.15)" stroke="#00ccff" stroke-width="1.5"/><circle cx="100" cy="70" r="6" fill="#fff"/><text x="100" y="65" fill="#fff" font-size="6" text-anchor="middle" font-family="monospace">ATOM</text></svg></div>` +
+    `<div style="font-size:8px;text-align:center;opacity:.7;margin-top:4px">Doppel-Pyramide · 8 Ecken = 8 Axiome</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:6px;font-size:7px">` +
+    AXIOMS.map(a => `<div style="text-align:center;padding:2px;border:1px solid ${a.color};color:${a.color};border-radius:2px">${a.name}</div>`).join("") + `</div>`;
+}
+function bodyCpuco() {
+  return `<div class="bus"><div class="bus-cpu">CPU<br>8086</div><div class="bus-arrow">⇄</div><div class="bus-cocpu">Co-CPU<br>8087</div></div><div class="bus-stats"><div class="bus-stat on">ESC</div><div class="bus-stat on">BUSY</div><div class="bus-stat">READY</div><div class="bus-stat">80b</div></div><button style="width:100%;margin-top:8px;padding:4px;font-size:9px;font-weight:700;border:1px solid var(--c);background:rgba(0,204,255,.1);color:var(--c);border-radius:3px" id="burst-btn">BURST</button>`;
+}
+function body3TEL() {
+  return `<div style="font-size:8px;opacity:.6;margin-bottom:4px">3TEL · α q702 / β u1030 / γ PQ — LINK: Slider ziehen, Summe prüft sich selbst.</div><div class="tri">` +
+    `<div class="tri-slider"><span style="color:var(--orange)">q702 (α)</span><input type="range" min="0" max="900" value="${S.triAlpha}" data-tri="triAlpha"><b>${S.triAlpha}</b></div>` +
+    `<div class="tri-slider"><span style="color:var(--cyan)">u1030 (β)</span><input type="range" min="0" max="1200" value="${S.triBeta}" data-tri="triBeta"><b>${S.triBeta}</b></div>` +
+    `<div class="tri-slider"><span style="color:var(--gold)">PQ (γ)</span><input type="range" min="0" max="800" value="${S.triGamma}" data-tri="triGamma"><b>${S.triGamma}</b></div></div>` +
+    `<div style="margin-top:8px;padding:6px;border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,.3);text-align:center"><div style="font-size:8px;opacity:.6">SUMME</div><div class="sum-value" style="font-size:16px;font-weight:700;color:${S.sum >= 2268 ? "var(--smaragd)" : "var(--gold)"}">${S.sum} / 2268</div><div style="font-size:9px;color:var(--smaragd)">4TEL = ${fourTel()}</div></div><div style="font-size:7px;opacity:.5;margin-top:6px">2268 = 3 × 756 · 2268 / 4 = 567</div>`;
+}
+function bodyEnergie() {
+  return `<div style="text-align:center;padding:10px;font-size:9px"><div style="font-size:20px;color:var(--c);margin-bottom:4px">⚡</div><div style="font-weight:700;color:var(--c)">Prism Feed</div><div style="font-size:8px;opacity:.6;margin-top:4px">CPU burst → Prism feed</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px"><div class="vital-item"><div class="k">BURST</div><div class="v">80/80</div></div><div class="vital-item"><div class="k">ENERGIE</div><div class="v">100%</div></div><div class="vital-item"><div class="k">PRISM</div><div class="v" style="color:var(--smaragd)">FEED</div></div><div class="vital-item"><div class="k">ATEM</div><div class="v">16s</div></div></div>`;
+}
+function bodyMagma() {
+  return `<canvas class="magma-canvas" id="magma-canvas"></canvas><div style="font-size:8px;opacity:.6;margin-top:4px">MAGMA · 8 Axiom Farben · H↔B 1.5×</div><div style="display:flex;gap:2px;margin-top:4px">` + AXIOMS.map(a => `<div style="flex:1;height:4px;background:${a.color};border-radius:2px;opacity:.7"></div>`).join("") + `</div>`;
+}
+function bodyPlayer() {
+  return `<select class="player-sel" id="player-sel"><option>OST pentatonic · 80bpm</option><option>WEST minor epic · 100bpm</option><option>PAULI punk · 140bpm</option><option>SIEGFRIED battle · 120bpm</option><option>VULKAN drone · 62bpm</option><option>ACHSE techno · 128bpm</option><option>PRISMATIC white · 96bpm</option><option>PYRAMIDE gold · 72bpm</option></select><canvas class="player-canvas" id="player-canvas"></canvas><div style="display:flex;gap:2px;margin-top:4px"><button style="flex:1;padding:3px;font-size:8px;border:1px solid var(--c);background:transparent;color:var(--c);border-radius:3px" id="play-btn">▶ PLAY</button><button style="flex:1;padding:3px;font-size:8px;border:1px solid var(--border);background:transparent;color:var(--dim);border-radius:3px" id="stop-btn">■ STOP</button></div>`;
+}
+function body9x9() {
+  return `<div style="font-size:8px;opacity:.6;margin-bottom:4px">81 Stationen · 8 × 10 + 1 — antippen = markieren</div><div class="station-grid">` +
+    Array.from({length: 81}, (_, i) => {
+      const on = i % 8 === 0 || i === 40;
+      const c = AXIOMS[i % AXIOMS.length].color;
+      return `<div class="station${on ? " on" : ""}" style="--sc:${c}" data-station="${i}">${i === 40 ? "♔" : i + 1}</div>`;
+    }).join("") + `</div>`;
+}
+function bodyTerminal() {
+  return `<div class="term-box" id="term-box">EIN OS v4 · BIO.TEL + ZOOM\n5 WEG · 8 AXIOME · 2268 → 4TEL ${fourTel()}\ntype help\n\n❯ </div><div class="term-in"><input id="term-in" placeholder="bio · 2268 · seal · zoom · help…"><button id="term-run">RUN</button></div>`;
+}
+function termRun() {
+  const inp = $("term-in");
+  const box = $("term-box");
+  if (!inp || !box) return;
+  const cmd = inp.value.trim().toLowerCase();
+  if (!cmd) return;
+  let out = "❯ " + cmd + "\n";
+  if (cmd === "help") out += "bio · vector · prism · 2268 · seal · atem · weg · zoom · clear\n";
+  else if (cmd === "bio") out += "bio.tel REAL — b.i.o → bio → bios → uefi → OPEN.md → bio.tel\n";
+  else if (cmd === "vector") out += "VECTOR = 81 Stationen · 8 × 10 + 1\n";
+  else if (cmd === "prism") out += "PRISMATIC = 8 Axiome · α(3) β(3) γ(2)\n";
+  else if (cmd === "2268") out += "2268 = 3 × 756 · 4TEL = " + fourTel() + "\n";
+  else if (cmd === "seal") {
+    AXIOMS.forEach(a => S.axioms[a.id] = true);
+    S.sum = 2268;
+    triggerSeal();
+    renderAxioms(); renderHeader(); renderDesk();
+    out += "SEALED · 8 Axiome · 2268 · 4TEL " + fourTel() + "\n";
+  }
+  else if (cmd === "atem") out += "ATEM 16s · EIN/HALTEN/AUS/HALTEN_2 · phase " + S.atemPhase + "\n";
+  else if (cmd === "weg") out += "5 WEG · active " + S.activeWeg.toUpperCase() + "\n";
+  else if (cmd === "zoom") { out += "ZOOM → wechsle zur WHIRL-Ansicht\n"; showView("zoom"); }
+  else if (cmd === "clear") { box.textContent = "❯ "; inp.value = ""; return; }
+  else out += "unbekannt: " + cmd + "\n";
+  box.textContent += out + "\n❯ ";
+  box.scrollTop = box.scrollHeight;
+  inp.value = "";
+  tel("TERMINAL", cmd);
+}
+function bodyTodo() {
+  return `<div style="display:flex;gap:2px;margin-bottom:4px"><input id="todo-in" placeholder="+ Aufgabe…" style="flex:1;padding:3px;font-size:8px;background:rgba(0,0,0,.5);border:1px solid var(--border);color:var(--text);border-radius:3px"><button id="todo-add" style="padding:3px 6px;font-size:8px;background:var(--c);color:#000;border:none;border-radius:3px;font-weight:700">+</button></div><div class="todo-list" id="todo-list">` +
+    ["5 WEG prüfen", "8 Axiome siegeln", "ATEM stabil", "2268 → 4TEL 567", "bio.tel REAL", "PRISMATIC seal", "ZOOM · WHIRL laufen lassen"]
+      .map((t, i) => `<div class="todo-item${i === 3 ? " done" : ""}"><input type="checkbox"${i === 3 ? " checked" : ""}><b>WEG</b><span>${t}</span></div>`).join("") + `</div>`;
+}
+function todoAdd() {
+  const inp = $("todo-in");
+  const list = $("todo-list");
+  if (!inp || !list || !inp.value.trim()) return;
+  const item = document.createElement("div");
+  item.className = "todo-item";
+  const cb = document.createElement("input");
+  cb.type = "checkbox";
+  const b = document.createElement("b");
+  b.textContent = "NEU";
+  const sp = document.createElement("span");
+  sp.textContent = inp.value;
+  item.append(cb, b, sp);
+  list.insertBefore(item, list.firstChild);
+  tel("TODO", inp.value);
+  inp.value = "";
+}
+function bodyKalender() {
+  const d = new Date();
+  const day = d.getDate();
+  const month = d.toLocaleString("de-DE", {month: "long"});
+  return `<div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:4px"><span>‹</span><b>${month.toUpperCase()} ${d.getFullYear()}</b><span>›</span></div><div class="kal-grid">` +
+    ["MO", "DI", "MI", "DO", "FR", "SA", "SO"].map(x => `<div style="font-size:6px;text-align:center;opacity:.5">${x}</div>`).join("") +
+    Array.from({length: 30}, (_, i) => `<div class="kal-day${i + 1 === day ? " today" : ""}">${i + 1}</div>`).join("") +
+    `</div><div style="font-size:8px;opacity:.6;margin-top:6px;text-align:center">QI CYCLE · Xt ${[3, 9, 27, 81, 243, 756, 729][day % 7]}</div>`;
+}
+function bodyPaint() {
+  return `<div style="display:flex;gap:2px;margin-bottom:4px">` + AXIOMS.map(a => `<button style="flex:1;height:16px;background:${a.color};border:none;border-radius:2px" data-paint="${a.color}" title="${a.name}"></button>`).join("") + `</div><canvas class="paint-canvas" id="paint-canvas"></canvas><div style="display:flex;gap:2px;margin-top:4px"><button style="flex:1;padding:2px;font-size:7px;border:1px solid var(--border);background:transparent;color:var(--dim);border-radius:2px" id="paint-clear">CLEAR</button><button style="flex:1;padding:2px;font-size:7px;border:1px solid var(--border);background:transparent;color:var(--dim);border-radius:2px" id="paint-export">EXPORT</button></div>`;
+}
+function bodyZoom() {
+  return `<div style="font-size:9px;margin-bottom:6px">ZOOM · WHIRL 3→9→81→9→3 — das ist der LINK. Kein iframe, kein toter Link: Klick öffnet die echte WHIRL-Ansicht.</div><div style="text-align:center;font-size:28px;margin:6px 0">◉</div><div style="font-size:8px;opacity:.7;text-align:center">3 · 9 · 81 · 9 · 3 — 40° pro Schritt</div><button style="width:100%;margin-top:8px;padding:6px;font-size:10px;font-weight:700;border:1px solid var(--c);background:rgba(0,204,255,.1);color:var(--c);border-radius:4px" id="zoom-open">→ ZOOM · WHIRL öffnen</button>`;
+}
+function renderDesk() {
+  Anim.stopAll();
+  $("desk").innerHTML = `<div id="bio-pulse"><canvas id="pulse-canvas"></canvas></div>` + ORGANS.map(o => renderWindow(o)).join("");
+  bindWindows();
+  bindOrganInteractions();
+  drawPulse();
+  drawMagma();
+  drawPlayer();
+  bindPaint();
+  bindButtons();
+}
+function bindWindows() {
+  document.querySelectorAll(".win").forEach(w => {
+    const id = w.dataset.win;
+    w.onpointerdown = e => {
+      if (e.target.tagName === "BUTTON" || e.target.tagName === "INPUT") return;
+      S.windows[id].z = ++S.zCounter;
+      w.style.zIndex = S.windows[id].z;
+    };
+    const head = w.querySelector(".win-head");
+    if (head) {
+      head.onpointerdown = e => {
+        if (e.target.tagName === "BUTTON") return;
+        const sx = e.clientX, sy = e.clientY;
+        const ox = S.windows[id].x, oy = S.windows[id].y;
+        S.windows[id].z = ++S.zCounter;
+        w.style.zIndex = S.windows[id].z;
+        const move = ev => {
+          const nx = Math.max(0, Math.min(window.innerWidth - 100, ox + ev.clientX - sx));
+          const ny = Math.max(0, Math.min(window.innerHeight - 200, oy + ev.clientY - sy));
+          S.windows[id].x = nx; S.windows[id].y = ny;
+          w.style.left = nx + "px"; w.style.top = ny + "px";
+        };
+        const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); };
+        window.addEventListener("pointermove", move);
+        window.addEventListener("pointerup", up);
+      };
+    }
+  });
+  document.querySelectorAll("[data-act]").forEach(b => {
+    b.onclick = () => {
+      const id = b.dataset.id;
+      if (b.dataset.act === "close") S.windows[id].open = false;
+      else if (b.dataset.act === "min") S.windows[id].min = !S.windows[id].min;
+      renderDesk(); renderDock();
+    };
+  });
+}
+function bindOrganInteractions() {
+  document.querySelectorAll(".axiom-card").forEach(c => { c.onclick = () => toggleAxiom(c.dataset.ax); });
+  document.querySelectorAll("[data-station]").forEach(s => {
+    s.onclick = () => { s.classList.toggle("on"); tel("9X9", "station " + s.dataset.station); };
+  });
+  document.querySelectorAll("[data-tri]").forEach(r => {
+    r.oninput = () => {
+      S[r.dataset.tri] = parseInt(r.value, 10);
+      S.sum = Math.min(2268, S.triAlpha + S.triBeta + S.triGamma);
+      renderHeader();
+      const valEl = r.parentElement.querySelector("b");
+      if (valEl) valEl.textContent = S[r.dataset.tri];
+      const sumEl = r.closest(".win-body").querySelector(".sum-value");
+      if (sumEl) { sumEl.textContent = S.sum + " / 2268"; sumEl.style.color = S.sum >= 2268 ? "var(--smaragd)" : "var(--gold)"; }
+    };
+  });
+  document.querySelectorAll("[data-paint]").forEach(b => {
+    b.onclick = () => { S.paintColor = b.dataset.paint; tel("PAINT", "color " + S.paintColor); };
+  });
+  const zo = $("zoom-open");
+  if (zo) zo.onclick = () => showView("zoom");
+  const tr = $("term-run");
+  if (tr) tr.onclick = termRun;
+  const ti = $("term-in");
+  if (ti) ti.onkeydown = e => { if (e.key === "Enter") termRun(); };
+  const ta = $("todo-add");
+  if (ta) ta.onclick = todoAdd;
+  const tIn = $("todo-in");
+  if (tIn) tIn.onkeydown = e => { if (e.key === "Enter") todoAdd(); };
+}
+function bindButtons() {
+  const hb = $("hb-btn");
+  if (hb) hb.onclick = () => {
+    S.hb = !S.hb;
+    hb.textContent = S.hb ? "H↔B · H 1.8×" : "H↔B · B 1×";
+    hb.classList.toggle("on", S.hb);
+    tel("HB", S.hb ? "H 1.8×" : "B 1×");
+  };
+  const log = $("log-btn");
+  if (log) log.onclick = () => $("tel-log").classList.toggle("open");
+  const burst = $("burst-btn");
+  if (burst) burst.onclick = () => tel("CPUCO", "burst · 80-bit");
+  const play = $("play-btn");
+  if (play) play.onclick = () => tel("PLAYER", "▶ play");
+  const stop = $("stop-btn");
+  if (stop) stop.onclick = () => tel("PLAYER", "■ stop");
+  const pc = $("paint-clear");
+  if (pc) pc.onclick = paintClear;
+  const pe = $("paint-export");
+  if (pe) pe.onclick = paintExport;
+}
+function renderDock() {
+  $("dock").innerHTML = ORGANS.map(o =>
+    `<button class="dock-btn${S.windows[o.id].open ? " open" : ""}" data-dock="${o.id}">${o.icon} ${o.id}</button>`
+  ).join("") + `<div class="dock-spacer"></div><div class="dock-info">v4 · BIO.TEL + ZOOM · Σ ${S.sum} · 4TEL ${fourTel()}</div>`;
+  document.querySelectorAll("[data-dock]").forEach(b => {
+    b.onclick = () => {
+      const id = b.dataset.dock;
+      if (id === "ZOOM") { showView("zoom"); return; }
+      S.windows[id].open = !S.windows[id].open;
+      S.windows[id].min = false;
+      S.windows[id].z = ++S.zCounter;
+      tel(id, S.windows[id].open ? "geöffnet" : "geschlossen");
+      renderDesk(); renderDock();
+    };
+  });
+}
+function drawPulse() {
+  const cv = $("pulse-canvas");
+  if (!cv) return;
+  const parent = cv.parentElement;
+  if (!parent) return;
+  const rect = parent.getBoundingClientRect();
+  cv.width = Math.max(rect.width || 300, 100);
+  cv.height = 60;
+  const ctx = cv.getContext("2d");
+  let t = 0;
+  Anim.start("pulse", () => {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--c").trim() || "#00ccff";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const ap = Math.sin((S.atem / 16) * Math.PI * 2);
+    for (let x = 0; x < cv.width; x += 3) {
+      const y = cv.height / 2 + Math.sin(x * 0.02 + t * 0.05) * 8 * (1 + ap * 0.5);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    t++;
+  });
+}
+function drawMagma() {
+  const cv = $("magma-canvas");
+  if (!cv) return;
+  cv.width = Math.max(cv.clientWidth || 300, 100);
+  cv.height = 120;
+  const ctx = cv.getContext("2d");
+  const blobs = AXIOMS.map(a => ({ x: Math.random() * cv.width, y: Math.random() * cv.height, r: 15 + Math.random() * 20, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6, color: a.color }));
+  Anim.start("magma", () => {
+    ctx.fillStyle = "rgba(5,8,12,0.2)";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    blobs.forEach(b => {
+      b.x += b.vx * (S.hb ? 1.5 : 1);
+      b.y += b.vy * (S.hb ? 1.5 : 1);
+      if (b.x < 0 || b.x > cv.width) b.vx *= -1;
+      if (b.y < 0 || b.y > cv.height) b.vy *= -1;
+      const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+      g.addColorStop(0, b.color);
+      g.addColorStop(1, "transparent");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  });
+}
+function drawPlayer() {
+  const cv = $("player-canvas");
+  if (!cv) return;
+  cv.width = Math.max(cv.clientWidth || 280, 100);
+  cv.height = 60;
+  const ctx = cv.getContext("2d");
+  let t = 0;
+  Anim.start("player", () => {
+    ctx.fillStyle = "rgba(8,14,20,0.3)";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--c").trim() || "#00ccff";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < cv.width; i += 2) {
+      const y = cv.height / 2 + Math.sin(i * 0.08 + t * 0.1) * 15 + Math.sin(i * 0.15 + t * 0.05) * 8;
+      if (i === 0) ctx.moveTo(i, y); else ctx.lineTo(i, y);
+    }
+    ctx.stroke();
+    t++;
+  });
+}
+function bindPaint() {
+  const cv = $("paint-canvas");
+  if (!cv) return;
+  cv.width = Math.max(cv.clientWidth || 300, 100);
+  cv.height = 140;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#0a1218";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  let down = false;
+  const draw = e => {
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) * cv.width / r.width;
+    const y = (e.clientY - r.top) * cv.height / r.height;
+    ctx.fillStyle = S.paintColor;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  cv.onpointerdown = e => { down = true; draw(e); };
+  cv.onpointermove = e => { if (down) draw(e); };
+  cv.onpointerup = () => { down = false; };
+  cv.onpointerleave = () => { down = false; };
+}
+function paintClear() {
+  const cv = $("paint-canvas");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#0a1218";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  tel("PAINT", "clear");
+}
+function paintExport() {
+  const cv = $("paint-canvas");
+  if (!cv) return;
+  const a = document.createElement("a");
+  a.href = cv.toDataURL();
+  a.download = "bio-tel-paint.png";
+  a.click();
+  tel("PAINT", "export png");
+}
+function tickAtem() {
+  S.atem = (S.atem + 1) % 16;
+  const phase = S.atem < 4 ? "EIN" : S.atem < 8 ? "HALTEN" : S.atem < 12 ? "AUS" : "HALTEN_2";
+  if (phase !== S.atemPhase) { S.atemPhase = phase; tel("ATEM", phase + " · " + S.atem + "/16s"); }
+  const phEl = $("atem-phase");
+  if (phEl) phEl.textContent = phase;
+  const fillEl = $("atem-fill");
+  if (fillEl) fillEl.style.width = ((S.atem / 16) * 100) + "%";
+  const cntEl = $("atem-count");
+  if (cntEl) cntEl.textContent = S.atem + "/16";
+}
+
+/* ── ZOOM · WHIRL 3→9→81→9→3 ───────────────────────── */
+const cv = $("cv");
+const g = cv.getContext("2d");
+const GREEN = "#4ade80", ORG = "#f59e0b", TXT = "#e6edf7", PAN = "#111827", STEP = 40;
+const BASE = [
+  {x: 50, y: 16, n: "ZOOM"},
+  {x: 14, y: 76, n: "ZO.OM"},
+  {x: 86, y: 76, n: "Z.O.O.M"}
+];
+const CEN = {x: 50, y: 52};
+const L = {3: BASE.map((b, i) => ({...b, p: -1, b: i})), 9: [], 81: []};
+L[3].forEach((v, i) => {
+  BASE.forEach((b, j) => {
+    L[9].push({x: v.x + (b.x - CEN.x) * 0.22, y: v.y + (b.y - CEN.y) * 0.22, n: b.n, p: i, b: j});
+  });
 });
-$("train").addEventListener("click",()=>{
- const before=Math.floor(state.xp/100);state.xp+=20;
- const gained=Math.floor(state.xp/100)-before;state.points+=gained;
- save();render();
- $("status").textContent=gained?`Level ${level()} erreicht · +1 Skillpunkt.`:"Übung gespeichert · +20 XP.";
+L[9].forEach((v, i) => {
+  for (let a = -1; a <= 1; a++) {
+    for (let c = -1; c <= 1; c++) {
+      L[81].push({x: v.x + c * 1.6, y: v.y + a * 1.6, p: i, b: v.b});
+    }
+  }
 });
-$("search").addEventListener("input",renderSkills);
-$("reset").addEventListener("click",()=>{
- if(confirm("Lokalen Fortschritt und eigene Kompetenzen zurücksetzen?")){
-  state=fresh();category="Alle";$("search").value="";save();render();$("status").textContent="Fortschritt zurückgesetzt.";
- }
+const SEQ = [3, 9, 81, 9, 3];
+const INTV = {3: 1.0, 9: 0.5, 81: 0.1};
+const HUE = [350, 130, 215];
+let level = 3, seqI = 0, cycle = true, whirl = true;
+let idx = 0, prev = 0, f = 1, steps = 0, lvSteps = 0;
+let rot = 0, rotT = 0, acc = 0, msg = "sam: bereit";
+let W = 0, H = 0, sc = 1, ox = 0, oy = 0, last = 0;
+let zoomRunning = false, zoomRAF = null;
+function setLevel(v) {
+  level = v; idx = 0; prev = 0; f = 1; lvSteps = 0;
+  document.querySelectorAll("[data-l]").forEach(button => {
+    button.classList.toggle("on", Number(button.dataset.l) === v);
+  });
+}
+function step(d) {
+  const n = L[level].length;
+  prev = idx;
+  idx = (idx + d + n) % n;
+  f = 0; steps += d; lvSteps += d;
+  rotT = steps * STEP;
+  const limit = level === 81 ? 81 : 9;
+  if (cycle && d > 0 && lvSteps >= limit) {
+    seqI = (seqI + 1) % SEQ.length;
+    setLevel(SEQ[seqI]);
+  }
+}
+function resize() {
+  const d = window.devicePixelRatio || 1;
+  W = cv.clientWidth; H = cv.clientHeight;
+  if (!W || !H) return;
+  cv.width = Math.round(W * d); cv.height = Math.round(H * d);
+  g.setTransform(d, 0, 0, d, 0, 0);
+  sc = Math.min(W / 100, H / 92);
+  ox = (W - 100 * sc) / 2; oy = (H - 92 * sc) / 2;
+}
+function transformPoint(x, y) {
+  const a = rot * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
+  const dx = x - CEN.x, dy = y - CEN.y;
+  return [ox + (CEN.x + dx * c - dy * s) * sc, oy + (CEN.y + dx * s + dy * c) * sc];
+}
+function circ(x, y, r, fill, stroke, lineWidth) {
+  const pt = transformPoint(x, y);
+  g.beginPath();
+  g.arc(pt[0], pt[1], Math.max(0.5, r * sc), 0, Math.PI * 2);
+  if (fill) { g.fillStyle = fill; g.fill(); }
+  if (stroke) { g.lineWidth = lineWidth || 1; g.strokeStyle = stroke; g.stroke(); }
+}
+function line(a, b, width, color) {
+  const p = transformPoint(a.x, a.y), q = transformPoint(b.x, b.y);
+  g.beginPath(); g.moveTo(p[0], p[1]); g.lineTo(q[0], q[1]);
+  g.lineWidth = width; g.strokeStyle = color; g.stroke();
+}
+function draw(t) {
+  g.fillStyle = "#070f16"; g.fillRect(0, 0, W, H);
+  const R = 44, active = ((steps % 9) + 9) % 9;
+  for (let k = 0; k < 9; k++) {
+    const a = (-90 + k * STEP) * Math.PI / 180;
+    const x = ox + (CEN.x + Math.cos(a) * R) * sc;
+    const y = oy + (CEN.y + Math.sin(a) * R) * sc;
+    g.beginPath();
+    g.arc(x, y, (k === active ? 1.3 : 0.6) * sc, 0, Math.PI * 2);
+    g.fillStyle = k === active ? ORG : "#1f3444";
+    g.fill();
+  }
+  g.beginPath();
+  g.arc(ox + CEN.x * sc, oy + CEN.y * sc, R * sc, 0, Math.PI * 2);
+  g.strokeStyle = "rgba(74,222,128,.15)"; g.lineWidth = 1; g.stroke();
+  line(BASE[0], BASE[1], 3, GREEN);
+  line(BASE[0], BASE[2], 3, GREEN);
+  line(BASE[1], BASE[2], 3, GREEN);
+  if (level >= 9) L[9].forEach(n => line(L[3][n.p], n, 1.5, `hsla(${HUE[n.b]},80%,60%,.6)`));
+  if (level === 81) L[81].forEach(n => line(L[9][n.p], n, 0.6, `hsla(${HUE[n.b]},80%,60%,.5)`));
+  L[3].forEach(n => circ(n.x, n.y, level === 3 ? 7 : 10, PAN, GREEN, 3));
+  if (level >= 9) L[9].forEach(n => circ(n.x, n.y, level === 9 ? 2.6 : 3, PAN, GREEN, 2));
+  if (level === 81) L[81].forEach(n => circ(n.x, n.y, 0.65, `hsl(${HUE[n.b]},85%,62%)`));
+  g.textAlign = "center"; g.fillStyle = TXT;
+  if (level === 3) L[3].forEach(n => {
+    const pt = transformPoint(n.x, n.y);
+    g.font = `${2.4 * sc}px Consolas`;
+    g.fillText(n.n, pt[0], pt[1] + 0.8 * sc);
+  });
+  if (level === 9) L[9].forEach(n => {
+    const pt = transformPoint(n.x, n.y);
+    g.font = `${1.05 * sc}px Consolas`;
+    g.fillText(n.n, pt[0], pt[1] + 0.4 * sc);
+  });
+  g.fillStyle = ORG;
+  g.font = `bold ${2.8 * sc}px Consolas`;
+  g.fillText("ZOOMEND", ox + CEN.x * sc, oy + CEN.y * sc + sc);
+  g.fillText("bewegen", ox + CEN.x * sc, oy + (CEN.y + 4) * sc + sc);
+  const a = L[level][prev], b = L[level][idx];
+  const e = f * f * (3 - 2 * f);
+  const x = a.x + (b.x - a.x) * e, y = a.y + (b.y - a.y) * e;
+  const pulse = (Math.sin(t * 0.004) + 1) / 2;
+  const radius = level === 81 ? 1 + pulse : 2 + pulse * 2;
+  g.globalAlpha = 0.3 + pulse * 0.35;
+  circ(x, y, radius * 1.8, ORG);
+  g.globalAlpha = 1;
+  circ(x, y, radius, ORG);
+  const limit = level === 81 ? 81 : 9;
+  const degree = ((steps * STEP) % 360 + 360) % 360;
+  const shownStep = ((lvSteps % limit) + limit) % limit;
+  $("info").textContent =
+    `${level} · Schritt ${shownStep}/${limit} · ${degree}° · Umdrehung ${Math.floor(steps / 9)}  ·  ` +
+    `${cycle ? "ZYKLUS 3→9→81→9→3" : "fest"}  ·  ${whirl ? "WHIRL läuft" : "STOP"}\n${msg}`;
+}
+function loop(t) {
+  if (!zoomRunning) return;
+  zoomRAF = requestAnimationFrame(loop);
+  const dt = Math.min(0.05, (t - last) / 1000 || 0);
+  last = t;
+  if (whirl) {
+    acc += dt;
+    if (acc >= INTV[level]) { acc = 0; step(1); }
+  }
+  f = Math.min(1, f + dt / INTV[level]);
+  rot += (rotT - rot) * Math.min(1, dt * 8);
+  draw(t);
+}
+function startZoom() {
+  if (zoomRunning) return;
+  zoomRunning = true;
+  last = performance.now();
+  resize();
+  zoomRAF = requestAnimationFrame(loop);
+}
+function stopZoom() {
+  zoomRunning = false;
+  if (zoomRAF) cancelAnimationFrame(zoomRAF);
+  zoomRAF = null;
+}
+function sam(command) {
+  const c = command.toLowerCase().trim().replace(/^nc\s+/, "");
+  if (c === "whirl") { whirl = true; step(1); sync(); return "WHIRL: dreht. 1 Atom, 40°, weiter."; }
+  if (c === "rewind") { step(-1); return "REWIND: 1 Schritt zurück. nichts gelöscht."; }
+  if (c === "stop" || c === "clean") {
+    whirl = false; sync();
+    return c === "stop" ? "STOP. alles aus. nur du." : "CLEAN: stop. schauen.";
+  }
+  if (c === "gong") {
+    whirl = false; cycle = false; setLevel(3); seqI = 0; idx = 0; prev = 0; sync();
+    return "GONG ——— kreis zu. abgang.";
+  }
+  if (c === "use" || c === "user") return "USER: du bist da. level 6. aktiv.";
+  return "sam: whirl | rewind | stop | clean | gong";
+}
+function sync() {
+  $("wh").classList.toggle("on", whirl);
+  $("cyc").classList.toggle("on", cycle);
+}
+document.querySelectorAll("[data-l]").forEach(button => {
+  button.addEventListener("click", () => {
+    cycle = false;
+    setLevel(Number(button.dataset.l));
+    seqI = Math.max(0, SEQ.indexOf(level));
+    sync();
+  });
 });
-if("ResizeObserver"in window)new ResizeObserver(draw).observe($("map"));
-else addEventListener("resize",draw);
-render();
-})();
+$("cyc").addEventListener("click", () => { cycle = !cycle; seqI = Math.max(0, SEQ.indexOf(level)); sync(); });
+$("wh").addEventListener("click", () => { whirl = !whirl; sync(); });
+$("st").addEventListener("click", () => step(1));
+$("rw").addEventListener("click", () => step(-1));
+$("cmd").addEventListener("keydown", event => {
+  if (event.key === "Enter") { msg = sam($("cmd").value); $("cmd").value = ""; }
+});
+/* ── TABS · kein CO2: versteckte Ansicht = Animationen aus ── */
+function showView(name) {
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + name));
+  document.querySelectorAll("[role=tab]").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === name)));
+  try { history.replaceState(null, "", "#" + name); } catch(e) {}
+  if (name === "zoom") {
+    Anim.stopAll();
+    startZoom();
+    tel("ZOOM", "WHIRL-Ansicht geöffnet");
+  } else {
+    stopZoom();
+    renderDesk();
+    tel("OS", "OS-Ansicht geöffnet");
+  }
+}
+document.querySelectorAll("[role=tab]").forEach(t => {
+  t.addEventListener("click", () => showView(t.dataset.view));
+});
+window.addEventListener("resize", () => { if (zoomRunning) resize(); });
+/* ── BOOT ─────────────────────────────────────────────── */
+function boot() {
+  initState();
+  renderHeader(); renderWeg(); renderAxioms();
+  renderDesk(); renderDock();
+  renderTel();
+  tel("OS", "BOOT · EIN OS v4 · BIO.TEL + ZOOM");
+  tel("OS", "5 WEG · 8 AXIOME · 14 ORGANE · ATEM 16s");
+  tel("OS", "Σ " + S.sum + " → 4TEL " + fourTel());
+  tel("OS", "TABS · OS ↔ ZOOM · kein CO2: versteckt = aus");
+  setInterval(tickAtem, 1000);
+  if (location.hash === "#zoom") showView("zoom");
+}
+boot();
 </script>
 </body>
 </html>
