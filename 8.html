@@ -1,278 +1,224 @@
-<!DOCTYPE html>
-<html lang="de" data-theme="dark">
+<!doctype html>
+<html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NC.OS · PY-Batches · Demo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071019">
+<title>8 · NC.OS · Kompetenz & Rang</title>
 <style>
-:root {
-  color-scheme: dark;
-  --bg:#070f16; --card:#0d1822; --fg:#e6edf7; --muted:#8aa0b4;
-  --ok:#4ade80; --bad:#f87171; --warn:#f59e0b; --line:#1f3444;
+:root{
+  color-scheme:dark;--bg:#071019;--panel:#0d1a24;--line:#203542;
+  --text:#eef7f2;--muted:#9ab0ad;--accent:#c9ff2e;--cyan:#55dfea;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)
 }
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg:#f4f7fa; --card:#fff; --fg:#10202e; --muted:#5b6f80;
-  --ok:#15803d; --bad:#b91c1c; --warn:#b45309; --line:#cfd9e2;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; padding:16px; background:var(--bg); color:var(--fg);
-  font-family:Consolas,monospace;
-}
-.wrap { max-width:900px; margin:0 auto; }
-h1 { font-size:16px; letter-spacing:2px; margin:0 0 12px; }
-.card {
-  background:var(--card); border:1px solid var(--line); border-radius:12px;
-  padding:14px; margin-bottom:12px;
-}
-.controls { display:flex; gap:8px; flex-wrap:wrap; }
-button {
-  min-height:40px; padding:8px 16px; border:1px solid var(--ok);
-  border-radius:6px; background:var(--card); color:var(--ok);
-  font:inherit; cursor:pointer;
-}
-button:hover:not(:disabled) { background:var(--ok); color:var(--bg); }
-button:disabled { opacity:.4; cursor:not-allowed; }
-button:focus-visible { outline:2px solid var(--warn); outline-offset:3px; }
-.muted { color:var(--muted); }
-.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-.stat { border:1px solid var(--line); border-radius:8px; padding:10px; text-align:center; }
-.stat b { display:block; font-size:24px; }
-.grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
-.cell { border:1px solid var(--line); border-radius:6px; padding:6px 0; text-align:center; font-size:12px; }
-.cell.treffer { background:var(--ok); color:var(--bg); border-color:var(--ok); }
-.cell.daneben { background:var(--bad); color:var(--bg); border-color:var(--bad); }
-.cell.korrigiert { background:var(--warn); color:var(--bg); border-color:var(--warn); }
-#output { min-height:120px; max-height:240px; overflow:auto; white-space:pre-wrap; font-size:13px; }
-ul { margin:6px 0 0; padding-left:20px; }
-li.fixed { color:var(--warn); }
-li.err { color:var(--bad); }
-.row { display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding:4px 0; }
-.ok { color:var(--ok); }
-.bad { color:var(--bad); }
-@media (max-width:480px) {
-  .controls { flex-direction:column; }
-  button { width:100%; min-height:48px; }
-  .stats { grid-template-columns:repeat(2,1fr); }
-}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}
+button{min-height:42px;padding:9px 13px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+button:hover{border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.wrap{width:min(100% - 28px,760px);margin:auto;padding:calc(18px + var(--safe-top)) 0 calc(28px + var(--safe-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.brand{font-weight:850;letter-spacing:.12em}.brand b{color:var(--accent)}
+.pill,.category{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted);font-size:11px}
+h1{font-size:clamp(27px,8vw,40px);line-height:1.04;letter-spacing:-.04em;margin:12px 0 6px}
+.muted{color:var(--muted)}
+.card{padding:14px;margin:11px 0;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
+.card h2{margin:0 0 10px;font-size:12px;letter-spacing:.12em;color:var(--cyan)}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.stat{padding:10px 7px;text-align:center;background:#08131b;border:1px solid var(--line);border-radius:11px}
+.stat strong{display:block;color:var(--accent);font-size:20px}.stat span{font-size:10px;color:var(--muted)}
+.bar{height:7px;margin:9px 0;background:#1a2931;border-radius:99px;overflow:hidden}
+.bar i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));transition:width .2s}
+canvas{display:block;width:100%;height:auto;aspect-ratio:1.35;border:1px solid var(--line);border-radius:12px;background:#071019;touch-action:manipulation}
+.controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.primary{background:var(--accent);color:#101807;border-color:var(--accent);font-weight:800}
+.toolbar{display:flex;gap:8px;margin:9px 0}
+input[type=search]{min-width:0;flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#08131b;color:var(--text)}
+.filters{display:flex;gap:6px;overflow:auto;padding-bottom:3px}
+.filters button{min-height:36px;padding:6px 11px;white-space:nowrap;color:var(--muted)}
+.filters button[aria-pressed=true]{border-color:var(--accent);color:var(--accent);background:#c9ff2e12}
+.skills{display:grid;grid-template-columns:1fr;gap:7px}
+.skill{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:11px;border:1px solid var(--line);border-radius:11px;background:#08131b}
+.skill strong{display:block;font-size:13px}
+.skill small{display:block;color:var(--muted);font-size:11px}
+.skill button{min-height:36px;padding:6px 10px;color:var(--accent)}
+.empty{text-align:center;padding:18px;color:var(--muted)}
+#status{min-height:20px;color:var(--muted);font-size:12px}
+@media(min-width:560px){.skills{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>NC.OS · PY-BATCHES · 3 × 7 = 21</h1>
+<main class="wrap">
+<header>
+  <div class="brand"><b>8</b> · NC.OS</div>
+  <span class="pill" id="rankPill">RANG · ROOKIE</span>
+</header>
 
-  <div class="card">
-    <div class="controls">
-      <button id="boot" data-testid="boot-btn" type="button">BOOT</button>
-      <button id="halt" data-testid="halt-btn" type="button" disabled>HALT</button>
-      <button id="theme" data-testid="theme-btn" type="button">THEME</button>
-    </div>
-  </div>
+<section aria-labelledby="title">
+  <div class="pill">KOMPETENZ · LEVEL · SKILL</div>
+  <h1 id="title">Wachsen durch Können.</h1>
+  <p class="muted">Kompetenzen auswählen, üben und den Fortschritt lokal speichern.</p>
+</section>
 
-  <div class="card">
-    <div class="stats">
-      <div class="stat"><span class="muted">TREFFER</span><b id="s-treffer" data-testid="stat-treffer">0</b></div>
-      <div class="stat"><span class="muted">DANEBEN</span><b id="s-daneben" data-testid="stat-daneben">0</b></div>
-      <div class="stat"><span class="muted">OFFEN</span><b id="s-offen" data-testid="stat-offen">21</b></div>
-      <div class="stat"><span class="muted">BATCH</span><b id="s-batch" data-testid="stat-batch">–</b></div>
-    </div>
-    <div class="grid" id="grid"></div>
+<section class="card" aria-label="Fortschritt">
+  <div class="summary">
+    <div class="stat"><strong id="level">1</strong><span>LEVEL</span></div>
+    <div class="stat"><strong id="xp">0</strong><span>XP</span></div>
+    <div class="stat"><strong id="points">0</strong><span>SKILLPUNKTE</span></div>
   </div>
+  <div class="bar" aria-label="Fortschritt zum nächsten Level"><i id="progress"></i></div>
+  <div class="muted" id="progressText">0 / 100 XP bis zum nächsten Level</div>
+</section>
 
-  <div class="card">
-    <div id="output" data-testid="output" role="status" aria-live="polite">
-      <span class="muted">System bereit. BOOT drücken.</span>
-    </div>
+<section class="card">
+  <h2>SKILL-MAP · ANTIPPEN ZUM FOKUSSIEREN</h2>
+  <canvas id="map" aria-label="Interaktive Kompetenzkarte"></canvas>
+  <div class="controls">
+    <button id="train" class="primary" type="button">＋ Üben · +20 XP</button>
+    <button id="reset" type="button">Zurücksetzen</button>
   </div>
+  <p id="status" role="status" aria-live="polite">Kompetenzkarte bereit.</p>
+</section>
 
-  <div class="card">
-    <b>Fehlerliste</b>
-    <ul id="errs" data-testid="errors"><li class="muted">noch keine</li></ul>
+<section class="card">
+  <h2>KOMPETENZEN · ERWEITERBAR</h2>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Kompetenz suchen …" aria-label="Kompetenz suchen">
   </div>
-
-  <div class="card">
-    <b>729-Testkarte</b>
-    <span class="muted">(Verdichtung 729 → 81 → 9 → 3 → 1)</span>
-    <div id="t729" data-testid="card729"></div>
-  </div>
-</div>
+  <div class="filters" role="group" aria-label="Kategorie filtern" id="filters"></div>
+  <p class="muted" id="count" aria-live="polite"></p>
+  <div class="skills" id="skills"></div>
+  <p class="empty" id="empty" hidden>Keine passenden Kompetenzen gefunden.</p>
+</section>
+</main>
 
 <script>
+(()=>{
 "use strict";
-
-const $ = id => document.getElementById(id);
-const FAST = new URLSearchParams(location.search).get("fast") === "1";
-const DELAY = FAST ? 5 : 350;
-
-const B1 = { treffer:[2,4,5,7], daneben:[1,3,6] };
-const B2 = { treffer:[10,11,13,14], daneben:[8,9,12] };
-const py = Array(21).fill("offen");
-
-let timer = null;
-let running = false;
-let runId = 0;
-
-function render() {
-  const count = state => py.filter(value => value === state).length;
-
-  $("s-treffer").textContent = count("treffer") + count("korrigiert");
-  $("s-daneben").textContent = count("daneben");
-  $("s-offen").textContent = count("offen");
-
-  $("grid").innerHTML = py.map((state, index) =>
-    `<div class="cell ${state}">PY ${index + 1}</div>`
-  ).join("");
-
-  const errors = py.map((state, index) => {
-    if (state === "daneben") {
-      return `<li class="err">PY ${index + 1} — DANEBEN</li>`;
-    }
-    if (state === "korrigiert") {
-      return `<li class="fixed">PY ${index + 1} — DANEBEN → TARGETEER → TREFFER</li>`;
-    }
-    return "";
-  }).join("");
-
-  $("errs").innerHTML = errors || '<li class="muted">noch keine</li>';
+const KEY="ncos.competence.8";
+const initial=[
+ {name:"Webentwicklung",category:"Technik",description:"Responsive Oberflächen und interaktive Web-Erlebnisse bauen.",icon:"⌘"},
+ {name:"Datenanalyse",category:"Technik",description:"Informationen ordnen, Muster erkennen und Ergebnisse erklären.",icon:"⌁"},
+ {name:"KI-Werkzeuge",category:"Technik",description:"KI verantwortungsvoll in praktische Arbeitsabläufe einbinden.",icon:"✳"},
+ {name:"Problemlösung",category:"Technik",description:"Ursachen finden und nachvollziehbare Lösungen entwickeln.",icon:"⌕"},
+ {name:"Visuelles Design",category:"Kreativ",description:"Klare visuelle Systeme und gut lesbare Oberflächen gestalten.",icon:"◈"},
+ {name:"Konzeption",category:"Kreativ",description:"Ideen in konkrete Ziele und umsetzbare Schritte übersetzen.",icon:"✎"},
+ {name:"Kommunikation",category:"Zusammenarbeit",description:"Komplexe Inhalte verständlich und passend vermitteln.",icon:"↗"},
+ {name:"Teamarbeit",category:"Zusammenarbeit",description:"Wissen teilen und gemeinsam Lösungen entwickeln.",icon:"◎"},
+ {name:"Projektplanung",category:"Zusammenarbeit",description:"Aufgaben priorisieren, strukturieren und koordinieren.",icon:"◷"}
+];
+const $=id=>document.getElementById(id);
+function fresh(){return{xp:0,points:0,focused:0,skills:initial.map(x=>({...x,rank:0}))}}
+function load(){
+ try{
+  const s=JSON.parse(localStorage.getItem(KEY));
+  if(!s||!Array.isArray(s.skills))return fresh();
+  const base=fresh();
+  base.xp=Math.max(0,Math.floor(Number(s.xp)||0));
+  base.points=Math.max(0,Math.floor(Number(s.points)||0));
+  base.focused=Math.max(0,Math.min(s.skills.length-1,Number(s.focused)||0));
+  base.skills=s.skills.filter(x=>x&&typeof x.name==="string").map(x=>({
+   name:x.name.slice(0,60),category:String(x.category||"Eigene").slice(0,32),
+   description:String(x.description||"").slice(0,180),icon:String(x.icon||"•").slice(0,4),
+   rank:Math.max(0,Math.floor(Number(x.rank)||0))
+  }));
+  if(!base.skills.length)base.skills=base.skills.concat(initial.map(x=>({...x,rank:0})));
+  return base;
+ }catch{return fresh()}
 }
-
-function log(text) {
-  const output = $("output");
-  if (output.dataset.fresh !== "0") {
-    output.textContent = "";
-    output.dataset.fresh = "0";
-  }
-  output.textContent += text + "\n";
-  output.scrollTop = output.scrollHeight;
+let state=load(),category="Alle",hits=[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}}
+function level(){return Math.floor(state.xp/100)+1}
+function rankName(){const names=["ROOKIE","SCOUT","ADEPT","SPECIALIST","VETERAN","ELITE","MASTER","ACE"];return names[Math.min(names.length-1,Math.floor((level()-1)/3))]}
+function render(){
+ const lv=level(),partial=state.xp%100;
+ $("level").textContent=lv;$("xp").textContent=state.xp;$("points").textContent=state.points;
+ $("rankPill").textContent="RANG · "+rankName();
+ $("progress").style.width=partial+"%";
+ $("progressText").textContent=`${partial} / 100 XP bis zum nächsten Level`;
+ renderFilters();renderSkills();draw();
 }
-
-function setRunning(value) {
-  running = value;
-  $("boot").disabled = value;
-  $("halt").disabled = !value;
+function renderFilters(){
+ const cats=["Alle",...new Set(state.skills.map(s=>s.category))];
+ if(!cats.includes(category))category="Alle";
+ const host=$("filters");host.replaceChildren();
+ cats.forEach(c=>{
+  const b=document.createElement("button");b.type="button";b.textContent=c;
+  b.setAttribute("aria-pressed",String(c===category));
+  b.addEventListener("click",()=>{category=c;renderSkills();renderFilters()});
+  host.append(b);
+ });
 }
-
-function finish() {
-  clearTimeout(timer);
-  timer = null;
-  setRunning(false);
+function renderSkills(){
+ const q=$("search").value.trim().toLocaleLowerCase("de");
+ const list=state.skills.map((s,i)=>({...s,index:i})).filter(s=>
+  (category==="Alle"||s.category===category)&&
+  `${s.name} ${s.category} ${s.description}`.toLocaleLowerCase("de").includes(q)
+ );
+ const host=$("skills");host.replaceChildren();
+ list.forEach(s=>{
+  const row=document.createElement("article");row.className="skill";
+  const info=document.createElement("div"),title=document.createElement("strong"),desc=document.createElement("small");
+  title.textContent=`${s.icon} ${s.name}`;
+  desc.textContent=`${s.category} · Rang ${s.rank} · ${s.description}`;
+  info.append(title,desc);
+  const b=document.createElement("button");b.type="button";b.textContent="＋ Skill";
+  b.disabled=state.points<1;b.setAttribute("aria-label",`${s.name} verbessern`);
+  b.addEventListener("click",()=>{if(!state.points)return;state.points--;state.skills[s.index].rank++;save();render();$("status").textContent=`${s.name}: Rang ${state.skills[s.index].rank}.`});
+  row.append(info,b);host.append(row);
+ });
+ $("count").textContent=`${list.length} von ${state.skills.length} Kompetenzen`;
+ $("empty").hidden=list.length!==0;
 }
-
-function boot() {
-  clearTimeout(timer);
-  runId++;
-  const thisRun = runId;
-
-  py.fill("offen");
-  $("output").dataset.fresh = "1";
-  $("s-batch").textContent = "–";
-  render();
-  setRunning(true);
-
-  const steps = [];
-
-  function addBatch(number, batch, correctErrors) {
-    steps.push(() => {
-      $("s-batch").textContent = number;
-      log(`BATCH ${number} — 7 PY`);
-    });
-
-    for (let offset = 1; offset <= 7; offset++) {
-      const index = (number - 1) * 7 + offset;
-      steps.push(() => {
-        const hit = batch.treffer.includes(index);
-        py[index - 1] = hit ? "treffer" : "daneben";
-        log(`  PY ${index}: ${hit ? "TREFFER" : "DANEBEN"}`);
-        render();
-      });
-    }
-
-    if (correctErrors) {
-      steps.push(() => {
-        batch.daneben.forEach(index => { py[index - 1] = "korrigiert"; });
-        log("  TARGETEER → 7/7 TREFFER");
-        render();
-      });
-    } else {
-      steps.push(() => log("  = 4 TREFFER · 3 DANEBEN"));
-    }
-  }
-
-  addBatch(1, B1, false);
-  addBatch(2, B2, true);
-
-  steps.push(() => {
-    $("s-batch").textContent = "3";
-    log("BATCH 3 — 7 PY\n  Status: noch offen");
-  });
-
-  steps.push(() => {
-    log("21 PY · 1 KETTE · HALT = ZIEL");
-    finish();
-  });
-
-  let index = 0;
-
-  function next() {
-    if (!running || thisRun !== runId) return;
-    if (index >= steps.length) {
-      finish();
-      return;
-    }
-    steps[index++]();
-    if (running && thisRun === runId) {
-      timer = setTimeout(next, DELAY);
-    }
-  }
-
-  next();
+function draw(){
+ const c=$("map"),rect=c.getBoundingClientRect();if(!rect.width)return;
+ const dpr=Math.min(devicePixelRatio||1,2),w=rect.width,h=Math.round(w/1.35);
+ c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);c.style.height=h+"px";
+ const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+ ctx.clearRect(0,0,w,h);ctx.fillStyle="#071019";ctx.fillRect(0,0,w,h);
+ const cx=w/2,cy=h/2,r=Math.min(w*.39,h*.38),n=state.skills.length;
+ hits=[];
+ ctx.strokeStyle="#55dfea26";ctx.lineWidth=1;
+ ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+ state.skills.forEach((s,i)=>{
+  const a=(i/n)*Math.PI*2-Math.PI/2,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle="#203542";ctx.stroke();
+  const selected=i===state.focused,rad=selected?9:Math.min(7,4+s.rank);
+  ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);
+  ctx.fillStyle=selected?"#c9ff2e":s.rank?"#55dfea":"#668078";ctx.fill();
+  if(selected){ctx.beginPath();ctx.arc(x,y,rad+6,0,Math.PI*2);ctx.strokeStyle="#c9ff2e88";ctx.stroke()}
+  hits.push({x,y,r:Math.max(16,rad+8),i});
+ });
+ ctx.beginPath();ctx.arc(cx,cy,19,0,Math.PI*2);ctx.fillStyle="#c9ff2e";ctx.fill();
+ ctx.fillStyle="#071019";ctx.font="bold 11px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("8",cx,cy);
+ ctx.fillStyle="#9ab0ad";ctx.font="11px system-ui";ctx.textBaseline="alphabetic";
+ ctx.fillText(`${state.skills.length} SKILLS · LEVEL ${level()}`,cx,h-9);
 }
-
-function halt() {
-  if (!running) return;
-  clearTimeout(timer);
-  timer = null;
-  runId++;
-  setRunning(false);
-  log("HALT. Stand eingefroren. HALT = ZIEL");
-}
-
-$("boot").addEventListener("click", boot);
-$("halt").addEventListener("click", halt);
-
-// Dark-/Light-Theme mit gespeicherter Auswahl
-const root = document.documentElement;
-
-try {
-  const savedTheme = localStorage.getItem("ncos-theme");
-  if (savedTheme === "dark" || savedTheme === "light") {
-    root.dataset.theme = savedTheme;
-  } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-    root.dataset.theme = "light";
-  }
-} catch {}
-
-$("theme").addEventListener("click", () => {
-  const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
-  root.dataset.theme = nextTheme;
-  try {
-    localStorage.setItem("ncos-theme", nextTheme);
-  } catch {}
+$("map").addEventListener("pointerup",e=>{
+ const r=$("map").getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+ let best=null,dist=Infinity;
+ for(const t of hits){const d=Math.hypot(x-t.x,y-t.y);if(d<t.r&&d<dist){best=t;dist=d}}
+ if(best){state.focused=best.i;save();render();$("status").textContent=`Fokus: ${state.skills[best.i].name}.`}
 });
-
-// 729-Testkarte
-const tests = [[729,9,81], [81,9,9], [9,3,3], [3,3,1]];
-
-$("t729").innerHTML = tests.map(([a,b,c]) => {
-  const valid = a / b === c;
-  return `<div class="row"><span>${a} ÷ ${b} = ${c}</span><span class="${valid ? "ok" : "bad"}">${valid ? "✓" : "✗"}</span></div>`;
-}).join("") + (() => {
-  const valid = 7 + 7 + 7 === 21;
-  return `<div class="row"><span>7 + 7 + 7 = 21</span><span class="${valid ? "ok" : "bad"}">${valid ? "✓" : "✗"}</span></div>`;
-})();
-
+$("train").addEventListener("click",()=>{
+ const before=Math.floor(state.xp/100);state.xp+=20;
+ const gained=Math.floor(state.xp/100)-before;state.points+=gained;
+ save();render();
+ $("status").textContent=gained?`Level ${level()} erreicht · +1 Skillpunkt.`:"Übung gespeichert · +20 XP.";
+});
+$("search").addEventListener("input",renderSkills);
+$("reset").addEventListener("click",()=>{
+ if(confirm("Lokalen Fortschritt und eigene Kompetenzen zurücksetzen?")){
+  state=fresh();category="Alle";$("search").value="";save();render();$("status").textContent="Fortschritt zurückgesetzt.";
+ }
+});
+if("ResizeObserver"in window)new ResizeObserver(draw).observe($("map"));
+else addEventListener("resize",draw);
 render();
+})();
 </script>
 </body>
 </html>
