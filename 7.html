@@ -1,228 +1,289 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NC · Mobile Index — 94 Knoten</title>
-<link rel="icon" href="icon.ico">
-<link rel="icon" type="image/png" href="icon.png">
+<meta name="theme-color" content="#080d13">
+<title>7 · MAXIMUS · PvP Skill</title>
 <style>
-  :root {
-    --line: #263342;
-    --panel: #0b1220;
-    --muted: #8da294;
-    --gold: #e8b64c;
-    --green: #4ade80;
-    --safe-area-inset-top: env(safe-area-inset-top, 0px);
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    color: #e8eef2;
-    background: #050912;
-    font-family: system-ui, sans-serif;
-  }
-  a { color: inherit; text-decoration: none; }
-  .eyebrow { color: var(--green); font: 11px/1.4 ui-monospace, monospace; letter-spacing: .18em; text-transform: uppercase; }
-  .index h1 { margin: 8px 0 6px; color: var(--gold); font: 700 clamp(28px, 8vw, 48px)/1 Georgia, serif; letter-spacing: -.03em; }
-  .intro { color: var(--muted); margin: 0 0 18px; font-size: 13px; }
+:root{
+  color-scheme:dark;
+  --bg:#080d13;--panel:#0c141e;--panel2:#101c29;--line:#223746;
+  --text:#e8f4f0;--muted:#8da6a3;--green:#58f28b;--cyan:#55dfea;
+  --gold:#f1c45a;--red:#ff7474;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px max(14px,env(safe-area-inset-left));background:#080d13ee;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.brand{font-size:14px;font-weight:900;letter-spacing:.14em}.brand b{color:var(--green)}
+.top-actions,.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+button{min-height:40px;padding:8px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+button:hover{border-color:var(--cyan)}
+button.primary{background:var(--green);border-color:var(--green);color:#04130a;font-weight:850}
+button.active{border-color:var(--green);color:var(--green);background:#58f28b12}
+button.danger:hover{border-color:var(--red);color:var(--red)}
+.shell{width:min(1120px,100%);margin:auto;padding:20px 14px 42px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:8px 0 16px}
+.eyebrow{color:var(--green);font:800 11px/1.4 ui-monospace,monospace;letter-spacing:.17em}
+h1{margin:5px 0;font-size:clamp(28px,5vw,42px);line-height:1}
+p{color:var(--muted);margin:6px 0}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:12px}
+.panel{min-width:0;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.panel h2{margin:0 0 12px;color:var(--cyan);font-size:13px;letter-spacing:.1em}
+.level-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.level-num{color:var(--gold);font-size:25px;font-weight:900}
+.progress{height:9px;margin:10px 0;background:#182530;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:99px;transition:width .2s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat{padding:10px;border:1px solid var(--line);border-radius:10px;background:#09111a}
+.stat strong{display:block;color:var(--green);font-size:19px}
+.stat span{color:var(--muted);font-size:11px}
+.canvas-wrap{position:relative}
+canvas{display:block;width:100%;height:310px;border:1px solid var(--line);border-radius:11px;background:#070c12;touch-action:manipulation}
+.hint{font-size:11px}
+.skill-tree{display:grid;gap:9px}
+.skill{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:11px;background:#09111a}
+.skill strong{display:block;font-size:13px}.skill small{color:var(--muted)}
+.skill .value{color:var(--cyan);font:700 13px ui-monospace,monospace}
+.skill button{min-height:34px;padding:5px 10px}
+.skill button:disabled{opacity:.45;cursor:not-allowed}
+.pvp-tree{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.node{width:48px;height:48px;border-radius:50%;padding:0;background:#0a1720;border:1px solid var(--line);font-weight:800}
+.node.unlocked{border-color:var(--cyan);background:#55dfea20;color:var(--cyan)}
+.node.selected{box-shadow:0 0 0 3px #55dfea30}
+.node.locked{opacity:.42}
+.output{min-height:74px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#070c12;color:var(--muted);font:12px/1.6 ui-monospace,monospace;white-space:pre-wrap}
+.modebar{display:flex;gap:7px;flex-wrap:wrap}
+#toast{position:fixed;right:14px;bottom:14px;z-index:10;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);opacity:0;transform:translateY(8px);transition:.18s}
+#toast.show{opacity:1;transform:none}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}canvas{height:280px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
-  <main class="index">
-    <header>
-      <p class="eyebrow">NC · Mobile Index</p>
-      <h1>729 → 243 → 81 → 27 → 9 → 3 → 1</h1>
-      <p class="intro">Interaktive Canvas-Übersicht · 94 Knoten</p>
-    </header>
+<header class="topbar">
+  <div class="brand"><b>7</b> · MAXIMUS</div>
+  <div class="top-actions">
+    <span class="pill" id="pointsPill">PUNKTE 0</span>
+    <button id="resetButton" class="danger" type="button">Reset</button>
+  </div>
+</header>
 
-    <section class="canvas-card" aria-label="Interaktive Knotenübersicht">
-      <canvas id="indexCanvas" aria-label="94 Knoten in konzentrischen Ebenen"></canvas>
-      <p class="canvas-hint">Antippen oder klicken, um einen Knoten auszuwählen.</p>
-    </section>
+<main class="shell">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">ALGORITHMUS · LEVEL · PvP · SKILL</div>
+      <h1>MAXIMUS</h1>
+      <p>Tippe einen Knoten an, sammle Trainingspunkte und verteile sie auf Skills.</p>
+    </div>
+    <span class="pill" id="focusPill">FOCUS · ROOT</span>
+  </section>
 
-    <section class="selected-card" aria-live="polite">
-      <span class="eyebrow">AUSGEWÄHLTER KNOTEN</span>
-      <strong id="selectedNode">NC · ROOT</strong>
-    </section>
+  <section class="grid">
+    <article class="panel">
+      <h2>MAXIMUS · KNOTENFELD</h2>
+      <div class="canvas-wrap">
+        <canvas id="maxCanvas" aria-label="Interaktives Knotenfeld"></canvas>
+      </div>
+      <p class="hint">Knoten auswählen: Tippen oder klicken. „Pointed“ fokussiert den ausgewählten Knoten.</p>
+      <div class="modebar">
+        <button class="active" data-mode="pointed" type="button">POINTED</button>
+        <button data-mode="all" type="button">ALLE KNOTEN</button>
+        <button id="trainButton" class="primary" type="button">＋ TRAINIEREN</button>
+      </div>
+      <div class="output" id="algorithmOutput" aria-live="polite"></div>
+    </article>
 
-    <nav class="node-grid" id="nodeGrid" aria-label="Alle Indexknoten"></nav>
+    <div>
+      <article class="panel">
+        <h2>LEVEL · FORTSCHRITT</h2>
+        <div class="level-head">
+          <div>LEVEL <span class="level-num" id="levelValue">01</span></div>
+          <span class="pill" id="xpLabel">0 / 100 XP</span>
+        </div>
+        <div class="progress"><i id="xpBar"></i></div>
+        <div class="stats">
+          <div class="stat"><strong id="winsValue">0</strong><span>PvP-Siege</span></div>
+          <div class="stat"><strong id="trainValue">0</strong><span>Training</span></div>
+          <div class="stat"><strong id="skillValue">0</strong><span>Skillpunkte</span></div>
+        </div>
+      </article>
 
-    <footer>1 Root + 3 Achsen + 9 Kerne + 81 Zellen = 94 Knoten</footer>
-  </main>
+      <article class="panel" style="margin-top:12px">
+        <h2>PvP · SKILL-TREE</h2>
+        <div class="pvp-tree" id="pvpTree" aria-label="PvP-Level-Knoten"></div>
+        <div class="skill-tree" id="skillTree"></div>
+        <div class="row" style="margin-top:12px">
+          <button id="duelButton" class="primary" type="button">⚔ Duell starten</button>
+        </div>
+        <p class="hint">Das Duell ist eine lokale Demo-Berechnung, keine Verbindung zu anderen Spielern.</p>
+      </article>
+    </div>
+  </section>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
 
-  <style>
-    .index {
-      width: min(100% - 28px, 720px);
-      margin: 0 auto;
-      padding: calc(20px + var(--safe-area-inset-top, 0px)) 0 max(36px, env(safe-area-inset-bottom));
+<script>
+(()=>{
+"use strict";
+const KEY="maximus.7.state.v1";
+const SKILLS=[
+  {id:"aim",name:"Präzision",desc:"Erhöht die Stärke im PvP-Demo-Duell."},
+  {id:"guard",name:"Verteidigung",desc:"Stabilisiert die Verteidigungswertung."},
+  {id:"focus",name:"Fokus",desc:"Bonus für fokussiertes Pointed-Training."}
+];
+const $=id=>document.getElementById(id);
+const canvas=$("maxCanvas"),ctx=canvas.getContext("2d");
+const fresh=()=>({xp:0,wins:0,training:0,points:0,skills:{aim:0,guard:0,focus:0},selected:0,mode:"pointed"});
+function load(){
+  try{
+    const x=JSON.parse(localStorage.getItem(KEY));
+    if(!x||typeof x!=="object")return fresh();
+    const s=fresh();
+    for(const k of ["xp","wins","training","points"])s[k]=Number.isFinite(x[k])?Math.max(0,Math.floor(x[k])):s[k];
+    for(const k of Object.keys(s.skills))s.skills[k]=Number.isFinite(x.skills?.[k])?Math.max(0,Math.floor(x.skills[k])):0;
+    s.selected=Number.isInteger(x.selected)?Math.max(0,Math.min(93,x.selected)):0;
+    s.mode=x.mode==="all"?"all":"pointed";
+    return s;
+  }catch{return fresh()}
+}
+let state=load(),targets=[],toastTimer;
+const nodes=[{label:"ROOT",ring:0,slot:0}];
+["BIO","BIOS","BIOS.EN"].forEach((label,slot)=>nodes.push({label,ring:1,slot}));
+for(let i=0;i<9;i++)nodes.push({label:`K${String(i+1).padStart(2,"0")}`,ring:2,slot:i});
+for(let i=0;i<81;i++)nodes.push({label:`N${String(i+1).padStart(2,"0")}`,ring:3,slot:i});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch{notify("Lokaler Speicher nicht verfügbar.")}}
+function notify(text){const t=$("toast");t.textContent=text;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),1800)}
+function level(){return Math.floor(state.xp/100)+1}
+function xpInLevel(){return state.xp%100}
+function cost(id){return 1+state.skills[id]}
+function renderSkills(){
+  const host=$("skillTree");host.replaceChildren();
+  for(const s of SKILLS){
+    const row=document.createElement("div");row.className="skill";
+    const info=document.createElement("div");
+    const title=document.createElement("strong");title.textContent=s.name;
+    const desc=document.createElement("small");desc.textContent=`${s.desc} · Rang ${state.skills[s.id]}`;
+    info.append(title,desc);
+    const btn=document.createElement("button");btn.type="button";
+    btn.textContent=`＋ ${cost(s.id)} P`;
+    btn.disabled=state.points<cost(s.id);
+    btn.addEventListener("click",()=>buySkill(s.id));
+    row.append(info,btn);host.append(row);
+  }
+}
+function renderPvp(){
+  const host=$("pvpTree");host.replaceChildren();
+  const unlocked=Math.min(9,Math.floor((level()-1)/2)+1);
+  for(let i=0;i<9;i++){
+    const b=document.createElement("button");b.type="button";b.className="node";
+    b.textContent=String(i+1);b.title=`PvP-Knoten ${i+1}`;
+    b.classList.add(i<unlocked?"unlocked":"locked");
+    if(i===Math.min(unlocked-1,Math.floor((level()-1)/2)))b.classList.add("selected");
+    b.setAttribute("aria-label",`PvP-Knoten ${i+1}${i<unlocked?", freigeschaltet":", gesperrt"}`);
+    host.append(b);
+  }
+}
+function render(){
+  $("levelValue").textContent=String(level()).padStart(2,"0");
+  $("xpLabel").textContent=`${xpInLevel()} / 100 XP`;
+  $("xpBar").style.width=`${xpInLevel()}%`;
+  $("winsValue").textContent=state.wins;
+  $("trainValue").textContent=state.training;
+  $("skillValue").textContent=state.points;
+  $("pointsPill").textContent=`PUNKTE ${state.points}`;
+  $("focusPill").textContent=`FOCUS · ${nodes[state.selected].label}`;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("active",b.dataset.mode===state.mode));
+  const n=nodes[state.selected];
+  $("algorithmOutput").textContent=
+    `MAXIMUS / ${state.mode.toUpperCase()}\n`+
+    `Auswahl: ${n.label} · Ebene ${n.ring}\n`+
+    `Level ${level()} · XP ${state.xp} · Skillpunkte ${state.points}\n`+
+    `Algorithmus: Knoten wählen → Aktion ausführen → Ergebnis lokal speichern.`;
+  renderSkills();renderPvp();draw();
+}
+function addXP(amount){
+  const before=level();state.xp+=amount;state.points+=Math.floor(state.xp/100)-Math.floor((state.xp-amount)/100);
+  if(level()>before)notify(`Levelaufstieg: Level ${level()}!`);
+}
+function train(){
+  state.training++;addXP(20+(state.mode==="pointed"?5:0)+(state.skills.focus*2));
+  save();render();notify("+ XP · Training abgeschlossen");
+}
+function buySkill(id){
+  const c=cost(id);if(state.points<c)return;
+  state.points-=c;state.skills[id]++;save();render();notify("Skill verbessert.");
+}
+function duel(){
+  const power=level()*2+state.skills.aim*4+state.skills.guard*2+state.skills.focus*3;
+  const roll=Math.floor(Math.random()*11);
+  const won=power+roll>=level()*2+6;
+  if(won){state.wins++;addXP(35);notify("PvP-Demo: Sieg · +35 XP")}
+  else{addXP(10);notify("PvP-Demo: Niederlage · +10 XP")}
+  save();render();
+}
+function resize(){
+  const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);
+  if(!r.width)return;
+  canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  draw();
+}
+function draw(){
+  const r=canvas.getBoundingClientRect();if(!r.width)return;
+  const w=r.width,h=r.height,cx=w/2,cy=h/2,radius=Math.min(w*.43,h*.43);
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#070c12";ctx.fillRect(0,0,w,h);
+  const scales=[0,.34,.64,.94],colors=["#f1c45a","#58f28b","#55dfea","#ae8aff"];
+  for(let ring=1;ring<=3;ring++){
+    ctx.beginPath();ctx.arc(cx,cy,radius*scales[ring],0,Math.PI*2);
+    ctx.strokeStyle="#55dfea22";ctx.lineWidth=1;ctx.stroke();
+  }
+  targets=[];
+  nodes.forEach((n,i)=>{
+    let x=cx,y=cy,rad=7;
+    if(n.ring){
+      const count=[1,3,9,81][n.ring],angle=n.slot/count*Math.PI*2-Math.PI/2;
+      x=cx+Math.cos(angle)*radius*scales[n.ring];
+      y=cy+Math.sin(angle)*radius*scales[n.ring];
+      rad=n.ring===3?3:5;
     }
-    .index-card,
-    .canvas-card,
-    .selected-card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--panel);
-    }
-    .canvas-card { padding: 12px; }
-    #indexCanvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 100 / 82;
-      border: 1px solid #4ade8033;
-      border-radius: 10px;
-      background: #050912;
-      touch-action: manipulation;
-    }
-    .canvas-hint { margin: 9px 2px 0; color: var(--muted); font-size: 11px; }
-    .selected-card {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 10px;
-      padding: 12px 14px;
-    }
-    .selected-card strong { color: var(--gold); font: 600 15px ui-monospace, monospace; }
-    .node-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 14px;
-    }
-    .node-grid a {
-      min-width: 0;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 4px;
-      padding: 8px;
-      border: 1px solid var(--line);
-      border-radius: 9px;
-      background: var(--panel);
-      font: 11px ui-monospace, monospace;
-    }
-    .node-grid a span:last-child { color: var(--muted); }
-    .node-grid a[aria-current="true"] { border-color: var(--green); color: var(--green); }
-    .index footer { margin-top: 18px; color: var(--muted); font: 11px/1.6 ui-monospace, monospace; }
-    @media (min-width: 480px) {
-      .node-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    }
-  </style>
-
-  <script>
-    (() => {
-      const canvas = document.getElementById("indexCanvas");
-      const ctx = canvas.getContext("2d");
-      const grid = document.getElementById("nodeGrid");
-      const selected = document.getElementById("selectedNode");
-      const nodes = [{ label: "NC", type: "ROOT", ring: 0 }];
-      ["BIO", "BIOS", "BIOS.EN"].forEach((label, i) => {
-        nodes.push({ label, type: "ACHSE", ring: 1, slot: i });
-      });
-      for (let i = 1; i <= 9; i++) {
-        nodes.push({ label: `K${String(i).padStart(2, "0")}`, type: "KERN", ring: 2, slot: i - 1 });
-      }
-      for (let i = 1; i <= 81; i++) {
-        nodes.push({ label: `N${String(i).padStart(2, "0")}`, type: "ZELLE", ring: 3, slot: i - 1 });
-      }
-      let activeIndex = 0;
-      let hitTargets = [];
-      function selectNode(index) {
-        activeIndex = index;
-        const node = nodes[index];
-        selected.textContent = `${node.label} · ${node.type}`;
-        grid.querySelectorAll("a").forEach((link, i) => {
-          if (i === index) link.setAttribute("aria-current", "true");
-          else link.removeAttribute("aria-current");
-        });
-        draw();
-      }
-      nodes.forEach((node, index) => {
-        const link = document.createElement("a");
-        link.href = `#node-${index + 1}`;
-        link.innerHTML = `<span>${node.label}</span><span>${String(index + 1).padStart(2, "0")}</span>`;
-        link.addEventListener("click", event => { event.preventDefault(); selectNode(index); });
-        grid.appendChild(link);
-      });
-      // Interne Zeichenfläche = angezeigte CSS-Größe × DPR.
-      // Nur width:100% im CSS skaliert die Zeichenfläche NICHT mit.
-      function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
-        const width = rect.width || 320;
-        const height = Math.round(width * 0.82); // = aspect-ratio 100 / 82 aus CSS
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.round(width * dpr);
-        canvas.height = Math.round(height * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        return { width, height };
-      }
-      function draw() {
-        const { width, height } = resizeCanvas();
-        ctx.clearRect(0, 0, width, height);
-        const cx = width / 2;
-        const cy = height / 2;
-        const radius = Math.min(width * 0.43, height * 0.43);
-        const ringScales = [0, 0.34, 0.64, 0.94];
-        const colors = ["#e8b64c", "#4ade80", "#33d6ff", "#b98aff"];
-        hitTargets = [];
-        for (let ring = 1; ring <= 3; ring++) {
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius * ringScales[ring], 0, Math.PI * 2);
-          ctx.strokeStyle = "#4ade8030";
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-        nodes.forEach((node, index) => {
-          let x = cx, y = cy, dotRadius = 7;
-          if (node.ring > 0) {
-            const count = [1, 3, 9, 81][node.ring];
-            const angle = (node.slot / count) * Math.PI * 2 - Math.PI / 2;
-            const r = radius * ringScales[node.ring];
-            x = cx + Math.cos(angle) * r;
-            y = cy + Math.sin(angle) * r;
-            dotRadius = node.ring === 3 ? 3 : 5;
-          }
-          const isActive = index === activeIndex;
-          ctx.beginPath();
-          ctx.arc(x, y, isActive ? dotRadius + 3 : dotRadius, 0, Math.PI * 2);
-          ctx.fillStyle = colors[node.ring];
-          ctx.fill();
-          if (isActive) {
-            ctx.beginPath();
-            ctx.arc(x, y, dotRadius + 7, 0, Math.PI * 2);
-            ctx.strokeStyle = colors[node.ring];
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-          }
-          hitTargets.push({ x, y, radius: Math.max(dotRadius + 7, 12), index });
-        });
-        ctx.fillStyle = "#8da294";
-        ctx.font = "11px ui-monospace, monospace";
-        ctx.textAlign = "left";
-        ctx.fillText("94 NODES", 10, height - 10);
-      }
-      function handleTap(event) {
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        let closest = null, closestDistance = Infinity;
-        for (const target of hitTargets) {
-          const distance = Math.hypot(x - target.x, y - target.y);
-          if (distance <= target.radius && distance < closestDistance) { closest = target; closestDistance = distance; }
-        }
-        if (closest) selectNode(closest.index);
-      }
-      canvas.addEventListener("pointerup", handleTap);
-      // Bei Größenänderung: Zeichenfläche neu skalieren + neu zeichnen.
-      // Nur resizeCanvas() ohne draw() würde das Bild löschen.
-      new ResizeObserver(() => draw()).observe(canvas);
-      window.addEventListener("resize", () => draw());
-      // Initial: erst skalieren, dann zeichnen (läuft über selectNode -> draw)
-      resizeCanvas();
-      selectNode(0);
-    })();
-  </script>
+    const active=i===state.selected;
+    if(state.mode==="pointed"&&!active){ctx.globalAlpha=.25}
+    ctx.beginPath();ctx.arc(x,y,active?rad+2:rad,0,Math.PI*2);
+    ctx.fillStyle=colors[n.ring];ctx.fill();ctx.globalAlpha=1;
+    if(active){ctx.beginPath();ctx.arc(x,y,rad+9,0,Math.PI*2);ctx.strokeStyle=colors[n.ring];ctx.lineWidth=2;ctx.stroke()}
+    targets.push({x,y,r:Math.max(13,rad+8),i});
+  });
+  ctx.fillStyle="#8da6a3";ctx.font="11px ui-monospace,monospace";ctx.textAlign="left";
+  ctx.fillText("MAXIMUS · 94 KNOTEN",10,h-10);
+  ctx.textAlign="right";ctx.fillStyle="#58f28b";
+  ctx.fillText(`LVL ${String(level()).padStart(2,"0")} · ${state.mode.toUpperCase()}`,w-10,h-10);
+}
+function selectAt(e){
+  const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  let best=null,dist=Infinity;
+  for(const t of targets){const d=Math.hypot(x-t.x,y-t.y);if(d<t.r&&d<dist){best=t;dist=d}}
+  if(best){state.selected=best.i;save();render()}
+}
+canvas.addEventListener("pointerup",selectAt);
+document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>{
+  state.mode=b.dataset.mode;save();render();
+}));
+$("trainButton").addEventListener("click",train);
+$("duelButton").addEventListener("click",duel);
+$("resetButton").addEventListener("click",()=>{
+  if(confirm("MAXIMUS-Fortschritt lokal zurücksetzen?")){
+    state=fresh();save();render();notify("Fortschritt zurückgesetzt.");
+  }
+});
+if("ResizeObserver"in window)new ResizeObserver(resize).observe(canvas);
+else addEventListener("resize",resize);
+render();
+})();
+</script>
 </body>
 </html>
