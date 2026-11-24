@@ -1,552 +1,325 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1a1512">
-<title>ROMANUM IMPERIA · NC-Hub-All · OCTA</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d0a">
+<title>NC.OS · CO₂ → O₂ + H₂O · Emulation</title>
 <style>
-:root {
-  color-scheme: dark;
-  --gold: #d4a017;
-  --marble: #e8ddd0;
-  --dark: #1a1512;
-  --panel: #211a15;
-  --bronze: #cd7f32;
-  --line: rgba(212,160,23,.24);
-  --muted: #a99b8d;
+:root{
+  color-scheme:dark;
+  --bg:#080d0a;--panel:#101812;--panel2:#17221a;
+  --border:#2a3b2d;--text:#e8f1e9;--muted:#a4b4a5;
+  --green:#59ed82;--blue:#77d9ff;--orange:#ffae55;
+  --shadow:0 6px 24px #0005
 }
-
-* { box-sizing: border-box; }
-
-html {
-  min-height: 100%;
-  -webkit-text-size-adjust: 100%;
+*{box-sizing:border-box}
+body{
+  margin:0;padding:20px 14px 40px;background:var(--bg);color:var(--text);
+  font:14px/1.5 Consolas,ui-monospace,monospace
 }
-
-body {
-  min-height: 100vh;
-  min-height: 100svh;
-  margin: 0;
-  padding: 24px 16px;
-  display: grid;
-  place-items: center;
-  background: radial-gradient(ellipse at top, #34251a 0%, var(--dark) 55%);
-  color: var(--marble);
-  font: 16px/1.5 Georgia, "Times New Roman", serif;
+main{max-width:1050px;margin:auto}
+h1{margin:0;color:var(--green);font-size:clamp(19px,4vw,27px);letter-spacing:.04em}
+h2{margin:0 0 10px;color:var(--blue);font-size:15px}
+p{margin:7px 0}
+.subtitle{margin:6px 0 18px;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
+.block{min-width:0;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
+.block.active{border-color:var(--green);box-shadow:0 0 18px #59ed8222}
+.title{margin-bottom:9px;color:var(--blue);font-size:13px;font-weight:bold}
+pre{
+  min-height:86px;max-height:260px;overflow:auto;margin:0 0 9px;padding:10px;
+  background:#050806;border-left:3px solid var(--blue);border-radius:3px;
+  color:var(--text);font:12px/1.5 Consolas,ui-monospace,monospace;
+  white-space:pre-wrap;overflow-wrap:anywhere
 }
-
-.imperium {
-  position: relative;
-  width: min(100%, 900px);
-  padding: clamp(22px, 5vw, 40px);
-  background: var(--panel);
-  border: 2px solid var(--gold);
-  border-radius: 16px;
-  box-shadow: 0 18px 70px #0008, 0 0 50px #d4a01712;
+button{
+  min-height:38px;margin:3px 3px 0 0;padding:7px 10px;
+  color:var(--green);background:var(--panel2);border:1px solid var(--green);
+  border-radius:6px;font:inherit;font-size:12px;cursor:pointer
 }
-
-.imperium::before {
-  content: "SENATVS POPVLVSQVE ROMANVS";
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: calc(100% - 28px);
-  padding: 0 12px;
-  overflow: hidden;
-  background: var(--dark);
-  color: var(--gold);
-  font: 10px/1.5 Georgia, serif;
-  letter-spacing: .18em;
-  text-align: center;
-  white-space: nowrap;
-}
-
-h1 {
-  margin: 0 0 18px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--line);
-  color: var(--gold);
-  font-size: clamp(1.7rem, 6vw, 2.8rem);
-  font-weight: 400;
-  letter-spacing: .12em;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-h1 small {
-  display: block;
-  margin-top: 6px;
-  color: var(--bronze);
-  font-size: .72rem;
-  font-style: italic;
-  letter-spacing: .18em;
-}
-
-.sub {
-  margin: 0 0 24px;
-  color: var(--bronze);
-  font-size: .8rem;
-  font-style: italic;
-  letter-spacing: .08em;
-  text-align: center;
-}
-
-h2 {
-  margin: 0 0 12px;
-  color: var(--gold);
-  font-size: .9rem;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-
-.achse {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin: 22px 0;
-}
-
-.achse-item {
-  min-width: 0;
-  min-height: 100px;
-  padding: 14px 8px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #ffffff05;
-  text-align: center;
-  transition: border-color .2s, background .2s;
-}
-
-.achse-item:hover {
-  border-color: var(--gold);
-  background: #d4a0170b;
-}
-
-.sym {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 22px;
-}
-
-.label {
-  color: var(--gold);
-  font-size: 11px;
-  letter-spacing: .08em;
-}
-
-.desc {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.controls {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: end;
-  margin-top: 24px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-input {
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #0d0a08;
-  color: var(--marble);
-  font: inherit;
-}
-
-input:focus-visible,
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-}
-
-.btn {
-  min-height: 44px;
-  padding: 10px 18px;
-  border: 1px solid var(--gold);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--gold);
-  font: inherit;
-  font-size: .86rem;
-  letter-spacing: .04em;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: background .2s, color .2s, transform .2s;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  background: var(--gold);
-  color: var(--dark);
-}
-
-.btn.secondary {
-  border-color: var(--line);
-  color: var(--marble);
-}
-
-.btn.secondary:hover {
-  border-color: var(--gold);
-  color: var(--dark);
-}
-
-.btn-group {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 12px 0 20px;
-}
-
-.output {
-  min-height: 120px;
-  margin: 18px 0;
-  padding: 16px;
-  overflow: auto;
-  border: 1px solid #2a221c;
-  border-left: 3px solid var(--gold);
-  border-radius: 10px;
-  background: #0d0a08;
-  color: #c9bcae;
-  font: 13px/1.55 ui-monospace, Consolas, monospace;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.status {
-  min-height: 1.4em;
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-.footer {
-  margin-top: 20px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  color: #88796b;
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-align: center;
-  line-height: 1.8;
-}
-
-.footer span { color: var(--bronze); }
-.footer a { color: var(--bronze); }
-
-@media (max-width: 560px) {
-  body {
-    display: block;
-    min-height: 100vh;
-    min-height: 100svh;
-    padding:
-      max(24px, env(safe-area-inset-top))
-      max(12px, env(safe-area-inset-right))
-      max(20px, env(safe-area-inset-bottom))
-      max(12px, env(safe-area-inset-left));
-  }
-
-  .imperium {
-    width: 100%;
-    padding: 26px 16px 20px;
-    border-radius: 12px;
-  }
-
-  h1 {
-    font-size: clamp(1.55rem, 8vw, 2.2rem);
-    letter-spacing: .07em;
-  }
-
-  h1 small { letter-spacing: .12em; }
-
-  .sub {
-    font-size: .72rem;
-    line-height: 1.7;
-  }
-
-  .achse {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin: 16px 0 24px;
-  }
-
-  .achse-item {
-    min-height: 92px;
-    padding: 12px 6px;
-  }
-
-  .controls {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-  }
-
-  input {
-    min-height: 48px;
-    font-size: 16px;
-  }
-
-  .controls .btn {
-    width: 100%;
-    min-height: 48px;
-  }
-
-  .output {
-    min-height: 140px;
-    padding: 12px;
-    font-size: 12px;
-  }
-
-  .btn-group {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .btn-group .btn {
-    min-width: 0;
-    min-height: 48px;
-    padding: 10px 8px;
-  }
-}
-
-@media (max-width: 360px) {
-  .imperium { padding-inline: 12px; }
-  .achse { gap: 6px; }
-  .label { font-size: 10px; }
-  .btn-group { grid-template-columns: 1fr; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
-    animation-duration: .01ms !important;
-  }
-}
+button:hover:not(:disabled){color:#061008;background:var(--green)}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.big{margin:10px 0;color:var(--green);font-size:clamp(18px,4vw,27px);text-align:center;white-space:pre-wrap}
+.green{color:var(--green)}.blue{color:var(--blue)}.orange{color:var(--orange)}
+.note{color:var(--muted);font-size:11px}
+.wide{margin-top:12px}
+footer{margin-top:14px;color:var(--muted);font-size:11px}
 </style>
 </head>
-
 <body>
-<main class="imperium">
-  <h1>ROMANUM IMPERIA<small>NC · HUB · OCTA · POT · 6D</small></h1>
-  <p class="sub">SENATVS POPVLVSQVE ROMANVS · AXIOMA · RESPO · CONTINVVM</p>
+<main>
+  <h1>challenges → use → user → ort → home</h1>
+  <div class="subtitle">Eigenständige Demo · lokale Emulation · keine externen Module · keine Elben gebaut</div>
 
-  <section aria-labelledby="achsenTitel">
-    <h2 id="achsenTitel">Die sechs Achsen</h2>
-    <div class="achse">
-      <div class="achse-item"><span class="sym">▲</span><span class="label">HÖHE</span><span class="desc">Caelum · Himmel</span></div>
-      <div class="achse-item"><span class="sym">◀▶</span><span class="label">BREITE</span><span class="desc">Terra · Erde</span></div>
-      <div class="achse-item"><span class="sym">▼</span><span class="label">TIEFE</span><span class="desc">Mare · Meer</span></div>
-      <div class="achse-item"><span class="sym">⬆</span><span class="label">MYSTERY-HÖHE</span><span class="desc">Aether · Unsichtbar</span></div>
-      <div class="achse-item"><span class="sym">⬌</span><span class="label">MYSTERY-BREITE</span><span class="desc">Fatum · Schicksal</span></div>
-      <div class="achse-item"><span class="sym">⬇</span><span class="label">MYSTERY-TIEFE</span><span class="desc">Tempus · Zeit</span></div>
-    </div>
-  </section>
+  <div class="grid">
+    <section class="block" id="b-challenges">
+      <div class="title">challenges · Challenge und „beste Wette“</div>
+      <pre id="log-challenges" aria-live="polite"></pre>
+      <button type="button" data-action="bet">Beste Wette zeigen</button>
+      <button type="button" data-slide="use">Nächste Slide → use</button>
+    </section>
 
-  <section aria-labelledby="aktionTitel">
-    <h2 id="aktionTitel">Kristall erzeugen</h2>
-    <div class="controls">
-      <div>
-        <label for="impuls">Impuls</label>
-        <input id="impuls" maxlength="120" value="Romanum" autocomplete="off" placeholder="Impuls eingeben">
-      </div>
-      <button class="btn" id="actionBtn" type="button">✦ Kristall · Respo · Axiom</button>
-    </div>
-    <p class="status" id="status" aria-live="polite">Bereit.</p>
-  </section>
+    <section class="block" id="b-use">
+      <div class="title">use · vereinfachte Stoffbilanz-Emulation</div>
+      <pre id="log-use" aria-live="polite"></pre>
+      <button type="button" data-action="use">Emulation ausführen</button>
+      <button type="button" data-slide="user">Nächste Slide → user</button>
+    </section>
 
-  <pre class="output" id="output" aria-live="polite">⚡ POT · Romanum Imperia · 6D · Axioma · Continuum · bereit</pre>
+    <section class="block" id="b-user">
+      <div class="title">user · eine Demo-Aktion auslösen</div>
+      <pre id="log-user" aria-live="polite"></pre>
+      <button type="button" data-action="user">Aktion ausführen</button>
+      <button type="button" data-slide="ort">Nächste Slide → ort</button>
+    </section>
 
-  <div class="btn-group">
-    <button class="btn secondary" id="copyBtn" type="button">⧉ Kopieren</button>
-    <button class="btn secondary" id="resetBtn" type="button">⟲ SPQR · Reset</button>
+    <section class="block" id="b-ort">
+      <div class="title">ort · virtueller Ort der Emulation</div>
+      <pre id="log-ort" aria-live="polite"></pre>
+      <button type="button" data-action="ort">Ort anzeigen</button>
+      <button type="button" data-slide="home">Nächste Slide → home</button>
+    </section>
+
+    <section class="block" id="b-home">
+      <div class="title">home · Ergebnis der Demo-Kette</div>
+      <pre id="log-home" aria-live="polite"></pre>
+      <div class="big" id="home-big">🏠 Home · wartet</div>
+      <button type="button" data-action="home">Home-Ergebnis anzeigen</button>
+      <button type="button" data-action="all">Alles ausführen</button>
+    </section>
   </div>
 
-  <footer class="footer">
-    <span>🧩</span> NC-Hub-All · OCTA · POT · 6D · Romanum Imperia ·
-    <span>wieimmer4u</span> · <a href="index.html">Master Mobile</a>
-  </footer>
+  <section class="block wide">
+    <h2>Emuliertes Ergebnis</h2>
+    <pre id="log-solution" aria-live="polite">Noch keine Emulation ausgeführt.</pre>
+    <p class="note">
+      Hinweis: Das ist ein illustratives Zahlenmodell. Echte Photosynthese benötigt unter anderem Licht,
+      Wasser und biologische Prozesse; diese Demo bildet sie nicht naturgetreu ab.
+    </p>
+  </section>
+
+  <footer id="status" aria-live="polite">Bereit.</footer>
 </main>
 
 <script>
 "use strict";
 
-const READY_TEXT = "⚡ POT · Romanum Imperia · 6D · Axioma · Continuum · bereit";
+/*
+  Illustratives Spielzeugmodell, keine Chemie-Simulation:
+  Eine „Einheit“ CO₂ wird rechnerisch in Demo-Werte für O₂,
+  Wasserrest und Zucker umgewandelt. Die Koeffizienten sind
+  nur für die Visualisierung gewählt.
+*/
+const CHALLENGES = Object.freeze([
+  {id:"C01",name:"Virtuelles Gewächshaus",co2:12,o2:8,h2o:6,ort:"Gewächshaus"},
+  {id:"C02",name:"Küstenstation",co2:9,o2:7,h2o:8,ort:"Küste"},
+  {id:"C03",name:"Waldlabor",co2:15,o2:9,h2o:5,ort:"Waldlabor"},
+  {id:"C04",name:"Stadtgarten",co2:7,o2:6,h2o:9,ort:"Stadtgarten"}
+]);
 
-const IMPERIUM = Object.freeze({
-  P(wert) {
-    return { primär: wert, status: "frei", symbol: "P" };
-  },
+const state = {
+  challenge:null,
+  useResult:null,
+  userResult:null,
+  ortResult:null,
+  homeResult:null
+};
 
-  O(sache, code = "js") {
-    return { sache, code, verordnet: true, symbol: "O" };
-  },
+const $ = id => document.getElementById(id);
+const round1 = value => Math.round(value * 10) / 10;
+const showJSON = value => JSON.stringify(value,null,2);
 
-  T(matrix) {
-    if (!Array.isArray(matrix) || matrix.length === 0) {
-      throw new TypeError("Die Tele-Matrix benötigt mindestens einen Wert.");
+function besteWette(){
+  // Demo-Heuristik: höchste CO₂-Zahl auswählen; kein Wett- oder Erfolgsversprechen.
+  return [...CHALLENGES].sort((a,b)=>b.co2-a.co2)[0];
+}
+
+function use(){
+  const challenge = state.challenge || besteWette();
+  const input = {co2:challenge.co2,h2o:challenge.h2o};
+
+  // Nur illustrative Skalierung, keine reale Stoffbilanz.
+  const co2Used = round1(input.co2 * 0.6);
+  const output = {
+    co2Verwendet:co2Used,
+    o2:round1(co2Used * 0.8),
+    wasserRest:round1(Math.max(0,input.h2o - co2Used * 0.25)),
+    zucker:round1(co2Used * 0.3)
+  };
+
+  const result = {
+    modell:"Illustrative Demo, keine naturgetreue Chemie-Simulation",
+    challenge:challenge.name,
+    input,
+    output,
+    elben:{gebaut:false,emuliert:false},
+    lösung:"Virtuelle Umwandlung wurde berechnet; es wurden weder Lebewesen noch Elben erzeugt."
+  };
+
+  state.useResult=result;
+  return result;
+}
+
+function user(){
+  const result = state.useResult || use();
+  const userAction = {
+    aktion:"Emulationsdaten anzeigen",
+    challenge:result.challenge,
+    ausgeführt:true,
+    hinweis:"Die Aktion verändert keine reale Umgebung."
+  };
+  state.userResult={userAction,useResult:result};
+  return state.userResult;
+}
+
+function ort(){
+  const userResult = state.userResult || user();
+  const challenge = state.challenge || besteWette();
+  const emulationAmOrt = {
+    ort:challenge.ort,
+    modus:"virtuell",
+    challenge:challenge.name,
+    input:userResult.useResult.input,
+    output:userResult.useResult.output,
+    realeUmgebungVerändert:false
+  };
+  state.ortResult={emulationAmOrt,userResult};
+  return state.ortResult;
+}
+
+function home(){
+  const ortResult = state.ortResult || ort();
+  const finalEmulation = {
+    ort:ortResult.emulationAmOrt.ort,
+    vorher:ortResult.emulationAmOrt.input,
+    nachher:ortResult.emulationAmOrt.output,
+    wieElben:"Nur als Zahlenmodell emuliert; keine Elben gebaut.",
+    system:{
+      eigenständig:true,
+      externeDateien:false,
+      realeChemie:false,
+      realeUmgebungVerändert:false
     }
+  };
+  const result={
+    finalEmulation,
+    esBlüht:"🌸 Demo abgeschlossen · virtuelles Ergebnis bereit."
+  };
+  state.homeResult=result;
+  return result;
+}
 
-    const values = matrix.map(Number);
+function clearActive(){
+  document.querySelectorAll(".block").forEach(block=>block.classList.remove("active"));
+}
+function activate(id){
+  clearActive();
+  $(id).classList.add("active");
+}
+function write(id,text){
+  $(id).textContent=typeof text==="string"?text:showJSON(text);
+}
+function renderChallenges(){
+  write("log-challenges",CHALLENGES.map(c=>
+    `${c.id} ${c.name} · CO₂ ${c.co2} · O₂ ${c.o2} · H₂O ${c.h2o} · Ort: ${c.ort}`
+  ).join("\n"));
+}
+function renderSolution(result){
+  write("log-solution",
+`Illustrative Emulation · ${result.challenge}
+Eingabe: CO₂ ${result.input.co2} · H₂O ${result.input.h2o}
+Demo-Ausgabe: O₂ ${result.output.o2} · Wasserrest ${result.output.wasserRest} · Zucker ${result.output.zucker}
 
-    if (!values.every(Number.isFinite)) {
-      throw new TypeError("Alle Matrixwerte müssen gültige Zahlen sein.");
-    }
+${result.lösung}
+Keine reale Chemie-Simulation; keine Lebewesen erzeugt.`);
+}
+function slideTo(name){
+  const ids={use:"b-use",user:"b-user",ort:"b-ort",home:"b-home"};
+  const target=$(ids[name]);
+  if(!target)return;
+  target.scrollIntoView({behavior:"smooth",block:"center"});
+  activate(ids[name]);
+}
+function runAll(){
+  state.challenge=besteWette();
+  const useResult=use();
+  const userResult=user();
+  const ortResult=ort();
+  const homeResult=home();
 
-    const balance = values.reduce((sum, value) => sum + value, 0) / values.length;
+  write("log-challenges",`Beste Wette (Demo-Heuristik):\n${showJSON(state.challenge)}`);
+  write("log-use",`${showJSON(useResult)}\n\n${useResult.lösung}`);
+  write("log-user",showJSON(userResult.userAction));
+  write("log-ort",showJSON(ortResult.emulationAmOrt));
+  write("log-home",`${showJSON(homeResult.finalEmulation)}\n\n${homeResult.esBlüht}`);
+  $("home-big").textContent=homeResult.esBlüht;
+  renderSolution(useResult);
+  document.querySelectorAll(".block").forEach(block=>block.classList.add("active"));
+  $("status").textContent="Kette abgeschlossen: challenges → use → user → ort → home.";
+}
 
-    return {
-      verbindung: "all4all",
-      balance: balance.toFixed(2),
-      modus: "alltechall",
-      symbol: "T"
-    };
-  },
+document.addEventListener("click",event=>{
+  const button=event.target.closest("button");
+  if(!button)return;
 
-  D6() {
-    return {
-      höhe: "Caelum",
-      breite: "Terra",
-      tiefe: "Mare",
-      mysteryHöhe: "Aether",
-      mysteryBreite: "Fatum",
-      mysteryTiefe: "Tempus"
-    };
-  },
-
-  resonanz(input) {
-    return {
-      empfangen: input,
-      geantwortet: `Romanum Imperia · ${input} · balanciert · 6D · Axioma`,
-      zeit: new Date().toISOString()
-    };
-  },
-
-  kristall(impuls) {
-    return {
-      imperium: "Romanum Imperia",
-      impuls,
-      primär: this.P(impuls),
-      ordert: this.O("Axiom"),
-      tele: this.T([3, 9, 27, 81]),
-      "6D": this.D6(),
-      resonanz: this.resonanz(impuls),
-      motto: "✦ SPQR · Axioma · Continuum · Freude · Harmonie",
-      stamp: new Date().toISOString()
-    };
-  }
-});
-
-const output = document.getElementById("output");
-const input = document.getElementById("impuls");
-const status = document.getElementById("status");
-const copyButton = document.getElementById("copyBtn");
-
-let count = 0;
-
-function showKristall() {
-  const impuls = input.value.trim();
-
-  if (!impuls) {
-    status.textContent = "Bitte zuerst einen Impuls eingeben.";
-    input.focus();
+  if(button.dataset.slide){
+    slideTo(button.dataset.slide);
     return;
   }
 
-  try {
-    const result = IMPERIUM.kristall(impuls);
-    count++;
-
-    const d6 = result["6D"];
-
-    output.textContent = [
-      `✦ ROMANUM IMPERIA · Kristall #${count}`,
-      `Impuls: ${result.impuls}`,
-      `P · Primär: ${result.primär.primär} · ${result.primär.status}`,
-      `O · Ordert: ${result.ordert.sache} · ${result.ordert.code} · verordnet`,
-      `T · Tele-Matrix: ${result.tele.verbindung} · Balance ${result.tele.balance} · ${result.tele.modus}`,
-      `6D: Höhe ${d6.höhe} · Breite ${d6.breite} · Tiefe ${d6.tiefe}`,
-      `    Mystery: ${d6.mysteryHöhe} · ${d6.mysteryBreite} · ${d6.mysteryTiefe}`,
-      `Respo: ${result.resonanz.geantwortet}`,
-      result.motto
-    ].join("\n");
-
-    status.textContent = `Kristall #${count} für „${impuls}“ erzeugt.`;
-  } catch (error) {
-    output.textContent = READY_TEXT;
-    status.textContent = error instanceof Error
-      ? `Fehler: ${error.message}`
-      : "Unerwarteter Fehler.";
-  }
-}
-
-function reset() {
-  input.value = "Romanum";
-  count = 0;
-  output.textContent = READY_TEXT;
-  status.textContent = "Zurückgesetzt. Bereit.";
-  input.focus();
-}
-
-document.getElementById("actionBtn").addEventListener("click", showKristall);
-document.getElementById("resetBtn").addEventListener("click", reset);
-
-copyButton.addEventListener("click", async () => {
-  const text = output.textContent;
-
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-    } else {
-      const temporary = document.createElement("textarea");
-      temporary.value = text;
-      temporary.setAttribute("readonly", "");
-      temporary.style.position = "fixed";
-      temporary.style.opacity = "0";
-      document.body.appendChild(temporary);
-      temporary.select();
-
-      const copied = document.execCommand("copy");
-      temporary.remove();
-
-      if (!copied) throw new Error("Kopieren fehlgeschlagen");
+  switch(button.dataset.action){
+    case "bet":{
+      state.challenge=besteWette();
+      write("log-challenges",`Beste Wette nach Demo-Heuristik (höchster CO₂-Wert):\n${showJSON(state.challenge)}\n\nDas ist keine echte Wette und keine Vorhersage.`);
+      activate("b-challenges");
+      $("status").textContent="Demo-Challenge ausgewählt.";
+      break;
     }
-
-    const previousText = copyButton.textContent;
-    copyButton.textContent = "✓ Kopiert";
-    setTimeout(() => {
-      copyButton.textContent = previousText;
-    }, 1200);
-  } catch {
-    status.textContent = "Kopieren nicht möglich — Text markieren.";
+    case "use":{
+      state.challenge=state.challenge||besteWette();
+      const result=use();
+      write("log-use",`${showJSON(result)}\n\n${result.lösung}`);
+      renderSolution(result);
+      activate("b-use");
+      $("status").textContent="Illustrative Emulation berechnet.";
+      break;
+    }
+    case "user":{
+      const result=user();
+      write("log-user",showJSON(result.userAction));
+      activate("b-user");
+      $("status").textContent="Demo-Aktion ausgeführt.";
+      break;
+    }
+    case "ort":{
+      const result=ort();
+      write("log-ort",showJSON(result.emulationAmOrt));
+      activate("b-ort");
+      $("status").textContent="Virtueller Ort ausgewählt.";
+      break;
+    }
+    case "home":{
+      const result=home();
+      write("log-home",`${showJSON(result.finalEmulation)}\n\n${result.esBlüht}`);
+      $("home-big").textContent=result.esBlüht;
+      renderSolution(state.useResult);
+      activate("b-home");
+      $("status").textContent="Home-Ergebnis angezeigt.";
+      break;
+    }
+    case "all":
+      runAll();
+      break;
   }
 });
 
-input.addEventListener("keydown", event => {
-  if (event.key === "Enter") showKristall();
-});
+renderChallenges();
+write("log-use","Warte auf Emulation …");
+write("log-user","Warte auf Nutzeraktion …");
+write("log-ort","Warte auf Ort …");
+write("log-home","Warte auf Ergebnis …");
 </script>
 </body>
 </html>
