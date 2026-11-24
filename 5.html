@@ -1,502 +1,774 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101522">
-<title>DOPPELDAME · LEVEL-SKILL · 1 → 3 → 9 → 81</title>
-<style>
-:root{color-scheme:dark;--bg:#101522;--panel:#151c2b;--border:#29364b;--text:#e8edf7;--muted:#a2aec2;--green:#39dfa0;--gold:#ffc978;--pink:#ff658e}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:14px Consolas,ui-monospace,monospace}
-header,main{width:min(1100px,100%);margin:auto;padding-inline:16px}
-header{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-h1{margin:0;color:var(--green);font-size:17px;letter-spacing:1.5px}
-.controls{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
-button{min-height:36px;padding:7px 12px;border:1px solid var(--border);border-radius:7px;background:#182131;color:var(--text);font:inherit;cursor:pointer}
-button:hover{border-color:var(--green)}
-button.active{background:var(--green);border-color:var(--green);color:#07130f}
-button.wrong{border-color:var(--pink);color:var(--pink)}
-button.wrong.active{background:var(--pink);color:#1d0911}
-button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-main{padding-block:14px 22px}
-.readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.readout,.help{padding:10px 13px;border:1px solid var(--border);border-radius:9px;background:var(--panel)}
-.readout{min-height:65px}
-.readout-label{display:block;margin-bottom:5px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}
-output{color:var(--green);font-weight:bold}
-.visual{overflow:hidden;border:1px solid var(--border);border-radius:12px;background:#131a28}
-canvas{display:block;width:100%;height:min(62vh,600px);min-height:300px}
-.help{margin-top:12px;color:var(--muted);line-height:1.7}
-.help strong{color:var(--text)}
-#modeText{color:var(--gold)}
-@media(max-width:650px){
-  header{padding-block:12px}
-  h1{width:100%;font-size:15px}
-  .readouts{grid-template-columns:1fr;gap:7px}
-  .readout{min-height:54px}
-  canvas{height:55vh;min-height:280px}
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101510">
+  <meta name="description" content="M1-, M2- und M3-Bewertungen vergleichen und lokal verwalten.">
+  <title>M1 / M2 / M3 · Bewertungsboard</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101510;
+      --panel: #181f19;
+      --panel-2: #20291f;
+      --line: #344031;
+      --text: #f1f4ec;
+      --muted: #a7b09f;
+      --accent: #c5f36b;
+      --green: #61f58f;
+      --yellow: #ffd27a;
+      --red: #ff8d8d;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 12% 0%, #26331f 0, transparent 38%),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .wrap { width: min(100% - 32px, 1100px); margin: 0 auto; }
+
+    header {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+      background: #101510cc;
+    }
+
+    .header-row, .toolbar, .card-heading, .dialog-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+
+    .brand span { color: var(--accent); }
+
+    .save-status {
+      color: var(--muted);
+      font-size: .82rem;
+      text-align: right;
+    }
+
+    main { padding: 48px 0 72px; }
+    .intro { max-width: 700px; }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.3rem, 7vw, 4.5rem);
+      letter-spacing: -.06em;
+      line-height: 1;
+    }
+
+    .intro-copy {
+      margin: 16px 0 0;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .toolbar {
+      flex-wrap: wrap;
+      margin: 30px 0 14px;
+    }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; }
+
+    .field, .button, .icon-button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .field { min-width: 190px; padding: 9px 12px; }
+    .field::placeholder { color: #869080; }
+
+    .button {
+      padding: 9px 14px;
+      font-weight: 650;
+    }
+
+    .button:hover, .icon-button:hover { background: var(--panel-2); }
+
+    .button-primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #18200f;
+    }
+
+    .button-primary:hover { filter: brightness(1.08); }
+
+    .button-danger:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .count {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      min-width: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, var(--panel), #141a14);
+    }
+
+    .card-heading { align-items: flex-start; }
+
+    .card-id {
+      color: var(--muted);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      overflow-wrap: anywhere;
+    }
+
+    .actions { display: flex; gap: 6px; }
+
+    .icon-button {
+      width: 36px;
+      min-height: 36px;
+      padding: 5px;
+      color: var(--muted);
+    }
+
+    .card h2 {
+      margin: 15px 0 4px;
+      font-size: 1.1rem;
+    }
+
+    .card-note {
+      min-height: 1.5em;
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: .87rem;
+      overflow-wrap: anywhere;
+    }
+
+    .rating-row { margin: 12px 0; }
+
+    .rating-label {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) 28px;
+      align-items: center;
+      gap: 9px;
+      font-weight: 750;
+    }
+
+    .rating-label output {
+      color: var(--accent);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rating-slider {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .rating-scale {
+      display: flex;
+      justify-content: space-between;
+      padding-left: 39px;
+      color: #808a7b;
+      font-size: .68rem;
+    }
+
+    .result-box {
+      display: grid;
+      gap: 9px;
+      margin-top: 17px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .result-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: .86rem;
+    }
+
+    .result-label { color: var(--muted); }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .status-konsens {
+      color: var(--green);
+      background: #10311e;
+      border-color: #2f864d;
+    }
+
+    .status-teil {
+      color: var(--yellow);
+      background: #3b2f0d;
+      border-color: #8b6a14;
+    }
+
+    .status-offen {
+      color: var(--red);
+      background: #381616;
+      border-color: #963131;
+    }
+
+    .gate {
+      padding: 8px 10px;
+      border-radius: 9px;
+      font-size: .82rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .gate-build {
+      color: var(--green);
+      background: #10311e;
+      border: 1px solid #2f864d;
+    }
+
+    .gate-wait {
+      color: var(--yellow);
+      background: #3b2f0d;
+      border: 1px solid #8b6a14;
+    }
+
+    .empty {
+      display: none;
+      padding: 28px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .notice {
+      min-height: 22px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    dialog {
+      width: min(100% - 28px, 480px);
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    dialog::backdrop { background: #000b; }
+
+    .dialog-content { padding: 22px; }
+    .dialog-content h2 { margin: 0 0 18px; }
+
+    .form-field {
+      display: grid;
+      gap: 6px;
+      margin: 14px 0;
+    }
+
+    .form-field label {
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .form-field input, .form-field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .form-field textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    .dialog-actions { justify-content: flex-end; margin-top: 20px; }
+
+    footer {
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 560px) {
+      main { padding-top: 36px; }
+      .grid { grid-template-columns: 1fr; }
+      .header-row { align-items: flex-start; }
+      .toolbar { align-items: stretch; }
+      .controls { width: 100%; }
+      .controls .field { flex: 1 1 100%; }
+      .toolbar > .button { width: 100%; }
+      .save-status { max-width: 45%; }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <h1>DOPPELDAME · LEVEL-SKILL · 1 → 3 → 9 → 81</h1>
-  <nav class="controls" aria-label="Steuerung">
-    <button type="button" data-level="1">1</button>
-    <button type="button" data-level="3">3</button>
-    <button type="button" data-level="9">9</button>
-    <button type="button" data-level="81">81</button>
-    <button type="button" id="runButton">SKILL AN</button>
-    <button type="button" id="autoButton" aria-pressed="false">AUTO</button>
-    <button type="button" id="wrongButton" class="wrong" aria-pressed="false">GEGENLAUF</button>
-  </nav>
-</header>
-
-<main>
-  <section class="readouts" aria-live="polite">
-    <div class="readout">
-      <span class="readout-label">Level</span>
-      <output id="levelOutput">1 Punkt · Level 1</output>
+  <header>
+    <div class="wrap header-row">
+      <div class="brand">M1 <span>/</span> M2 <span>/</span> M3</div>
+      <span class="save-status" id="saveStatus" aria-live="polite">Lokale Daten</span>
     </div>
-    <div class="readout">
-      <span class="readout-label">Doppeldamen</span>
-      <output id="runnerOutput">1 / 1</output>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">Drei Quellen · ein Vergleich</p>
+      <h1>M1 / M2 / M3</h1>
+      <p class="intro-copy">
+        Werte von 0 bis 10 erfassen. Konsens und Kompetenz-Gate werden direkt aus den drei Bewertungen berechnet.
+        Diese Anzeige misst Übereinstimmung – sie beweist keine objektive Wahrheit.
+      </p>
+    </section>
+
+    <section aria-label="M1 M2 M3 Bewertungsboard">
+      <div class="toolbar">
+        <div class="controls">
+          <label hidden for="search">Einträge suchen</label>
+          <input class="field" id="search" type="search" placeholder="Einträge suchen …">
+          <button class="button" id="exportJson" type="button">JSON exportieren</button>
+          <button class="button" id="importButton" type="button">JSON importieren</button>
+          <input id="importJson" type="file" accept=".json,application/json" hidden>
+        </div>
+        <button class="button button-primary" id="addButton" type="button">+ Eintrag</button>
+      </div>
+
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty">Keine passenden Einträge gefunden.</p>
+      <p class="notice" id="notice" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      Lokale Demo: Bewertungsdaten werden in diesem Browser gespeichert. JSON-Import ersetzt die vorhandene Liste.
     </div>
-    <div class="readout">
-      <span class="readout-label">Skill-Status</span>
-      <output id="statusOutput">Bereit</output>
-    </div>
-  </section>
+  </footer>
 
-  <section class="visual">
-    <canvas id="canvas" aria-label="Zoom-Level und zwei metaphorische Skill-Marker"></canvas>
-  </section>
+  <dialog id="editor">
+    <form class="dialog-content" id="entryForm">
+      <h2 id="dialogTitle">Eintrag hinzufügen</h2>
+      <input type="hidden" id="entryId">
 
-  <section class="help">
-    <strong>Steuerung:</strong>
-    1, 3, 9 oder 8 für Level 81 · Leertaste startet/stoppt den Skill ·
-    A für AUTO · F für den Gegenlauf · Pfeiltasten wechseln das Level.
-    <br>
-    <span id="modeText">Zwei Marker zeigen denselben Skill-Verlauf – metaphorisch, kein Spiel mit Figuren.</span>
-  </section>
-</main>
+      <div class="form-field">
+        <label for="entryLabel">Anzeigename (optional)</label>
+        <input id="entryLabel" maxlength="70" placeholder="z. B. Eintrag 01">
+      </div>
 
-<script>
-"use strict";
+      <div class="form-field">
+        <label for="entryNote">Notiz (optional)</label>
+        <textarea id="entryNote" maxlength="240" placeholder="Kurze Erläuterung"></textarea>
+      </div>
 
-(() => {
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
+      <div class="dialog-actions">
+        <button class="button" id="cancelButton" type="button">Abbrechen</button>
+        <button class="button button-primary" type="submit">Speichern</button>
+      </div>
+    </form>
+  </dialog>
 
-  const levelOutput = document.getElementById("levelOutput");
-  const runnerOutput = document.getElementById("runnerOutput");
-  const statusOutput = document.getElementById("statusOutput");
-  const modeText = document.getElementById("modeText");
+  <script>
+    (() => {
+      "use strict";
 
-  const LEVELS = [1, 3, 9, 81];
-  const AUTO_SEQUENCE = [1, 3, 9, 81, 9, 3];
-
-  const COLORS = {
-    background: "#131a28",
-    line: "rgba(150,170,200,.24)",
-    inactive: "#354258",
-    green: "#39dfa0",
-    gold: "#ffc978",
-    pink: "#ff658e",
-    text: "#e8edf7"
-  };
-
-  const points = {
-    1: [{ x: 50, y: 50, parent: -1 }],
-    3: [],
-    9: [],
-    81: []
-  };
-
-  points[3] = [
-    { x: 50, y: 22, parent: 0, name: "ZOOM", sub: "sehen" },
-    { x: 27, y: 67, parent: 0, name: "ZO.OM", sub: "trennen" },
-    { x: 73, y: 67, parent: 0, name: "Z.O.O.M", sub: "zerlegen" }
-  ];
-
-  points[3].forEach((parent, parentIndex) => {
-    points[3].forEach((child, childIndex) => {
-      points[9].push({
-        x: parent.x + (child.x - 50) * 0.25,
-        y: parent.y + (child.y - 50) * 0.25,
-        parent: parentIndex,
-        branch: parentIndex,
-        child: childIndex
-      });
-    });
-  });
-
-  points[9].forEach((parent, parentIndex) => {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 3; col++) {
-        points[81].push({
-          x: parent.x + (col - 1) * 2.2,
-          y: parent.y + (row - 1) * 2.2,
-          parent: parentIndex,
-          cell: row * 3 + col
-        });
-      }
-    }
-  });
-
-  let level = 1;
-  let running = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let reverse = false;
-  let auto = false;
-  let position = 0;
-  let autoIndex = 0;
-  let autoElapsed = 0;
-  let lastTime = 0;
-  let lastReportedIndex = -1;
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
-  let scale = 1;
-  let offsetX = 0;
-  let offsetY = 0;
-
-  function resizeCanvas() {
-    const rect = canvas.getBoundingClientRect();
-
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    width = rect.width;
-    height = rect.height;
-
-    canvas.width = Math.max(1, Math.round(width * dpr));
-    canvas.height = Math.max(1, Math.round(height * dpr));
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    scale = Math.min(width / 100, height / 100);
-    offsetX = (width - 100 * scale) / 2;
-    offsetY = (height - 100 * scale) / 2;
-  }
-
-  function sx(x) {
-    return offsetX + x * scale;
-  }
-
-  // Die Spiegelung liegt zentral in der Koordinatenabbildung.
-  // Dadurch werden Punkte, Linien, Labels und Läufer gemeinsam gespiegelt.
-  function sy(y) {
-    const displayedY = reverse ? 100 - y : y;
-    return offsetY + displayedY * scale;
-  }
-
-  function updateRunner(index) {
-    if (index === lastReportedIndex) return;
-
-    lastReportedIndex = index;
-    runnerOutput.textContent = `${index + 1} / ${points[level].length}`;
-  }
-
-  function stopAuto() {
-    auto = false;
-    autoElapsed = 0;
-
-    const button = document.getElementById("autoButton");
-    button.classList.remove("active");
-    button.setAttribute("aria-pressed", "false");
-  }
-
-  function setLevel(nextLevel) {
-    if (!points[nextLevel]) return;
-
-    level = nextLevel;
-    position = 0;
-    lastReportedIndex = -1;
-    stopAuto();
-
-    document.querySelectorAll("[data-level]").forEach(button => {
-      button.classList.toggle(
-        "active",
-        Number(button.dataset.level) === level
-      );
-    });
-
-    const count = points[level].length;
-    levelOutput.textContent =
-      `${count} ${count === 1 ? "Punkt" : "Punkte"} · Level ${level}`;
-
-    updateRunner(0);
-    statusOutput.textContent = level === 1 ? "Einzelpunkt" : "Skill bereit";
-  }
-
-  function drawLine(a, b, color, lineWidth) {
-    ctx.beginPath();
-    ctx.moveTo(sx(a.x), sy(a.y));
-    ctx.lineTo(sx(b.x), sy(b.y));
-    ctx.strokeStyle = color;
-    ctx.lineWidth = lineWidth;
-    ctx.stroke();
-  }
-
-  function drawPoint(point, radius, fill) {
-    ctx.beginPath();
-    ctx.arc(
-      sx(point.x),
-      sy(point.y),
-      Math.max(1, radius * scale),
-      0,
-      Math.PI * 2
-    );
-    ctx.fillStyle = fill;
-    ctx.fill();
-  }
-
-  function draw(time) {
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = COLORS.background;
-    ctx.fillRect(0, 0, width, height);
-
-    const visibleLevels = LEVELS.filter(value => value <= level);
-
-    // Linien zur jeweiligen Elternebene.
-    for (const childLevel of visibleLevels) {
-      if (childLevel === 1) continue;
-
-      const parentLevel =
-        childLevel === 3 ? 1 :
-        childLevel === 9 ? 3 : 9;
-
-      for (const point of points[childLevel]) {
-        const parent = points[parentLevel][point.parent];
-        if (parent) {
-          drawLine(
-            parent,
-            point,
-            COLORS.line,
-            childLevel === 81 ? 0.7 : 1.2
-          );
-        }
-      }
-    }
-
-    // Alle sichtbaren Punkte verwenden dieselbe Spiegeltransformation.
-    for (const visibleLevel of visibleLevels) {
-      for (const point of points[visibleLevel]) {
-        const selected = visibleLevel === level;
-        const fill = selected
-          ? (reverse ? COLORS.pink : COLORS.green)
-          : COLORS.inactive;
-
-        const radius =
-          visibleLevel === 1 ? 5 :
-          visibleLevel === 3 ? 3.5 :
-          visibleLevel === 9 ? 2.2 : 1.2;
-
-        drawPoint(point, radius, fill);
-      }
-    }
-
-    // Labels bleiben an ihren Punkten und spiegeln gemeinsam mit ihnen.
-    if (level === 3) {
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      for (const point of points[3]) {
-        ctx.fillStyle = COLORS.text;
-        ctx.font = `${Math.max(10, 11 * scale)}px Consolas, monospace`;
-        ctx.fillText(point.name, sx(point.x), sy(point.y + 8));
-
-        ctx.fillStyle = "#9aa6ba";
-        ctx.font = `${Math.max(9, 9 * scale)}px Consolas, monospace`;
-        ctx.fillText(point.sub, sx(point.x), sy(point.y + 12));
-      }
-    }
-
-    const list = points[level];
-    const count = list.length;
-    if (!count) return;
-
-    const wholePosition = Math.floor(position);
-    const index = ((wholePosition % count) + count) % count;
-    const nextIndex = (index + 1) % count;
-    const fraction = position - wholePosition;
-    const eased = fraction * fraction * (3 - 2 * fraction);
-
-    updateRunner(index);
-
-    const a = list[index];
-    const b = list[nextIndex];
-    const x = a.x + (b.x - a.x) * eased;
-    const y = a.y + (b.y - a.y) * eased;
-
-    const pulse = (Math.sin(time * 0.005) + 1) / 2;
-    const runnerColor = reverse ? COLORS.pink : COLORS.gold;
-    const radius = level === 81 ? 1.8 : level === 9 ? 2.8 : 4;
-    const pairOffset = level === 81 ? 1.2 : level === 9 ? 2.2 : 3.2;
-
-    // Doppeldame: zwei Marker als Paar auf demselben Pfad.
-    ctx.globalAlpha = 0.25 + pulse * 0.18;
-    drawPoint({ x: x - pairOffset, y }, radius * 2.3, runnerColor);
-    drawPoint({ x: x + pairOffset, y }, radius * 2.3, COLORS.green);
-
-    ctx.globalAlpha = 1;
-    drawPoint({ x: x - pairOffset, y }, radius, runnerColor);
-    drawPoint({ x: x + pairOffset, y }, radius, COLORS.green);
-
-    // Auch die Richtungsmarkierung nutzt sy(); kein separater Flip nötig.
-    if (count > 1) {
-      const direction = reverse ? -1 : 1;
-      const next = list[
-        (index + (direction > 0 ? 1 : count - 1) + count) % count
+      const STORAGE_KEY = "m1-m2-m3-board.v1";
+      const DEFAULT_ENTRIES = [
+        { id: "01", label: "Eintrag 01", note: "", m1: 8, m2: 8, m3: 8 },
+        { id: "02", label: "Eintrag 02", note: "", m1: 6, m2: 9, m3: 7 },
+        { id: "03", label: "Eintrag 03", note: "", m1: 5, m2: 5, m3: 8 }
       ];
 
-      drawLine(
-        { x, y },
-        next,
-        runnerColor,
-        1.5
-      );
-    }
-  }
+      const $ = (selector) => document.querySelector(selector);
+      const grid = $("#grid");
+      const search = $("#search");
+      const count = $("#count");
+      const empty = $("#empty");
+      const editor = $("#editor");
+      const form = $("#entryForm");
+      const notice = $("#notice");
+      const saveStatus = $("#saveStatus");
 
-  function frame(time) {
-    const delta = lastTime
-      ? Math.min(0.05, (time - lastTime) / 1000)
-      : 0;
+      let entries = loadEntries();
 
-    lastTime = time;
+      function makeId() {
+        if (globalThis.crypto && typeof globalThis.crypto.randomUUID === "function") {
+          return globalThis.crypto.randomUUID();
+        }
+        return "m123-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 9);
+      }
 
-    const list = points[level];
+      function escapeHTML(value = "") {
+        return String(value).replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[char]);
+      }
 
-    if (running && list.length > 1) {
-      const speed = level === 3 ? 0.8 : level === 9 ? 2 : 8;
-      position += delta * speed * (reverse ? -1 : 1);
+      function validateEntry(entry) {
+        return Boolean(
+          entry &&
+          typeof entry === "object" &&
+          typeof entry.id === "string" &&
+          entry.id.length > 0 &&
+          typeof entry.m1 === "number" &&
+          Number.isInteger(entry.m1) &&
+          entry.m1 >= 0 && entry.m1 <= 10 &&
+          typeof entry.m2 === "number" &&
+          Number.isInteger(entry.m2) &&
+          entry.m2 >= 0 && entry.m2 <= 10 &&
+          typeof entry.m3 === "number" &&
+          Number.isInteger(entry.m3) &&
+          entry.m3 >= 0 && entry.m3 <= 10 &&
+          (entry.label === undefined || typeof entry.label === "string") &&
+          (entry.note === undefined || typeof entry.note === "string")
+        );
+      }
 
-      const count = list.length;
-      position = ((position % count) + count) % count;
-    }
+      function normalizeEntry(entry) {
+        return {
+          id: entry.id,
+          label: typeof entry.label === "string" && entry.label.trim()
+            ? entry.label.trim()
+            : "Eintrag",
+          note: typeof entry.note === "string" ? entry.note : "",
+          m1: entry.m1,
+          m2: entry.m2,
+          m3: entry.m3
+        };
+      }
 
-    if (auto) {
-      autoElapsed += delta;
+      function loadEntries() {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (!stored) return DEFAULT_ENTRIES.map((entry) => ({ ...entry }));
 
-      if (autoElapsed >= 2.4) {
-        autoElapsed -= 2.4;
-        autoIndex = (autoIndex + 1) % AUTO_SEQUENCE.length;
-        level = AUTO_SEQUENCE[autoIndex];
-        position = 0;
-        lastReportedIndex = -1;
+          const parsed = JSON.parse(stored);
+          if (!Array.isArray(parsed) || !parsed.every(validateEntry)) {
+            return DEFAULT_ENTRIES.map((entry) => ({ ...entry }));
+          }
 
-        document.querySelectorAll("[data-level]").forEach(button => {
-          button.classList.toggle(
-            "active",
-            Number(button.dataset.level) === level
-          );
+          return parsed.map(normalizeEntry);
+        } catch {
+          return DEFAULT_ENTRIES.map((entry) => ({ ...entry }));
+        }
+      }
+
+      function saveEntries() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+          saveStatus.textContent = "Lokal gespeichert";
+        } catch {
+          saveStatus.textContent = "Lokales Speichern nicht möglich";
+        }
+      }
+
+      function getConsensus(entry) {
+        const values = [entry.m1, entry.m2, entry.m3];
+
+        if (values[0] === values[1] && values[1] === values[2]) {
+          return { text: "KONSENS", className: "status-konsens" };
+        }
+
+        if (
+          values[0] === values[1] ||
+          values[1] === values[2] ||
+          values[0] === values[2]
+        ) {
+          return { text: "TEILKONSENS", className: "status-teil" };
+        }
+
+        return { text: "OFFEN", className: "status-offen" };
+      }
+
+      function getGate(entry) {
+        const score = [entry.m1, entry.m2, entry.m3].filter((value) => value >= 7).length;
+        return { score, build: score === 3 };
+      }
+
+      function cardMarkup(entry) {
+        const consensus = getConsensus(entry);
+        const gate = getGate(entry);
+        const average = ((entry.m1 + entry.m2 + entry.m3) / 3).toFixed(1);
+        const label = entry.label || "Eintrag";
+
+        return `
+          <article class="card" data-entry-id="${escapeHTML(entry.id)}">
+            <div class="card-heading">
+              <span class="card-id">ID · ${escapeHTML(entry.id)}</span>
+              <div class="actions">
+                <button
+                  class="icon-button"
+                  type="button"
+                  data-edit="${escapeHTML(entry.id)}"
+                  aria-label="Eintrag bearbeiten"
+                  title="Bearbeiten">✎</button>
+                <button
+                  class="icon-button button-danger"
+                  type="button"
+                  data-delete="${escapeHTML(entry.id)}"
+                  aria-label="Eintrag löschen"
+                  title="Löschen">×</button>
+              </div>
+            </div>
+
+            <h2>${escapeHTML(label)}</h2>
+            <p class="card-note">${escapeHTML(entry.note || "Keine Notiz.")}</p>
+
+            ${["m1", "m2", "m3"].map((key) => `
+              <div class="rating-row">
+                <label class="rating-label">
+                  <span>${key.toUpperCase()}</span>
+                  <input
+                    class="rating-slider"
+                    type="range"
+                    min="0"
+                    max="10"
+                    step="1"
+                    value="${entry[key]}"
+                    data-id="${escapeHTML(entry.id)}"
+                    data-key="${key}"
+                    aria-label="${key.toUpperCase()} für ${escapeHTML(label)}">
+                  <output>${entry[key]}</output>
+                </label>
+                <div class="rating-scale" aria-hidden="true"><span>0</span><span>10</span></div>
+              </div>
+            `).join("")}
+
+            <div class="result-box">
+              <div class="result-line">
+                <span class="result-label">Mittelwert</span>
+                <strong>Ø ${average}</strong>
+              </div>
+              <div class="result-line">
+                <span class="result-label">Vergleich</span>
+                <span class="status ${consensus.className}">${consensus.text}</span>
+              </div>
+              <div class="gate ${gate.build ? "gate-build" : "gate-wait"}">
+                ${gate.score}/3 · ${gate.build ? "VERBAUEN" : "WAIT"}
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      function render() {
+        const query = search.value.trim().toLocaleLowerCase("de");
+        const visible = entries.filter((entry) => {
+          const text = `${entry.id} ${entry.label || ""} ${entry.note || ""}`.toLocaleLowerCase("de");
+          return text.includes(query);
         });
 
-        const count = points[level].length;
-        levelOutput.textContent =
-          `${count} ${count === 1 ? "Punkt" : "Punkte"} · Level ${level}`;
-
-        updateRunner(0);
-        statusOutput.textContent =
-          level === 1 ? "Einzelpunkt" : "AUTO läuft";
+        grid.innerHTML = visible.map(cardMarkup).join("");
+        count.textContent = `${visible.length} von ${entries.length} Einträgen`;
+        empty.style.display = visible.length ? "none" : "block";
       }
-    }
 
-    draw(time);
-    requestAnimationFrame(frame);
-  }
+      function openEditor(entry = null) {
+        form.reset();
+        $("#entryId").value = entry?.id || "";
+        $("#entryLabel").value = entry?.label || "";
+        $("#entryNote").value = entry?.note || "";
+        $("#dialogTitle").textContent = entry ? "Eintrag bearbeiten" : "Eintrag hinzufügen";
+        editor.showModal();
+        $("#entryLabel").focus();
+      }
 
-  document.querySelectorAll("[data-level]").forEach(button => {
-    button.addEventListener("click", () => {
-      setLevel(Number(button.dataset.level));
-    });
-  });
+      function setNotice(message) {
+        notice.textContent = message;
+        window.setTimeout(() => {
+          if (notice.textContent === message) notice.textContent = "";
+        }, 5000);
+      }
 
-  document.getElementById("runButton").addEventListener("click", event => {
-    running = !running;
-    event.currentTarget.classList.toggle("active", running);
-    event.currentTarget.textContent = running ? "SKILL AN" : "SKILL PAUSE";
-    statusOutput.textContent = running ? "Skill läuft" : "Skill pausiert";
-  });
+      function exportJSON() {
+        const blob = new Blob([JSON.stringify(entries, null, 2)], {
+          type: "application/json"
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "m1-m2-m3.json";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
 
-  document.getElementById("autoButton").addEventListener("click", () => {
-    if (auto) {
-      stopAuto();
-      statusOutput.textContent = "AUTO aus";
-      return;
-    }
+      async function importJSON(file) {
+        if (!file) return;
 
-    auto = true;
-    autoElapsed = 0;
-    autoIndex = Math.max(0, AUTO_SEQUENCE.indexOf(level));
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
 
-    const button = document.getElementById("autoButton");
-    button.classList.add("active");
-    button.setAttribute("aria-pressed", "true");
-    statusOutput.textContent = "AUTO läuft";
-  });
+          if (!Array.isArray(data)) {
+            throw new Error("Die JSON-Wurzel muss ein Array sein.");
+          }
 
-  document.getElementById("wrongButton").addEventListener("click", event => {
-    reverse = !reverse;
-    event.currentTarget.classList.toggle("active", reverse);
-    event.currentTarget.setAttribute("aria-pressed", String(reverse));
+          if (!data.every(validateEntry)) {
+            throw new Error(
+              "Einträge müssen eine Text-ID und ganzzahlige M1-, M2- und M3-Werte von 0 bis 10 enthalten."
+            );
+          }
 
-    modeText.textContent = reverse
-      ? "GEGENLAUF aktiv: Punkte, Linien, Labels und Doppeldamen sind gemeinsam gespiegelt."
-      : "Zwei Marker zeigen denselben Skill-Verlauf – metaphorisch, kein Spiel mit Figuren.";
+          const ids = data.map((entry) => entry.id);
+          if (new Set(ids).size !== ids.length) {
+            throw new Error("Die IDs müssen eindeutig sein.");
+          }
 
-    statusOutput.textContent = reverse
-      ? "Gegenlauf aktiv"
-      : "Normalmodus";
-  });
+          entries = data.map(normalizeEntry);
+          saveEntries();
+          render();
+          setNotice(`Import erfolgreich: ${entries.length} Einträge geladen.`);
+        } catch (error) {
+          setNotice("Import fehlgeschlagen: " + (error.message || "Ungültige Datei."));
+        } finally {
+          $("#importJson").value = "";
+        }
+      }
 
-  document.addEventListener("keydown", event => {
-    // Nur Eingabefelder ausnehmen. Button-Fokus blockiert Tastatursteuerung nicht.
-    const target = event.target;
-    if (
-      target instanceof HTMLElement &&
-      (target.isContentEditable ||
-       ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
-    ) {
-      return;
-    }
+      $("#addButton").addEventListener("click", () => openEditor());
+      $("#cancelButton").addEventListener("click", () => editor.close());
+      $("#exportJson").addEventListener("click", exportJSON);
+      $("#importButton").addEventListener("click", () => $("#importJson").click());
 
-    if (event.code === "Space") {
-      event.preventDefault();
-      document.getElementById("runButton").click();
-      return;
-    }
+      $("#importJson").addEventListener("change", (event) => {
+        importJSON(event.target.files && event.target.files[0]);
+      });
 
-    if (["1", "3", "9"].includes(event.key)) {
-      setLevel(Number(event.key));
-    } else if (event.key === "8") {
-      setLevel(81);
-    } else if (event.key.toLowerCase() === "a") {
-      document.getElementById("autoButton").click();
-    } else if (event.key.toLowerCase() === "f") {
-      document.getElementById("wrongButton").click();
-    } else if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-      const currentIndex = LEVELS.indexOf(level);
-      const change = event.key === "ArrowRight" ? 1 : -1;
-      const nextIndex = Math.max(
-        0,
-        Math.min(LEVELS.length - 1, currentIndex + change)
-      );
-      setLevel(LEVELS[nextIndex]);
-    }
-  });
+      search.addEventListener("input", render);
 
-  window.addEventListener("resize", resizeCanvas);
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
 
-  resizeCanvas();
-  setLevel(1);
+        const id = $("#entryId").value;
+        const label = $("#entryLabel").value.trim();
+        const note = $("#entryNote").value.trim();
 
-  const runButton = document.getElementById("runButton");
-  runButton.classList.toggle("active", running);
-  runButton.textContent = running ? "SKILL AN" : "SKILL PAUSE";
+        if (id) {
+          const entry = entries.find((item) => item.id === id);
+          if (entry) {
+            entry.label = label || "Eintrag";
+            entry.note = note;
+          }
+        } else {
+          entries.push({
+            id: makeId(),
+            label: label || `Eintrag ${String(entries.length + 1).padStart(2, "0")}`,
+            note,
+            m1: 0,
+            m2: 0,
+            m3: 0
+          });
+        }
 
-  statusOutput.textContent = running ? "Bereit" : "Reduzierte Bewegung";
-  requestAnimationFrame(frame);
-})();
-</script>
+        saveEntries();
+        render();
+        editor.close();
+      });
+
+      grid.addEventListener("input", (event) => {
+        const slider = event.target.closest(".rating-slider");
+        if (!slider) return;
+
+        const entry = entries.find((item) => item.id === slider.dataset.id);
+        const key = slider.dataset.key;
+        if (!entry || !["m1", "m2", "m3"].includes(key)) return;
+
+        entry[key] = Number(slider.value);
+        saveEntries();
+        render();
+
+        const newSlider = grid.querySelector(
+          `.rating-slider[data-id="${CSS.escape(entry.id)}"][data-key="${key}"]`
+        );
+        if (newSlider) newSlider.focus({ preventScroll: true });
+      });
+
+      grid.addEventListener("click", (event) => {
+        const editButton = event.target.closest("[data-edit]");
+        const deleteButton = event.target.closest("[data-delete]");
+
+        if (editButton) {
+          const entry = entries.find((item) => item.id === editButton.dataset.edit);
+          if (entry) openEditor(entry);
+          return;
+        }
+
+        if (deleteButton) {
+          const entry = entries.find((item) => item.id === deleteButton.dataset.delete);
+          if (!entry) return;
+
+          if (confirm(`„${entry.label || entry.id}“ wirklich löschen?`)) {
+            entries = entries.filter((item) => item.id !== entry.id);
+            saveEntries();
+            render();
+          }
+        }
+      });
+
+      render();
+    })();
+  </script>
 </body>
 </html>
