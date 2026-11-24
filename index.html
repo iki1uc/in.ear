@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050805">
-  <title>NC.OS · Mobile</title>
+  <title>NC.OS · Master Mobile</title>
 
   <style>
     :root {
@@ -61,7 +61,7 @@
 
     #search {
       width: 100%;
-      min-height: 44px;
+      min-height: 46px;
       margin-top: 12px;
       padding: 10px 12px;
       border: 1px solid var(--line);
@@ -72,18 +72,53 @@
       font-size: 16px;
     }
 
-    #search:focus { outline: 2px solid var(--green); }
+    #search:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 2px;
+    }
 
     main {
-      width: min(100%, 760px);
+      width: min(100%, 820px);
       margin: 0 auto;
-      padding: 16px 14px max(24px, env(safe-area-inset-bottom));
+      padding: 16px 14px max(28px, env(safe-area-inset-bottom));
     }
 
     .intro {
       margin: 0 2px 14px;
       color: var(--muted);
       font-size: 13px;
+    }
+
+    .master {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 13px;
+      min-height: 100px;
+      margin-bottom: 18px;
+      padding: 15px;
+      border: 1px solid #4ade8070;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #102418, var(--panel));
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .master:hover { border-color: var(--green); }
+
+    .master .number {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .master-tag {
+      display: inline-block;
+      margin-bottom: 4px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
     }
 
     .list {
@@ -96,20 +131,18 @@
       grid-template-columns: 44px 1fr auto;
       align-items: center;
       gap: 12px;
-      min-height: 88px;
-      padding: 13px;
+      min-height: 82px;
+      padding: 12px;
       border: 1px solid var(--line);
       border-radius: 14px;
       background: var(--panel);
       color: inherit;
       text-decoration: none;
-      transition: border-color .15s, background .15s;
     }
 
-    .card:hover, .card:focus-visible {
+    .card:hover {
       border-color: var(--green);
       background: #102016;
-      outline: none;
     }
 
     .number {
@@ -153,14 +186,16 @@
       text-align: center;
     }
 
-    @media (min-width: 600px) {
+    [hidden] { display: none !important; }
+
+    @media (min-width: 620px) {
       .list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .card { grid-template-columns: 42px 1fr; }
       .arrow { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; }
+      *, *::before, *::after { scroll-behavior: auto !important; }
     }
   </style>
 </head>
@@ -168,77 +203,106 @@
 <body>
   <header>
     <div class="top">
-      <h1>NC.OS <span style="color:var(--muted)">· MOBILE</span></h1>
-      <div class="count"><span id="shown">9</span> Bereiche</div>
+      <h1>NC.OS <span style="color:var(--muted)">· MASTER</span></h1>
+      <div class="count"><span id="shown">10</span> Bereiche</div>
     </div>
-    <input id="search" type="search" placeholder="Bereich suchen …" aria-label="Bereiche durchsuchen">
+    <input
+      id="search"
+      type="search"
+      placeholder="Bereich suchen …"
+      aria-label="Bereiche durchsuchen"
+      autocomplete="off"
+    >
   </header>
 
   <main>
-    <p class="intro">Tippe auf einen Bereich, um die zugehörige Seite zu öffnen.</p>
+    <p class="intro">Lokales Projekt · Datei öffnen, läuft · Kein Build, kein Server.</p>
 
-    <section class="list" id="list" aria-label="NC.OS Bereiche">
-      <a class="card" href="0.html" data-search="freudenhund erkennung scanner eingang">
+    <a class="master" href="6.html"
+       data-search="6 core neu grundlagen aua semarg 729 xp elo stand aktuell">
+      <span class="number">6</span>
+      <span>
+        <span class="master-tag">AKTUELLER STAND · AUTO-START</span>
+        <h2 class="name">CORE · NEU</h2>
+        <p class="details">
+          <span class="role">Kompetenz</span> · GRUNDLAGEN · AUA · SEMARG · 729 · XP · Elo
+        </p>
+      </span>
+      <span class="arrow" aria-hidden="true">›</span>
+    </a>
+
+    <p class="intro">Bereiche 0–9 · ältere Stände bleiben unverändert.</p>
+
+    <section class="list" aria-label="NC.OS Bereiche">
+      <a class="card" href="0.html" data-search="0 freudenhund erkennung scanner eingang">
         <span class="number">0</span>
         <span><h2 class="name">Freudenhund</h2><p class="details"><span class="role">Erkennung</span> · Scanner-Eingang</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="1.html" data-search="ram brain ramdisk 4168 mb/s">
+      <a class="card" href="1.html" data-search="1 ram brain ramdisk">
         <span class="number">1</span>
-        <span><h2 class="name">RAM</h2><p class="details"><span class="role">Brain</span> · ramdisk · 4168 MB/s</p></span>
+        <span><h2 class="name">RAM</h2><p class="details"><span class="role">Brain</span> · ramdisk</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="2.html" data-search="steckkarten noise sli 42%">
+      <a class="card" href="2.html" data-search="2 steckkarten noise">
         <span class="number">2</span>
-        <span><h2 class="name">Steckkarten</h2><p class="details"><span class="role">Noise</span> · SLI · 42%</p></span>
+        <span><h2 class="name">Steckkarten</h2><p class="details"><span class="role">Noise</span> · Steckkarten</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="3.html" data-search="kernel centrum mb1 9 centrum">
+      <a class="card" href="3.html" data-search="3 kernel centrum">
         <span class="number">3</span>
-        <span><h2 class="name">Kernel</h2><p class="details"><span class="role">Centrum</span> · MB1 · 9 CENTRUM</p></span>
+        <span><h2 class="name">Kernel</h2><p class="details"><span class="role">Centrum</span> · Kernel</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="4.html" data-search="industry verified mouth abmachung">
+      <a class="card" href="4.html" data-search="4 industry verified mouth abmachung">
         <span class="number">4</span>
         <span><h2 class="name">Industry Verified</h2><p class="details"><span class="role">Mouth</span> · Abmachung</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="5.html" data-search="in-ear loader orakel in-ear">
+      <a class="card" href="5.html" data-search="5 uni logbuch tracker logbuch">
         <span class="number">5</span>
-        <span><h2 class="name">In-Ear Loader</h2><p class="details"><span class="role">Orakel</span> · In-Ear</p></span>
+        <span><h2 class="name">Uni-Logbuch</h2><p class="details"><span class="role">Tracker</span> · Logbuch</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="6.html" data-search="letzter tech alt w3">
+      <a class="card" href="6.html" data-search="6 core neu grundlagen aua semarg 729 xp elo">
         <span class="number">6</span>
-        <span><h2 class="name">Letzter Tech</h2><p class="details"><span class="role">Alt</span> · W3</p></span>
+        <span><h2 class="name">CORE · NEU</h2><p class="details"><span class="role">Kompetenz</span> · XP · Elo · AUA · SEMARG · 729</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="7.html" data-search="11 zu 7 scsi 7 geräte">
+      <a class="card" href="7.html" data-search="7 nc mobile index knotenübersicht">
         <span class="number">7</span>
-        <span><h2 class="name">11 zu 7</h2><p class="details"><span class="role">SCSI</span> · 7 Geräte</p></span>
+        <span><h2 class="name">NC Mobile Index</h2><p class="details"><span class="role">Knotenübersicht</span> · Mobile Index</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
 
-      <a class="card" href="8.html" data-search="scanner eye 1:1 scan">
+      <a class="card" href="8.html" data-search="8 scanner eye 1:1 scan">
         <span class="number">8</span>
         <span><h2 class="name">Scanner</h2><p class="details"><span class="role">Eye</span> · 1:1-Scan</p></span>
         <span class="arrow" aria-hidden="true">›</span>
       </a>
+
+      <a class="card" href="9.html" data-search="9 zoom whirl bewegung 3 9 81">
+        <span class="number">9</span>
+        <span><h2 class="name">ZOOM · WHIRL</h2><p class="details"><span class="role">Bewegung</span> · 3 · 9 · 81</p></span>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
     </section>
 
-    <div id="empty">Keine passenden Bereiche gefunden.</div>
+    <div id="empty" role="status">Keine passenden Bereiche gefunden.</div>
   </main>
 
   <script>
+    "use strict";
+
     const search = document.getElementById("search");
-    const cards = [...document.querySelectorAll(".card")];
+    const cards = [...document.querySelectorAll("[data-search]")];
     const shown = document.getElementById("shown");
     const empty = document.getElementById("empty");
 
@@ -247,13 +311,16 @@
       let visible = 0;
 
       for (const card of cards) {
-        const matches = card.dataset.search.includes(query);
+        const matches = card.dataset.search
+          .toLocaleLowerCase("de")
+          .includes(query);
+
         card.hidden = !matches;
         if (matches) visible++;
       }
 
-      shown.textContent = visible;
-      empty.style.display = visible ? "none" : "block";
+      shown.textContent = String(visible);
+      empty.style.display = visible === 0 ? "block" : "none";
     });
   </script>
 </body>
