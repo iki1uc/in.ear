@@ -1,128 +1,1971 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0f14">
-<title>NC.OS ROOT · 4.html</title>
-<style>
-:root{color-scheme:dark;--bg:#0b0f14;--panel:#141a22;--panel2:#1b2430;--input:#0f141b;--border:#2c3645;--text:#e6edf3;--muted:#9fb0c3;--accent:#4da3ff;--good:#45d483;--danger:#ff7070;--shadow:0 4px 24px rgb(0 0 0/.28)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;padding-bottom:calc(68px + env(safe-area-inset-bottom));background:var(--bg);color:var(--text);font:14px/1.5 Consolas,ui-monospace,monospace}
-header{position:sticky;top:0;z-index:5;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--border)}
-h1{margin:0;color:var(--accent);font-size:17px}h2{margin:0 0 10px;color:var(--accent);font-size:13px;letter-spacing:.05em}.muted{color:var(--muted);font-size:12px}
-#breadcrumb{position:sticky;top:58px;z-index:4;display:flex;align-items:center;gap:4px;min-height:38px;padding:6px 12px;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap}
-#breadcrumb button{flex:0 0 auto;padding:2px 6px;background:transparent;border:0;color:var(--accent);font-weight:bold}
-#breadcrumb .sep{color:var(--muted)}
-#statusBar{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--panel2);color:var(--muted);font-size:12px;flex-wrap:wrap}
-#statusBar span{white-space:nowrap}
-#tools{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 12px}
-#tools button{padding:8px 6px;font-size:12px;border-radius:9px}
-main{margin:0 0 20px}.panel{margin:0 12px 12px;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow)}
-button,input,select,textarea{font:inherit}
-button{padding:9px 12px;color:var(--text);background:var(--panel2);border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
-button:hover{border-color:var(--accent)}button:active{transform:scale(.98)}button:disabled{opacity:.55;cursor:not-allowed}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-input,select,textarea{min-width:0;padding:9px;color:var(--text);background:var(--input);border:1px solid var(--border);border-radius:9px}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-#matrixGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
-.child{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:88px;padding:8px 4px;text-align:center;gap:2px}
-.child.has-canvas{border-color:var(--good)}.child.has-canvas .child-title{color:var(--text)}.child.empty{opacity:.6}
-.child-num{font-size:22px;font-weight:bold;color:var(--accent)}.child-title{font-size:11px;overflow-wrap:anywhere;max-width:100%;color:var(--muted)}.child-fmt{font-size:10px;color:var(--muted);letter-spacing:.1em}
-.leaf-msg{padding:16px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:12px}
-#editor{display:block;width:100%;height:44vh;min-height:200px;resize:vertical;font-size:16px;line-height:1.5}
-#preview{min-height:42px;margin-top:10px;padding:10px;background:var(--input);border:1px solid var(--border);border-radius:9px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
-#searchBox{width:100%}.result{display:block;width:100%;margin:8px 0;padding:10px;text-align:left;overflow-wrap:anywhere;border-radius:10px}
-#log{max-height:44vh;overflow:auto;font-size:12px}.logline{padding:5px 0;border-bottom:1px solid rgb(255 255 255/.06)}
-textarea.small{display:block;width:100%;height:80px;margin:4px 0 8px}
-#bottomNav{position:fixed;z-index:10;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);background:var(--panel);border-top:1px solid var(--border)}
-#bottomNav button{height:56px;padding:4px;border:0;border-radius:0;background:transparent;font-size:11px}
-#bottomNav button.on{background:var(--accent);color:#07111b;font-weight:bold}
-.tab{display:none}.tab.on{display:block}
-.status-good{color:var(--good);font-weight:bold}.status-error{color:var(--danger)}
-@media(prefers-color-scheme:dark){:root{--bg:#000;--panel:#0d1218;--panel2:#161d26;--input:#0a0e13;--border:#28323f}}
-@media(min-width:800px){main{max-width:1000px;margin:0 auto}#tools{grid-template-columns:repeat(9,1fr)}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b12">
+  <title>NC.OS · RIDVAN / RAWATOR / WAS BIN ICH</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b12;
+      --surface: #0e131d;
+      --surface-2: #111927;
+      --line: #202938;
+      --text: #e8edf7;
+      --muted: #8995a8;
+      --green: #65f0b0;
+      --cyan: #75c9ed;
+      --red: #ff647c;
+      --gold: #ffd166;
+      font: 13px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 60% -10%, rgba(37, 107, 86, .17), transparent 54%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    a { color: var(--green); }
+    pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    :focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 3px;
+    }
+
+    .app { min-height: 100vh; padding-bottom: 82px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 62px;
+      padding: 10px max(5vw, 16px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 11, 18, .96);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .brand-mark {
+      display: grid;
+      flex: 0 0 28px;
+      width: 28px;
+      height: 28px;
+      margin-right: 9px;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--green);
+      color: #08120e;
+    }
+
+    .brand small {
+      margin-left: 10px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .online {
+      flex: 0 0 auto;
+      color: var(--green);
+      font-size: 10px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+
+    .online::before {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      content: "";
+    }
+
+    .desktop-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px 5vw;
+      border-bottom: 1px solid #171e2b;
+    }
+
+    .nav-button, .button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #111927;
+      color: var(--text);
+      padding: 9px 12px;
+    }
+
+    .nav-button {
+      border-color: transparent;
+      background: transparent;
+      color: #9ba8bb;
+    }
+
+    .nav-button.selected {
+      border-color: #244439;
+      background: #12231e;
+      color: var(--green);
+    }
+
+    .button.primary {
+      border-color: var(--green);
+      background: var(--green);
+      color: #06120b;
+      font-weight: 800;
+    }
+
+    .button.gold {
+      border-color: var(--gold);
+      background: var(--gold);
+      color: #181300;
+      font-weight: 800;
+    }
+
+    .button.ghost-green {
+      border-color: #34765a;
+      color: var(--green);
+    }
+
+    main {
+      width: min(1160px, 92vw);
+      margin: 30px auto;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--green);
+      font-size: 10px;
+      letter-spacing: .16em;
+    }
+
+    h1 { margin: 0; font-size: clamp(28px, 5vw, 42px); letter-spacing: -.04em; }
+    h2 { margin: 0 0 14px; font-size: 17px; }
+    h3 { margin: 0 0 10px; font-size: 13px; }
+    p { margin: 8px 0; }
+
+    .subtitle { margin: 9px 0 20px; color: var(--muted); }
+    .muted { color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+    .card, .panel, .stat-card {
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--surface);
+    }
+
+    .card, .panel { margin: 12px 0; padding: 17px; }
+    .panel { padding: 20px; }
+    .card.green { border-color: #28734f; }
+    .card.gold { border-color: #78662b; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .stat-card {
+      display: flex;
+      min-height: 112px;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 9px;
+      padding: 15px;
+    }
+
+    .stat-label { color: var(--muted); font-size: 10px; letter-spacing: .12em; }
+    .stat-value { font-size: 25px; font-weight: 750; overflow-wrap: anywhere; }
+    .stat-value.good { color: var(--green); }
+    .stat-value.info { color: var(--cyan); }
+    .stat-detail { color: #707d91; font-size: 11px; }
+
+    .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+
+    .panel-heading, .toolbar, .button-row, .pagination, .inline-stats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .panel-heading, .pagination { justify-content: space-between; }
+    .panel-heading { margin-bottom: 14px; }
+    .panel-heading h2 { margin: 0; }
+
+    .toolbar { margin: 12px 0; }
+    .toolbar input { flex: 1 1 220px; }
+    .toolbar select { flex: 0 1 155px; }
+
+    input, select {
+      min-height: 40px;
+      border: 1px solid #283346;
+      border-radius: 8px;
+      padding: 9px 11px;
+      background: #090d15;
+      color: var(--text);
+    }
+
+    input::placeholder { color: #69768a; }
+
+    .timeline-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid #1d2532; vertical-align: top; }
+    th { color: var(--muted); font-size: 10px; letter-spacing: .08em; }
+    td { font-size: 11px; }
+    td code { color: var(--cyan); overflow-wrap: anywhere; }
+    .event-type { color: var(--green); font-weight: 800; }
+
+    .timeline-list {
+      position: relative;
+      display: grid;
+      gap: 0;
+    }
+
+    .timeline-list::before {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 5px;
+      width: 1px;
+      background: #28503e;
+      content: "";
+    }
+
+    .event {
+      position: relative;
+      display: grid;
+      grid-template-columns: 14px minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 13px;
+      min-height: 58px;
+      padding: 10px 6px;
+      border-top: 1px solid #1d2532;
+      transition: background .18s ease;
+    }
+
+    .event:hover { background: rgba(101, 240, 176, .035); }
+
+    .event-dot {
+      z-index: 1;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--surface);
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 9px rgba(101, 240, 176, .55);
+    }
+
+    .event-dot.halt, .event-dot.delete { background: var(--red); }
+    .event-dot.recovery { background: var(--gold); }
+
+    .event-main { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .event-main strong { font-size: 11px; }
+    .event-main span, .event time { color: var(--muted); font-size: 10px; }
+    .event code { max-width: 210px; color: var(--cyan); font-size: 10px; overflow-wrap: anywhere; }
+
+    .pagination {
+      justify-content: center;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .pagination button { min-width: 42px; }
+
+    .status-line { min-height: 20px; color: var(--muted); font-size: 11px; }
+    .status-line.error { color: var(--red); }
+
+    .module-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .module {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #0a0f18;
+      font-size: 11px;
+    }
+
+    .module b { overflow-wrap: anywhere; }
+    .module span { color: var(--green); font-size: 9px; white-space: nowrap; }
+    .module span.testing { color: var(--gold); }
+
+    .grid81 {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 5px;
+      width: min(560px, 100%);
+      margin: 16px auto;
+    }
+
+    .grid-cell {
+      display: grid;
+      aspect-ratio: 1;
+      place-items: center;
+      border: 1px solid #293244;
+      border-radius: 5px;
+      background: #121a26;
+      color: #9daabd;
+      font-size: 10px;
+    }
+
+    .grid-cell.center { background: var(--gold); color: #111; font-weight: 900; }
+    .grid-cell.marked { border-color: var(--green); background: rgba(101, 240, 176, .14); color: var(--green); }
+
+    .qgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 8px; }
+    .qgrid button { text-align: left; font-size: 11px; }
+    .qgrid button.used { border-color: var(--green); color: var(--green); }
+    .qgrid button.no { border-color: var(--red); color: var(--red); }
+
+    .hint {
+      margin: 7px 0;
+      border: 1px solid rgba(117, 201, 237, .25);
+      padding: 10px;
+      background: #080e15;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .hint b { color: var(--cyan); }
+
+    .log {
+      max-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      padding: 10px;
+      background: #05070b;
+      color: #c3cfdf;
+      font-size: 10px;
+      white-space: pre-wrap;
+    }
+
+    .bar { height: 8px; overflow: hidden; border-radius: 99px; background: #222a35; }
+    .bar i { display: block; width: 100%; height: 100%; background: var(--green); transition: width .25s ease; }
+
+    .cube-grid { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(0, 1.15fr); gap: 14px; }
+    .cube {
+      width: 260px;
+      height: 260px;
+      margin: 12px auto;
+      perspective: 900px;
+      cursor: grab;
+      touch-action: none;
+    }
+    .cube:active { cursor: grabbing; }
+
+    .cube-inner {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 30px auto;
+      transform-style: preserve-3d;
+      transition: transform .4s ease;
+    }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+      gap: 3px;
+      padding: 4px;
+      border: 2px solid #fff;
+      background: #060606;
+      backface-visibility: hidden;
+    }
+
+    .tile {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #393939;
+      background: #090d15;
+      color: #d9e2ed;
+      padding: 2px;
+      font-size: 7px;
+      font-weight: 700;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .tile.center { background: #fff; color: #000; }
+    .tile.bad { background: var(--red); color: #000; }
+
+    .steps { display: grid; gap: 5px; }
+    .step { border: 1px solid var(--line); padding: 9px; font-size: 10px; }
+    .step.current { border-color: var(--green); background: rgba(101, 240, 176, .12); }
+    .step.done { opacity: .55; }
+    .step b { color: var(--green); }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      background: #02040a;
+    }
+
+    pre {
+      overflow: auto;
+      margin: 8px 0 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px;
+      background: #05070b;
+      color: var(--green);
+      font-size: 10px;
+    }
+
+    .links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .links a { border: 1px solid var(--line); border-radius: 7px; padding: 8px; font-size: 10px; text-decoration: none; }
+    .links a:hover { border-color: var(--green); }
+
+    .mobile-nav { display: none; }
+    .footer { padding: 16px 5vw; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+
+    @media (max-width: 850px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cube-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .topbar { min-height: 56px; padding-inline: 4vw; }
+      .brand small { display: none; }
+      .desktop-nav { display: none; }
+      main { width: 92vw; margin: 22px auto; }
+      .stats { gap: 8px; }
+      .stat-card { min-height: 100px; padding: 12px; }
+      .stat-value { font-size: 21px; }
+      .panel, .card { padding: 14px; }
+      .grid2, .grid3, .grid4 { grid-template-columns: 1fr; }
+      .module-list { grid-template-columns: 1fr; }
+      .event { grid-template-columns: 12px minmax(0, 1fr) auto; gap: 8px; }
+      .event code { display: none; }
+      .event time { font-size: 9px; }
+      .toolbar { align-items: stretch; }
+      .toolbar input, .toolbar select { flex: 1 1 100%; width: 100%; }
+      .timeline-wrap th:nth-child(5), .timeline-wrap td:nth-child(5) { display: none; }
+      .mobile-nav {
+        position: fixed;
+        z-index: 30;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: space-around;
+        padding: 7px 4px max(7px, env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line);
+        background: rgba(11, 15, 24, .97);
+        backdrop-filter: blur(10px);
+      }
+      .mobile-nav button {
+        display: grid;
+        min-width: 58px;
+        justify-items: center;
+        gap: 2px;
+        border: 0;
+        background: transparent;
+        color: #8491a5;
+        font-size: 9px;
+      }
+      .mobile-nav button span { font-size: 17px; }
+      .mobile-nav button.active { color: var(--green); }
+      .pagination {
+        position: sticky;
+        bottom: 68px;
+        padding: 9px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #0b0f18;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .online { font-size: 9px; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-value { font-size: 18px; }
+      .grid81 { gap: 2px; }
+      .grid-cell { font-size: 8px; }
+      .qgrid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header><h1>NC.OS ROOT · 4.html</h1><div class="muted">CTRL = Befehl, nicht Zwang · 729 = 3⁶ · echte Hierarchie</div></header>
-<nav id="breadcrumb" aria-label="Breadcrumb"></nav>
-<div id="statusBar" aria-live="polite"><span id="stLevel">LEVEL 0</span><span id="stScale">1</span><span id="stPath">ROOT</span><span id="stCount">0 Canvas</span><span id="haltState">HALT AUS</span></div>
-<div id="tools" role="toolbar" aria-label="Werkzeuge"><button type="button" data-action="matrix">◼ MATRIX</button><button type="button" data-action="editor">✎ EDITOR</button><button type="button" data-action="zeugung">⚙ ZEUGUNG</button><button type="button" data-action="log">☰ LOG</button><button type="button" data-action="import">↓ IMPORT</button><button type="button" data-action="export">↑ EXPORT</button><button type="button" data-action="pipeline">▸ PIPELINE</button><button type="button" data-action="seek">◇ SEEK</button><button type="button" data-action="halt">■ HALT</button><input id="loadFile" type="file" accept=".json,application/json" hidden></div>
-<main>
-<section class="tab on" id="matrixTab"><div class="panel"><h2>MATRIX · KINDER DES AKTUELLEN PFADS</h2><div id="matrixGrid"></div><p class="muted">Jeder Knoten hat 3 Kinder. Tiefe 6 → 729 Blätter. Klick auf Kind navigiert tiefer.</p></div></section>
-<section class="tab" id="editorTab"><div class="panel"><h2>EDITOR · <span id="editorPath" class="muted"></span></h2><div class="toolbar"><select id="fmtSel" aria-label="Format"></select><input id="titleIn" placeholder="Titel" aria-label="Titel" style="flex:1;min-width:120px"><button type="button" data-action="save">Speichern</button><button type="button" data-action="new">Leeren</button></div><p class="muted" id="canvasId">Neu · wird beim Speichern angelegt</p><textarea id="editor" placeholder="Text eingeben …"></textarea><div class="muted" style="margin-top:8px">Vorschau</div><div id="preview" aria-live="polite">Vorschau erscheint hier.</div></div></section>
-<section class="tab" id="searchTab"><div class="panel"><h2>SUCHE</h2><input id="searchBox" placeholder="Titel · Pfad · Text · Format" aria-label="Suche" autocomplete="off"><div id="searchResults" aria-live="polite" style="margin-top:10px"></div></div></section>
-<section class="tab" id="logTab"><div class="panel"><h2>LOG · SEEK</h2><div id="log" aria-live="polite"></div><button type="button" data-action="seek" style="margin-top:10px">SEEK protokollieren</button></div></section>
-<section class="tab" id="zeugungTab"><div class="panel"><h2>ZEUGUNG · REGEL + HTML + JS → KIND</h2><p class="muted status-error">Hinweis: In der ZEUGUNG-Funktion wird das JavaScript als ausführbarer Code in die heruntergeladene HTML-Datei geschrieben. Daher nur vertrauenswürdigen Code eingeben. escapeScriptEnd() macht JS nicht sicher — es verhindert nur, dass &lt;/script&gt; den Block vorzeitig schließt.</p><label class="muted" for="z1">Regel / Beschreibung</label><textarea class="small" id="z1">3 Fenster = 1 Kind</textarea><label class="muted" for="z2">HTML-Inhalt</label><textarea class="small" id="z2">&lt;h2&gt;Hallo Welt&lt;/h2&gt;</textarea><label class="muted" for="z3">JavaScript</label><textarea class="small" id="z3">console.log('Kind lebt');</textarea><button type="button" data-action="birth">KIND ZEUGEN · DOWNLOAD</button><span class="muted" id="zeugOut" aria-live="polite" style="margin-left:8px"></span></div></section>
-</main>
-<nav id="bottomNav" aria-label="Hauptnavigation"><button type="button" class="on" data-tab="matrix">◼ Matrix</button><button type="button" data-tab="editor">✎ Editor</button><button type="button" data-tab="search">⌕ Suche</button><button type="button" data-tab="log">☰ Log</button><button type="button" data-tab="zeugung">⚙ Zeugung</button></nav>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">●</span>
+      <span>NC.OS <small>RIDVAN · RAWATOR · WAS BIN ICH</small></span>
+    </div>
+    <div class="online">LOKALE DEMO · KEINE API</div>
+  </header>
+
+  <nav class="desktop-nav" id="desktop-nav" aria-label="Hauptnavigation"></nav>
+
+  <main>
+    <section class="page active" data-page="dashboard" id="page-dashboard">
+      <p class="eyebrow">CONTROL CENTER · INDEX</p>
+      <h1>NC ROOT INDEX</h1>
+      <p class="subtitle">Lokales Dashboard · Status, Zeugen, 81 Grid und Module.</p>
+
+      <div class="stats">
+        <article class="stat-card"><span class="stat-label">TX TOTAL</span><strong id="stat-tx" class="stat-value">—</strong><span class="stat-detail">lokale Mock-Ereignisse</span></article>
+        <article class="stat-card"><span class="stat-label">HASH STATUS</span><strong id="stat-hash" class="stat-value good">—</strong><span class="stat-detail">Demo, keine kryptografische Prüfung</span></article>
+        <article class="stat-card"><span class="stat-label">RECOVERY</span><strong id="stat-recovery" class="stat-value">—</strong><span class="stat-detail">Ereignisse im Mock-Datensatz</span></article>
+        <article class="stat-card"><span class="stat-label">HALT</span><strong id="stat-halt" class="stat-value info">—</strong><span class="stat-detail">lokaler Status</span></article>
+      </div>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Zeugen-Timeline</h2>
+          <button class="button ghost-green" type="button" data-nav="timeline">Alle Zeugen ansehen →</button>
+        </div>
+        <div id="dashboard-events" class="timeline-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading"><h2>Module</h2><span class="muted">lokale Statusanzeige</span></div>
+        <div id="dashboard-modules" class="module-list"></div>
+      </section>
+    </section>
+
+    <section class="page" data-page="timeline" id="page-timeline">
+      <p class="eyebrow">AUDIT · LOKALE MOCK-DATEN</p>
+      <h1>Zeugen-Timeline</h1>
+      <p class="subtitle">Suche, Filter, Sortierung, Seitengröße und JSON-/CSV-Export.</p>
+
+      <section class="panel">
+        <div class="toolbar">
+          <input id="timeline-search" type="search" placeholder="TX, Typ oder Hash suchen …" aria-label="Zeugen durchsuchen">
+          <select id="timeline-filter" aria-label="Nach Typ filtern">
+            <option value="all">Alle Typen</option>
+            <option value="BOOT">BOOT</option>
+            <option value="UPDATE">UPDATE</option>
+            <option value="CREATE">CREATE</option>
+            <option value="DELETE">DELETE</option>
+            <option value="HALT">HALT</option>
+            <option value="RECOVERY">RECOVERY</option>
+            <option value="EXPORT">EXPORT</option>
+          </select>
+          <select id="timeline-sort" aria-label="Sortieren">
+            <option value="time-desc">Neueste zuerst</option>
+            <option value="time-asc">Älteste zuerst</option>
+            <option value="tx-desc">TX absteigend</option>
+            <option value="tx-asc">TX aufsteigend</option>
+          </select>
+          <select id="timeline-size" aria-label="Seitengröße">
+            <option value="10">10 pro Seite</option>
+            <option value="25" selected>25 pro Seite</option>
+            <option value="50">50 pro Seite</option>
+            <option value="100">100 pro Seite</option>
+          </select>
+          <button class="button primary" id="export-json" type="button">JSON EXPORT</button>
+          <button class="button ghost-green" id="export-csv" type="button">CSV UTF‑8</button>
+        </div>
+
+        <div id="timeline-status" class="status-line" role="status"></div>
+        <div id="export-status" class="status-line" aria-live="polite"></div>
+
+        <div class="timeline-wrap">
+          <table>
+            <thead>
+              <tr><th>TX</th><th>TYP</th><th>ZEIT</th><th>HASH</th><th>PREVIOUS HASH</th></tr>
+            </thead>
+            <tbody id="timeline-body"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <button class="button" id="prev-page" type="button" aria-label="Vorherige Seite">←</button>
+          <span id="page-info">1 / 1</span>
+          <button class="button" id="next-page" type="button" aria-label="Nächste Seite">→</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading"><h2>Zeugen-Log</h2><span class="muted">aktuelle Filterung</span></div>
+        <div id="timeline-list" class="timeline-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>JSON-Import</h2>
+        <p class="muted">Erwartet entweder ein Array von Ereignissen oder ein Objekt mit einem `events`-Array. Unbekannte oder fehlerhafte Einträge werden abgewiesen.</p>
+        <div class="toolbar">
+          <input id="file-input" type="file" accept=".json,application/json" aria-label="JSON-Datei auswählen">
+          <button class="button gold" type="button" id="import-json">JSON IMPORTIEREN</button>
+          <button class="button" type="button" id="reset-mocks">MOCKS ZURÜCKSETZEN</button>
+        </div>
+        <div id="import-status" class="status-line" role="status"></div>
+      </section>
+    </section>
+
+    <section class="page" data-page="grid" id="page-grid">
+      <p class="eyebrow">NC ROOT · 9 × 9</p>
+      <h1>81 Grid</h1>
+      <p class="subtitle">Die Mitte ist Zelle 41. Zellen lassen sich lokal markieren.</p>
+      <section class="panel">
+        <div class="panel-heading"><h2>81 Felder</h2><button id="clear-grid" class="button" type="button">Markierungen löschen</button></div>
+        <div class="grid81" id="grid81"></div>
+      </section>
+    </section>
+
+    <section class="page" data-page="modules" id="page-modules">
+      <p class="eyebrow">SYSTEM · STATUS</p>
+      <h1>Module</h1>
+      <p class="subtitle">Beispielhafte Modulübersicht; Statuswerte sind Mock-Daten.</p>
+      <section class="panel"><div id="module-list" class="module-list"></div></section>
+    </section>
+
+    <section class="page" data-page="game" id="page-game">
+      <p class="eyebrow">ICH BIN …? · NC.OS</p>
+      <h1>Was bin ich?</h1>
+      <p class="subtitle">Ja-/Nein-Fragen, Hinweise und Rätselrunden.</p>
+
+      <section class="card gold">
+        <div class="muted">GESUCHTER BEGRIFF</div>
+        <div id="mask" class="stat-value" style="font-size:32px;letter-spacing:.12em">? ? ?</div>
+        <div id="round-info" class="muted"></div>
+        <div class="bar"><i id="game-fill"></i></div>
+      </section>
+
+      <section class="card">
+        <h2>1 · Fragen — Ja / Nein</h2>
+        <p class="muted">Jede Frage kostet einen Schritt. Maximal 21 Schritte.</p>
+        <div id="questions" class="qgrid"></div>
+      </section>
+
+      <section class="card">
+        <h2>2 · Hinweise</h2>
+        <div id="hints"></div>
+        <button class="button gold" id="hint-button" type="button">+ HINWEIS</button>
+      </section>
+
+      <section class="card">
+        <h2>3 · Raten</h2>
+        <div class="toolbar">
+          <input id="guess-input" placeholder="Was bin ich? Zum Beispiel: 81 RAUM">
+          <button class="button primary" id="guess-button" type="button">ICH BIN …</button>
+          <button class="button" id="give-up" type="button">AUFGEBEN / ZEIGEN</button>
+          <button class="button" id="next-round" type="button">NÄCHSTE RUNDE →</button>
+        </div>
+        <div id="game-result" class="status-line" aria-live="polite"></div>
+      </section>
+
+      <section class="card">
+        <h2>Log</h2>
+        <div id="game-log" class="log"></div>
+      </section>
+
+      <section class="card">
+        <p class="muted">Start: 81 Punkte · Frage: −3 · Hinweis: −3 · falscher Tipp: −9 · richtig im ersten Versuch: +27.</p>
+        <div class="inline-stats muted">
+          <span>Punkte: <b id="game-score">81</b></span>
+          <span>Richtig: <b id="game-wins">0</b></span>
+          <span>Abgeschlossene Runden: <b id="game-rounds">0</b></span>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-page="pilot" id="page-pilot">
+      <p class="eyebrow">RIDVAN · PILOT · LEVEL 6</p>
+      <h1>RAWATOR / HOLO</h1>
+      <p class="subtitle">Lokale Lebensgeber- und 81-Frame-Demonstration.</p>
+
+      <div class="stats">
+        <article class="stat-card"><span class="stat-label">PILOT</span><strong class="stat-value good">RIDVAN</strong><span class="stat-detail">pilot · level 6 · active</span></article>
+        <article class="stat-card"><span class="stat-label">CARRIER</span><strong class="stat-value">NOAH</strong><span class="stat-detail">WELCOME · WETTER</span></article>
+        <article class="stat-card"><span class="stat-label">STATION</span><strong class="stat-value">START</strong><span class="stat-detail">respo NONE · pulse 0.0</span></article>
+        <article class="stat-card"><span class="stat-label">ROUTE</span><strong class="stat-value" style="font-size:13px">master.boot.block</strong><span class="stat-detail">evotaal · evocity · iki1uc.cockpit</span></article>
+      </div>
+
+      <section class="card green">
+        <h2>RAWATOR · LEBENSGEBER · 81-HOLOGRAMM</h2>
+        <p class="muted">Alles läuft lokal in dieser Datei. Vitalitätswerte sind illustrative Demo-Werte und keine biologische Messung.</p>
+        <div class="stats">
+          <article class="stat-card"><span class="stat-label">VITAL · DEMO</span><strong id="raw-vital" class="stat-value good">—</strong></article>
+          <article class="stat-card"><span class="stat-label">CO₂ / H₂O / O₂</span><strong id="raw-molecules" class="stat-value" style="font-size:13px">—</strong></article>
+          <article class="stat-card"><span class="stat-label">HOLO / ANIME / SHUFFLE</span><strong id="raw-counts" class="stat-value" style="font-size:16px">—</strong></article>
+          <article class="stat-card"><span class="stat-label">STATUS</span><strong id="raw-status" class="stat-value">bereit</strong></article>
+        </div>
+        <div class="button-row">
+          <button id="raw-init" class="button primary" type="button">RAWATOR INIT</button>
+          <button id="raw-proof" class="button ghost-green" type="button">HOLOGRAMM-BEWEIS</button>
+          <button id="raw-reset" class="button" type="button">EDITOR RESET</button>
+        </div>
+        <pre id="raw-output">RAWATOR bereit. INIT drücken.</pre>
+      </section>
+
+      <section class="card">
+        <h2>SHUFFLE DANCER · 81 STEPS</h2>
+        <div id="shuffle-output" class="log">Noch nicht initialisiert.</div>
+      </section>
+
+      <section class="card">
+        <h2>MOLEKÜLE · ATOM-DEMO</h2>
+        <pre id="molecule-output"></pre>
+      </section>
+
+      <section class="card">
+        <h2>Projektlinks</h2>
+        <div class="links">
+          <a href="https://iki1uc.github.io/our.HH/" target="_blank" rel="noopener noreferrer">our.HH ↗</a>
+          <a href="https://iki1uc.github.io/ich.vulkan/" target="_blank" rel="noopener noreferrer">ich.vulkan ↗</a>
+          <a href="https://iki1uc.github.io/buerger.HH/" target="_blank" rel="noopener noreferrer">bürger.HH ↗</a>
+          <a href="https://github.com/iki1uc/ui.me/blob/main/index.html" target="_blank" rel="noopener noreferrer">UIme-Führung ↗</a>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-page="runtime" id="page-runtime">
+      <p class="eyebrow">RUNTIME 3 · LOKALE VISUALISIERUNG</p>
+      <h1>Runtime</h1>
+      <p class="subtitle">Canvas-Diagramme und lokale Berechnungsdemo — keine Leistungsmessung des Betriebssystems.</p>
+
+      <section class="panel">
+        <h2>99 Root · Graphdemo</h2>
+        <div class="grid2">
+          <div><canvas id="canvas99" width="480" height="300" aria-label="99 Root Graph"></canvas><pre id="runtime-output"></pre></div>
+          <div><canvas id="gears" width="720" height="100" aria-label="Zahnraddiagramm"></canvas><p id="gear-text" class="muted"></p><div id="function-text" class="muted"></div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Zylinder · 9 Ebenen × 9 Atome</h2>
+        <canvas id="cylinder" width="900" height="190" aria-label="81 Zellen Zylinderdemo"></canvas>
+        <p id="cylinder-text" class="muted"></p>
+        <div class="button-row">
+          <button class="button" id="runtime-run" type="button">⏸ STOP</button>
+          <button class="button" id="runtime-move" type="button">◐ MOVE</button>
+          <button class="button" id="runtime-unmove" type="button">◑ UNMOVE</button>
+          <button class="button" id="runtime-use" type="button">◈ USE</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Graph</h2>
+        <canvas id="graph" width="900" height="280" aria-label="Runtime Graph"></canvas>
+        <p class="muted">Schematische, deterministische Visualisierung lokaler Demo-Knoten.</p>
+      </section>
+    </section>
+
+    <section class="page" data-page="cube" id="page-cube">
+      <p class="eyebrow">FORM · UNFORM · FALSCH FORM</p>
+      <h1>Zauberwürfel-Sequencer</h1>
+      <p class="subtitle">Dreh den Würfel mit Maus oder Touch. Sequencer-Schritte sind visuelle Demo-Zustände.</p>
+
+      <div class="grid4">
+        <article class="card"><b style="color:var(--green)">● FORM</b><p class="muted">Zielzustand.</p></article>
+        <article class="card"><b style="color:var(--red)">○ UNFORM</b><p class="muted">Lokal neu angeordnete Werte.</p></article>
+        <article class="card"><b style="color:var(--red)">◐ FALSCH FORM</b><p class="muted">Absichtlich veränderte Beschriftungen.</p></article>
+        <article class="card"><b style="color:var(--green)">◉ SEQUENCER</b><p class="muted">Anime-Demo bis zur Zielform.</p></article>
+      </div>
+
+      <div class="cube-grid">
+        <section class="card">
+          <div class="muted">RAWATOR · HOLO-81 · 3×3×3</div>
+          <div class="stat-value" style="font-size:31px">ZAUBERWÜRFEL</div>
+          <div id="cube-modes" class="button-row" style="margin-top:12px"></div>
+          <div id="cube-hint" class="muted" style="text-align:center">Ziehen zum Drehen</div>
+          <div class="cube" id="cube" aria-label="Interaktiver Demo-Würfel"><div class="cube-inner" id="cube-inner"></div></div>
+          <div class="card">
+            <div class="panel-heading"><strong id="cube-state">SOLVED · STABIL</strong><span class="muted">STATE</span></div>
+            <div class="bar"><i id="cube-fill"></i></div>
+            <p id="cube-state-text" class="muted"></p>
+          </div>
+        </section>
+
+        <div>
+          <section class="card green"><h2>KEIO TRI · DREIECK</h2><pre id="keio-output"></pre></section>
+          <section class="card"><h2>AXIOM · MANA / AURA / KRAFT</h2><button class="button primary" id="axiom-pulse" type="button">PULSE BERECHNEN</button><pre id="axiom-output"></pre></section>
+          <section class="card"><h2>SEQUENCER · SCHRITTE</h2><div id="cube-steps" class="steps"></div><button id="cube-start" class="button primary" style="width:100%;margin-top:10px" type="button">SEQUENCER STARTEN</button></section>
+          <section class="card"><h2>INDUSTRY · MARKT · NC ROUTING</h2><pre id="routing-output"></pre></section>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-page="uime" id="page-uime">
+      <p class="eyebrow">UIME · 12ALL RASTER EINSTIEG</p>
+      <h1>UIme</h1>
+      <p class="subtitle">Lokale Auswahl eines Einstiegspunkts.</p>
+      <section class="panel">
+        <div class="button-row">
+          <button class="button ghost-green" data-uime="male" type="button">male</button>
+          <button class="button ghost-green" data-uime="modi" type="button">modi</button>
+          <button class="button ghost-green" data-uime="UIme" type="button">UIme</button>
+          <button class="button ghost-green" data-uime="root" type="button">root</button>
+          <button class="button ghost-green" data-uime="12ALL" type="button">12ALL</button>
+        </div>
+        <pre id="uime-output">UIme bereit.</pre>
+      </section>
+      <section class="panel">
+        <h2>AxiomVectorMap</h2>
+        <pre id="vector-map"></pre>
+      </section>
+    </section>
+  </main>
+
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile Navigation"></nav>
+
+  <footer class="footer">
+    NC.OS · RIDVAN · RAWATOR · HOLO-81 · RUNTIME · LOKALE DEMO · HALT = ZIEL
+  </footer>
+</div>
+
 <script>
 "use strict";
+
+/* ---------- Gemeinsame Helfer und Navigation ---------- */
+
 const $ = id => document.getElementById(id);
-const STORAGE_KEY = "ncos-4";
-const FORMATS = ["PLAIN","NOTE","RULE","CODE","HTML","JS","PQ","PC","NODE","CHAIN","STORY","EXPORT"];
-const LEVELS = [1,3,9,27,81,243,729];
-const MAX_LEVEL = 6;
-const DECOR = { anker:"A01", seed:"S01", zoom:"2.3", home:40 };
-function defaultState(){return {canvas:{},log:[],path:["ROOT"],halted:false,selectedId:null,nextId:419,version:4};}
-let state = defaultState();
-function escapeHtml(s){return String(s).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
-function escapeScriptEnd(s){return s.replace(/<\/script/gi, "<\\/script");}
-function pathStr(p){ return p.join("."); }
-function getLevel(){ return state.path.length - 1; }
-function findCanvasByPath(pStr){return Object.values(state.canvas).find(c => c.path === pStr) || null;}
-function childrenOf(pathArr){const base = pathStr(pathArr);return [1,2,3].map(i => {const p = base + "." + i;return { label: String(i), path: p, canvas: findCanvasByPath(p) };});}
-function persist(){try {localStorage.setItem(STORAGE_KEY, JSON.stringify(state));return true;} catch (e) {console.error("persist fehlgeschlagen:", e);return false;}}
-function loadFromStorage(){try {const raw = localStorage.getItem(STORAGE_KEY);if (!raw) return;state = normalizeState(JSON.parse(raw));} catch (e) {console.warn("load fehlgeschlagen, nutze default:", e);state = defaultState();}}
-function normalizeState(v){
-  if (!v || typeof v !== "object") throw new Error("Kein Objekt");
-  const s = defaultState();
-  s.log = Array.isArray(v.log) ? v.log.filter(x => typeof x === "string").slice(-200) : [];
-  s.path = Array.isArray(v.path) && v.path.length ? v.path.map(String).slice(0, 20) : ["ROOT"];
-  s.halted = !!v.halted;
-  s.nextId = Number.isSafeInteger(v.nextId) && v.nextId > 0 ? v.nextId : 419;
-  if (v.canvas && typeof v.canvas === "object") {
-    for (const [k, c] of Object.entries(v.canvas)) {
-      if (!c || typeof c !== "object") continue;
-      const id = Number(c.id ?? k);
-      if (!Number.isSafeInteger(id) || id < 1) continue;
-      s.canvas[id] = {id,path:typeof c.path === "string" ? c.path : "ROOT",title:typeof c.title === "string" ? c.title : "",text:typeof c.text === "string" ? c.text : "",format:FORMATS.includes(c.format) ? c.format : "PLAIN",created:Number.isFinite(c.created) ? c.created : 0,modified:Number.isFinite(c.modified) ? c.modified : 0};
-      if (id >= s.nextId) s.nextId = id + 1;
-    }
+const navItems = [
+  ["dashboard", "⌂", "Dashboard"],
+  ["timeline", "◷", "Zeugen"],
+  ["grid", "▦", "81 Grid"],
+  ["modules", "◈", "Module"],
+  ["game", "?", "Spiel"],
+  ["pilot", "△", "RAWATOR"],
+  ["runtime", "◎", "Runtime"],
+  ["cube", "◇", "Cube"],
+  ["uime", "12", "UIme"]
+];
+
+function setPage(page) {
+  const valid = navItems.some(([id]) => id === page) ? page : "dashboard";
+
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.toggle("active", section.dataset.page === valid);
+  });
+
+  document.querySelectorAll("[data-page-link]").forEach(button => {
+    const active = button.dataset.pageLink === valid;
+    button.classList.toggle("selected", active);
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+
+  if (location.hash !== `#${valid}`) {
+    history.replaceState(null, "", `#${valid}`);
   }
-  if (v.selectedId != null && s.canvas[v.selectedId]) s.selectedId = Number(v.selectedId);
-  return s;
+
+  if (valid === "runtime") drawRuntime();
 }
-function log(msg){state.log.push(`${new Date().toLocaleTimeString("de-DE")} · ${msg}`);state.log = state.log.slice(-200);persist();renderLog();}
-function renderLog(){const el = $("log");el.replaceChildren();const recent = state.log.slice(-50);if (!recent.length) {el.textContent = "Noch keine Einträge.";return;}recent.forEach(line => {const div = document.createElement("div");div.className = "logline";div.textContent = line;el.append(div);});}
-function renderBreadcrumb(){const el = $("breadcrumb");el.replaceChildren();state.path.forEach((label, i) => {if (i) {const sep = document.createElement("span");sep.className = "sep";sep.textContent = "›";el.append(sep);}const btn = document.createElement("button");btn.type = "button";btn.textContent = label;btn.setAttribute("aria-label", `Pfad bis ${label}`);btn.addEventListener("click", () => {state.path = state.path.slice(0, i + 1);const c = findCanvasByPath(pathStr(state.path));state.selectedId = c ? c.id : null;renderAll();log(`BREADCRUMB → ${pathStr(state.path)}`);});el.append(btn);});}
-function renderStatus(){const lvl = getLevel();$("stLevel").textContent = `LEVEL ${lvl}`;$("stScale").textContent = `3^${lvl} = ${LEVELS[lvl]}`;$("stPath").textContent = pathStr(state.path);$("stCount").textContent = `${Object.keys(state.canvas).length} Canvas`;$("haltState").textContent = state.halted ? "HALT = ZIEL" : "HALT AUS";$("haltState").className = state.halted ? "status-good" : "";}
-function renderMatrix(){const grid = $("matrixGrid");grid.replaceChildren();if (getLevel() >= MAX_LEVEL) {const p = document.createElement("div");p.className = "leaf-msg";p.textContent = `Level ${MAX_LEVEL} erreicht · 729 Blätter · Blatt-Pfad ${pathStr(state.path)}`;grid.append(p);return;}const children = childrenOf(state.path);children.forEach(child => {const btn = document.createElement("button");btn.type = "button";btn.className = "child " + (child.canvas ? "has-canvas" : "empty");btn.innerHTML = `<span class="child-num">${child.label}</span><span class="child-title">${child.canvas ? escapeHtml(child.canvas.title || "(ohne Titel)") : "leer"}</span><span class="child-fmt">${child.canvas ? escapeHtml(child.canvas.format) : "—"}</span>`;btn.addEventListener("click", () => {state.path = [...state.path, child.label];state.selectedId = child.canvas ? child.canvas.id : null;renderAll();log(`MATRIX → ${pathStr(state.path)}${child.canvas ? " · Canvas #" + child.canvas.id : " · leer"}`);showTab("editor");});grid.append(btn);});}
-function renderEditor(){const canvas = findCanvasByPath(pathStr(state.path));$("editorPath").textContent = pathStr(state.path);if (canvas) {state.selectedId = canvas.id;$("titleIn").value = canvas.title;$("editor").value = canvas.text;$("fmtSel").value = FORMATS.includes(canvas.format) ? canvas.format : "PLAIN";$("preview").textContent = canvas.text || "Vorschau erscheint hier.";$("canvasId").textContent = `Canvas #${canvas.id} · ${canvas.format}`;} else {state.selectedId = null;$("titleIn").value = "";$("editor").value = "";$("fmtSel").value = "PLAIN";$("preview").textContent = "Vorschau erscheint hier.";$("canvasId").textContent = `Neu · Pfad ${pathStr(state.path)} · wird beim Speichern angelegt`;}}
-function saveCanvas(){const pStr = pathStr(state.path);let canvas = findCanvasByPath(pStr);const now = Date.now();if (!canvas) {const id = state.nextId++;canvas = { id, path: pStr, title: "", text: "", format: "PLAIN", created: now, modified: now };state.canvas[id] = canvas;log(`NEU · Canvas #${id} @ ${pStr}`);}canvas.title = $("titleIn").value.trim();canvas.text = $("editor").value;canvas.format = FORMATS.includes($("fmtSel").value) ? $("fmtSel").value : "PLAIN";canvas.modified = now;state.selectedId = canvas.id;persist();renderAll();log(`SPEICHERN · Canvas #${canvas.id} @ ${pStr} (${canvas.format})`);}
-function newCanvas(){$("titleIn").value = "";$("editor").value = "";$("fmtSel").value = "PLAIN";$("preview").textContent = "Vorschau erscheint hier.";log("EDITOR · geleert (Canvas bleibt bis Speichern unverändert)");}
-let searchTimer;
-function scheduleSearch(){clearTimeout(searchTimer);searchTimer = setTimeout(renderSearch, 150);}
-function renderSearch(){const q = $("searchBox").value.trim().toLowerCase();const out = $("searchResults");out.replaceChildren();if (!q) { out.textContent = "Suchbegriff eingeben."; return; }const hits = Object.values(state.canvas).filter(c => [c.title, c.text, c.path, c.format].join(" ").toLowerCase().includes(q)).sort((a, b) => b.modified - a.modified).slice(0, 50);if (!hits.length) { out.textContent = "Keine Treffer."; return; }hits.forEach(c => {const btn = document.createElement("button");btn.type = "button";btn.className = "result";btn.innerHTML = `<strong>Canvas #${c.id} · ${escapeHtml(c.format)}</strong><div class="muted">${escapeHtml(c.path)} · ${escapeHtml(c.title || "(ohne Titel)")}</div><div class="muted">${escapeHtml((c.text || "").slice(0, 120))}</div>`;btn.addEventListener("click", () => {state.path = c.path.split(".");state.selectedId = c.id;renderAll();showTab("editor");log(`SUCHE → ${c.path} · Canvas #${c.id}`);});out.append(btn);});}
-function exportJSON(){const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });const url = URL.createObjectURL(blob);const a = document.createElement("a");a.href = url;a.download = "ncos-root.json";a.click();setTimeout(() => URL.revokeObjectURL(url), 1000);log("EXPORT · JSON");}
-async function importJSON(file){if (!file) return;try {const text = await file.text();state = normalizeState(JSON.parse(text));persist();renderAll();log("IMPORT · JSON OK");} catch (e) {console.error(e);alert("Importfehler: " + e.message);log("IMPORT · FEHLER · Zustand unverändert");}}
-function zeugen(){const rule = $("z1").value;const html = $("z2").value;const js = escapeScriptEnd($("z3").value);const safeRule = escapeHtml(rule);const doc = `<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="ncos-rule" content="${safeRule}">\n<title>NC.OS · Kind</title>\n</head>\n<body>\n${html}\n<script>\n${js}\n<\/script>\n</body>\n</html>`;const blob = new Blob([doc], { type:"text/html" });const url = URL.createObjectURL(blob);const a = document.createElement("a");a.href = url;a.download = "ncos-kind.html";a.click();setTimeout(() => URL.revokeObjectURL(url), 1000);$("zeugOut").textContent = `Kind erzeugt · ${doc.length} Zeichen`;log(`ZEUGUNG · HTML+JS · ${doc.length} Zeichen`);}
-function toggleHalt(){state.halted = !state.halted;persist();renderStatus();log(`HALT · ${state.halted ? "ZIEL" : "AUS"}`);}
-function showTab(name){const valid = ["matrix","editor","search","log","zeugung"];if (!valid.includes(name)) return;document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.id === name + "Tab"));document.querySelectorAll("#bottomNav [data-tab]").forEach(b => {const on = b.dataset.tab === name;b.classList.toggle("on", on);if (on) b.setAttribute("aria-current", "page");else b.removeAttribute("aria-current");});window.scrollTo({ top:0, behavior:"smooth" });}
-function renderAll(){renderBreadcrumb();renderStatus();renderMatrix();renderEditor();renderSearch();renderLog();}
-function runAction(name){switch(name){case "matrix": showTab("matrix"); break;case "editor": showTab("editor"); break;case "zeugung": showTab("zeugung"); break;case "log": showTab("log"); break;case "import": $("loadFile").click(); break;case "export": exportJSON(); break;case "halt": toggleHalt(); break;case "save": saveCanvas(); break;case "new": newCanvas(); break;case "birth": zeugen(); break;case "pipeline": log("PIPELINE · markiert · 729 → 243 → 81 → 27 → 9 → 3 → 1"); break;case "seek": log("SEEK · gelesen · geordnet · angehängt"); break;}}
-function bindEvents(){
-  $("fmtSel").innerHTML = FORMATS.map((n, i) => `<option value="${n}">F${String(i+1).padStart(2,"0")} ${n}</option>`).join("");
-  document.addEventListener("click", e => {const btn = e.target.closest("[data-action]");if (!btn) return;runAction(btn.dataset.action);});
-  document.querySelectorAll("#bottomNav [data-tab]").forEach(b => {b.addEventListener("click", () => showTab(b.dataset.tab));});
-  $("editor").addEventListener("input", () => {$("preview").textContent = $("editor").value || "Vorschau erscheint hier.";});
-  $("searchBox").addEventListener("input", scheduleSearch);
-  $("loadFile").addEventListener("change", async e => {const file = e.target.files?.[0];if (file) await importJSON(file);e.target.value = "";});
+
+function renderNavigation() {
+  const items = navItems.map(([id, icon, label]) => `
+    <button class="nav-button" type="button" data-page-link="${id}" aria-label="${label}">
+      <span>${icon}</span> ${label}
+    </button>
+  `).join("");
+
+  $("desktop-nav").innerHTML = items;
+  $("mobile-nav").innerHTML = navItems.slice(0, 5).map(([id, icon, label]) => `
+    <button class="mobile-nav-item" type="button" data-page-link="${id}" aria-label="${label}">
+      <span>${icon}</span>${label}
+    </button>
+  `).join("");
+
+  document.querySelectorAll("[data-page-link]").forEach(button => {
+    button.addEventListener("click", () => setPage(button.dataset.pageLink));
+  });
+
+  document.querySelectorAll("[data-nav]").forEach(button => {
+    button.addEventListener("click", () => setPage(button.dataset.nav));
+  });
 }
-function init(){loadFromStorage();bindEvents();renderAll();log(`NC.OS ROOT · 4.html gestartet · Level ${getLevel()} · Pfad ${pathStr(state.path)}`);}
-init();
+
+/* ---------- Zeugen: lokale Daten, Suche, Export, Import ---------- */
+
+const EVENT_TYPES = ["BOOT", "UPDATE", "CREATE", "DELETE", "HALT", "RECOVERY", "EXPORT"];
+const mockEvents = Array.from({ length: 142 }, (_, index) => {
+  const tx = 142 - index;
+  const type = index === 0 ? "UPDATE" : EVENT_TYPES[(index * 7 + 2) % EVENT_TYPES.length];
+  const hash = `nc_${(tx * 7919).toString(16).padStart(12, "0")}`;
+
+  return {
+    tx,
+    type,
+    timestamp: Date.now() - index * 60_000,
+    hash,
+    previousHash: `nc_${((tx - 1) * 7919).toString(16).padStart(12, "0")}`
+  };
+});
+
+let events = [...mockEvents];
+let timelinePage = 1;
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function getFilteredEvents() {
+  const query = $("timeline-search").value.trim().toLowerCase();
+  const filter = $("timeline-filter").value;
+  const sort = $("timeline-sort").value;
+
+  const result = events.filter(event => {
+    const typeMatch = filter === "all" || event.type === filter;
+    const text = `${event.tx} ${event.type} ${event.hash} ${event.previousHash}`.toLowerCase();
+    return typeMatch && (!query || text.includes(query));
+  });
+
+  const comparators = {
+    "time-desc": (a, b) => b.timestamp - a.timestamp,
+    "time-asc": (a, b) => a.timestamp - b.timestamp,
+    "tx-desc": (a, b) => b.tx - a.tx,
+    "tx-asc": (a, b) => a.tx - b.tx
+  };
+
+  return result.sort(comparators[sort] || comparators["time-desc"]);
+}
+
+function renderEventList(container, list) {
+  container.innerHTML = list.map(event => `
+    <article class="event">
+      <span class="event-dot ${escapeHtml(event.type.toLowerCase())}"></span>
+      <div class="event-main">
+        <strong>TX ${escapeHtml(event.tx)}</strong>
+        <span>${escapeHtml(event.type)}</span>
+      </div>
+      <code>${escapeHtml(event.hash)}</code>
+      <time datetime="${new Date(event.timestamp).toISOString()}">${new Date(event.timestamp).toLocaleString("de-DE")}</time>
+    </article>
+  `).join("") || `<p class="muted">Keine passenden Ereignisse.</p>`;
+}
+
+function renderTimeline() {
+  const filtered = getFilteredEvents();
+  const pageSize = Math.max(1, Number($("timeline-size").value) || 25);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+
+  timelinePage = Math.min(Math.max(1, timelinePage), totalPages);
+  const start = (timelinePage - 1) * pageSize;
+  const visible = filtered.slice(start, start + pageSize);
+
+  $("timeline-body").replaceChildren();
+
+  visible.forEach(event => {
+    const row = document.createElement("tr");
+    [
+      String(event.tx),
+      event.type,
+      new Date(event.timestamp).toLocaleString("de-DE"),
+      event.hash,
+      event.previousHash
+    ].forEach((value, index) => {
+      const cell = document.createElement("td");
+
+      if (index === 1) {
+        const span = document.createElement("span");
+        span.className = "event-type";
+        span.textContent = value;
+        cell.appendChild(span);
+      } else if (index >= 3) {
+        const code = document.createElement("code");
+        code.textContent = value;
+        cell.appendChild(code);
+      } else {
+        cell.textContent = value;
+      }
+
+      row.appendChild(cell);
+    });
+    $("timeline-body").appendChild(row);
+  });
+
+  $("timeline-status").textContent =
+    `${filtered.length} Ereignis(se) gefunden · ${visible.length} auf dieser Seite`;
+  $("page-info").textContent = `${timelinePage} / ${totalPages}`;
+  $("prev-page").disabled = timelinePage <= 1;
+  $("next-page").disabled = timelinePage >= totalPages;
+
+  renderEventList($("timeline-list"), filtered.slice(0, 8));
+  renderEventList($("dashboard-events"), events.slice(0, 5));
+
+  $("stat-tx").textContent = String(events.length);
+  $("stat-hash").textContent = "MOCK";
+  $("stat-recovery").textContent = String(events.filter(event => event.type === "RECOVERY").length);
+  $("stat-halt").textContent = events.some(event => event.type === "HALT") ? "ZIEL" : "OFFEN";
+}
+
+function csvEscape(value) {
+  const text = String(value ?? "");
+  return /[;"\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function downloadBlob(blob, filename) {
+  let url;
+
+  try {
+    url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.style.display = "none";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    return true;
+  } catch (error) {
+    console.error("DOWNLOAD_FAILED", error);
+    return false;
+  } finally {
+    if (url) URL.revokeObjectURL(url);
+  }
+}
+
+$("export-json").addEventListener("click", () => {
+  const filtered = getFilteredEvents();
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    source: "local-demo",
+    filter: $("timeline-filter").value,
+    search: $("timeline-search").value,
+    sort: $("timeline-sort").value,
+    events: filtered
+  };
+
+  const ok = downloadBlob(
+    new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" }),
+    "nc-witnesses.json"
+  );
+
+  $("export-status").textContent = ok
+    ? `JSON exportiert · ${filtered.length} Ereignis(se)`
+    : "JSON-Export fehlgeschlagen.";
+});
+
+$("export-csv").addEventListener("click", () => {
+  const filtered = getFilteredEvents();
+  const rows = [
+    ["tx", "type", "timestamp", "hash", "previousHash"],
+    ...filtered.map(event => [
+      event.tx,
+      event.type,
+      new Date(event.timestamp).toISOString(),
+      event.hash,
+      event.previousHash
+    ])
+  ];
+  const csv = "\uFEFF" + rows.map(row => row.map(csvEscape).join(";")).join("\r\n");
+  const ok = downloadBlob(
+    new Blob([csv], { type: "text/csv;charset=utf-8" }),
+    "nc-witnesses.csv"
+  );
+
+  $("export-status").textContent = ok
+    ? `CSV UTF‑8 exportiert · ${filtered.length} Ereignis(se)`
+    : "CSV-Export fehlgeschlagen.";
+});
+
+function validateEntry(value) {
+  return value !== null
+    && typeof value === "object"
+    && Number.isFinite(Number(value.tx))
+    && typeof value.type === "string"
+    && EVENT_TYPES.includes(value.type)
+    && Number.isFinite(Number(value.timestamp))
+    && typeof value.hash === "string"
+    && typeof value.previousHash === "string";
+}
+
+$("import-json").addEventListener("click", async () => {
+  const file = $("file-input").files?.[0];
+
+  if (!file) {
+    $("import-status").textContent = "Wähle zuerst eine JSON-Datei aus.";
+    $("import-status").className = "status-line error";
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(await file.text());
+    const imported = Array.isArray(parsed) ? parsed : parsed?.events;
+
+    if (!Array.isArray(imported) || !imported.every(validateEntry)) {
+      throw new Error("Ungültige Struktur. Erwartet wird ein Events-Array mit tx, type, timestamp, hash und previousHash.");
+    }
+
+    events = imported.map(event => ({
+      tx: Number(event.tx),
+      type: event.type,
+      timestamp: Number(event.timestamp),
+      hash: event.hash,
+      previousHash: event.previousHash
+    }));
+
+    timelinePage = 1;
+    renderTimeline();
+    $("import-status").textContent = `${events.length} Ereignis(se) lokal importiert.`;
+    $("import-status").className = "status-line";
+  } catch (error) {
+    $("import-status").textContent = `Importfehler: ${error instanceof Error ? error.message : "Ungültige Datei"}`;
+    $("import-status").className = "status-line error";
+  } finally {
+    $("file-input").value = "";
+  }
+});
+
+$("reset-mocks").addEventListener("click", () => {
+  events = [...mockEvents];
+  timelinePage = 1;
+  renderTimeline();
+  $("import-status").textContent = "Beispielereignisse wiederhergestellt.";
+  $("import-status").className = "status-line";
+});
+
+$("timeline-search").addEventListener("input", () => {
+  timelinePage = 1;
+  renderTimeline();
+});
+$("timeline-filter").addEventListener("change", () => {
+  timelinePage = 1;
+  renderTimeline();
+});
+$("timeline-sort").addEventListener("change", renderTimeline);
+$("timeline-size").addEventListener("change", () => {
+  timelinePage = 1;
+  renderTimeline();
+});
+$("prev-page").addEventListener("click", () => {
+  timelinePage--;
+  renderTimeline();
+});
+$("next-page").addEventListener("click", () => {
+  timelinePage++;
+  renderTimeline();
+});
+
+/* ---------- Module und 81 Grid ---------- */
+
+const modules = [
+  ["SAM", "ONLINE"],
+  ["NCAPI", "MOCK"],
+  ["PENTAGRAMM", "TESTING"],
+  ["TOOLOMAT", "ONLINE"],
+  ["NC ZENTRALE", "ONLINE"],
+  ["RAWATOR", "LOKAL"],
+  ["HOLO-81", "81 FRAMES"],
+  ["RUNTIME 3", "DEMO"]
+];
+
+function renderModules() {
+  const markup = modules.map(([name, status]) => `
+    <div class="module">
+      <b>${escapeHtml(name)}</b>
+      <span class="${status === "TESTING" ? "testing" : ""}">${escapeHtml(status)}</span>
+    </div>
+  `).join("");
+
+  $("module-list").innerHTML = markup;
+  $("dashboard-modules").innerHTML = markup;
+}
+
+for (let id = 1; id <= 81; id++) {
+  const cell = document.createElement("button");
+  cell.type = "button";
+  cell.className = `grid-cell${id === 41 ? " center" : ""}`;
+  cell.textContent = String(id);
+  cell.setAttribute("aria-label", `Zelle ${id}${id === 41 ? ", Mitte" : ""}`);
+  cell.addEventListener("click", () => {
+    if (id !== 41) cell.classList.toggle("marked");
+  });
+  $("grid81").appendChild(cell);
+}
+
+$("clear-grid").addEventListener("click", () => {
+  document.querySelectorAll(".grid-cell.marked").forEach(cell => cell.classList.remove("marked"));
+});
+
+/* ---------- Was-bin-ich-Spiel ---------- */
+
+const ITEMS = [
+  { id: "0 PUNKT", hints: ["Ich habe keine Ausdehnung.", "Ich bin der Anfang vor der Linie.", "Ohne mich gibt es keinen Ort."], answers: { zahl: true, gross: false, ort: true, bewegung: false, mitte: false, leben: false } },
+  { id: "3 LINIE", hints: ["Ich verbinde zwei Punkte.", "Ich habe Richtung, aber keine Fläche.", "Ich bin der erste Strich."], answers: { zahl: true, gross: false, ort: false, bewegung: true, mitte: false, leben: false } },
+  { id: "9 RICHTUNG", hints: ["Ich zeige wohin.", "Ich bin drei mal drei.", "Ich bin Kompass, nicht Weg."], answers: { zahl: true, gross: false, ort: false, bewegung: true, mitte: false, leben: false } },
+  { id: "21 RUN", hints: ["Ich bin ein Lauf, kein Ort.", "Ich habe 21 Schritte.", "Drei Wochen als Schrittmaß."], answers: { zahl: true, gross: false, ort: false, bewegung: true, mitte: false, leben: true } },
+  { id: "27 GATE", hints: ["Ich bin ein Tor.", "Durch mich geht es von 9 zu 81.", "Ich bin drei hoch drei."], answers: { zahl: true, gross: false, ort: true, bewegung: false, mitte: false, leben: false } },
+  { id: "81 RAUM", hints: ["Ich bin 9 mal 9.", "Ich bin ein Rastermaß.", "In mir wohnen 81 Felder."], answers: { zahl: true, gross: true, ort: true, bewegung: false, mitte: false, leben: false } },
+  { id: "99 MITTE", hints: ["Nah an der Mitte, nicht die Mitte.", "Ich bin ein Begriff im System.", "Ich halte das Feld zusammen."], answers: { zahl: true, gross: true, ort: true, bewegung: false, mitte: true, leben: false } },
+  { id: "243 ANALYSE", hints: ["Ich zerlege.", "Ich bin drei hoch fünf.", "Ohne Prüfung bleibt etwas Behauptung."], answers: { zahl: true, gross: true, ort: false, bewegung: false, mitte: false, leben: false } },
+  { id: "333 WÜRDE", hints: ["Ich bin kein Befehl.", "Ich bleibe, auch wenn alles läuft.", "Würde, nicht Macht."], answers: { zahl: true, gross: true, ort: false, bewegung: false, mitte: true, leben: true } },
+  { id: "729 MEMORY", hints: ["Ich erinnere.", "Ich bin drei hoch sechs.", "Anker, nicht Leben."], answers: { zahl: true, gross: true, ort: false, bewegung: false, mitte: false, leben: false } },
+  { id: "999 DU", hints: ["Ich bin nicht das System.", "Ich bin das Gegenüber.", "Ohne dich kein Gespräch."], answers: { zahl: true, gross: true, ort: false, bewegung: false, mitte: true, leben: true } },
+  { id: "HALT ZIEL", hints: ["Ich blockiere, ich lösche nicht.", "Ich bin Ziel, nicht Ende.", "Wenn ich komme, bleibt alles stehen."], answers: { zahl: false, gross: false, ort: false, bewegung: false, mitte: true, leben: true } },
+  { id: "MOVE", hints: ["Ich bin ein Schritt.", "Ich habe einen Zeugen.", "Ich überschreibe nie die Quelle."], answers: { zahl: false, gross: false, ort: false, bewegung: true, mitte: false, leben: true } },
+  { id: "ZEUGE", hints: ["Ich zeichne ein Ereignis auf.", "Ich beweise nicht automatisch die Wahrheit.", "Ohne Daten gibt es keinen Eintrag."], answers: { zahl: false, gross: false, ort: false, bewegung: false, mitte: false, leben: false } },
+  { id: "EL BURRO", hints: ["Ich trage, ich entscheide nicht.", "Ich unterstütze eine Aufgabe.", "Diener, nicht Bestimmer."], answers: { zahl: false, gross: false, ort: false, bewegung: true, mitte: false, leben: true } },
+  { id: "MC FLY 81", hints: ["Ich verbinde 9, 3, 81 und 729.", "Warp, nicht Weg.", "81 ist mein Maß."], answers: { zahl: false, gross: true, ort: false, bewegung: true, mitte: false, leben: true } },
+  { id: "RIDVAN", hints: ["Ich bin als Pilot beschrieben.", "Carrier NOAH, WELCOME.", "Eine Figur in dieser Demo."], answers: { zahl: false, gross: false, ort: false, bewegung: true, mitte: true, leben: true } },
+  { id: "RAWATOR", hints: ["Ich gebe dem Modell einen Namen.", "Es gibt eine 81-Frame-Demo.", "Hier bin ich lokale Beispieldaten."], answers: { zahl: false, gross: true, ort: false, bewegung: false, mitte: false, leben: true } }
+];
+
+const QUESTIONS = [
+  ["zahl", "Bin ich eine Zahl?"],
+  ["gross", "Bin ich groß (81+)?"],
+  ["ort", "Bin ich ein Ort / Feld?"],
+  ["bewegung", "Bin ich Bewegung / Lauf?"],
+  ["mitte", "Bin ich Mitte / Haltung?"],
+  ["leben", "Bin ich Leben / lebendig?"]
+];
+
+let secretItem;
+let gameSteps = 0;
+let hintCount = 0;
+let gameScore = 81;
+let gameWins = 0;
+let gameRounds = 0;
+let gameOver = false;
+
+function addGameLog(text) {
+  $("game-log").textContent += `${text}\n`;
+  $("game-log").scrollTop = $("game-log").scrollHeight;
+}
+
+function renderGameStats() {
+  $("game-score").textContent = String(gameScore);
+  $("game-wins").textContent = String(gameWins);
+  $("game-rounds").textContent = String(gameRounds);
+  $("game-fill").style.width = `${Math.max(0, (21 - gameSteps) / 21 * 100)}%`;
+}
+
+function startRound() {
+  secretItem = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+  gameSteps = 0;
+  hintCount = 0;
+  gameOver = false;
+
+  $("mask").textContent = secretItem.id.replace(/[^\s]/g, "?");
+  $("round-info").textContent = `RUNDE ${gameRounds + 1} · ${ITEMS.length} Möglichkeiten · maximal 21 Schritte`;
+  $("game-result").textContent = "";
+  $("game-result").className = "status-line";
+  $("game-log").textContent = "";
+  $("hints").replaceChildren();
+  $("guess-input").value = "";
+
+  $("questions").innerHTML = QUESTIONS.map(([key, label]) =>
+    `<button class="button" type="button" data-question="${key}">${escapeHtml(label)}</button>`
+  ).join("");
+
+  $("questions").querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      if (gameOver || button.classList.contains("used")) return;
+
+      gameSteps++;
+      gameScore = Math.max(0, gameScore - 3);
+      const answer = secretItem.answers[button.dataset.question] ? "JA" : "NEIN";
+      button.classList.add("used");
+      if (answer === "NEIN") button.classList.add("no");
+
+      addGameLog(`FRAGE: ${button.textContent} → ${answer}`);
+      renderGameStats();
+    });
+  });
+
+  addGameLog("NEUE RUNDE — Ich bin ein Begriff aus dieser lokalen NC.OS-Demo.");
+  renderGameStats();
+}
+
+$("hint-button").addEventListener("click", () => {
+  if (gameOver || hintCount >= secretItem.hints.length) {
+    addGameLog("Keine weiteren Hinweise verfügbar.");
+    return;
+  }
+
+  gameSteps++;
+  gameScore = Math.max(0, gameScore - 3);
+
+  const hint = document.createElement("div");
+  hint.className = "hint";
+  const label = document.createElement("b");
+  label.textContent = `HINWEIS ${hintCount + 1}: `;
+  hint.append(label, document.createTextNode(secretItem.hints[hintCount]));
+  $("hints").appendChild(hint);
+
+  hintCount++;
+  renderGameStats();
+});
+
+$("guess-button").addEventListener("click", () => {
+  if (gameOver) return;
+  const guess = $("guess-input").value.trim().toUpperCase();
+  if (!guess) return;
+
+  gameSteps++;
+  if (guess === secretItem.id) {
+    const bonus = gameSteps === 1 ? 27 : 0;
+    gameScore += bonus;
+    gameWins++;
+    gameRounds++;
+    gameOver = true;
+    $("mask").textContent = secretItem.id;
+    $("game-result").textContent = `Richtig — gesucht war ${secretItem.id}. +${bonus} Punkte.`;
+    addGameLog(`GERATEN: ${guess} → RICHTIG.`);
+  } else {
+    gameScore = Math.max(0, gameScore - 9);
+    $("game-result").textContent = `Noch nicht: ${guess} ist es nicht. −9 Punkte.`;
+    addGameLog(`GERATEN: ${guess} → FALSCH.`);
+  }
+
+  renderGameStats();
+});
+
+$("give-up").addEventListener("click", () => {
+  if (gameOver) return;
+  gameOver = true;
+  gameRounds++;
+  $("mask").textContent = secretItem.id;
+  $("game-result").textContent = `Aufgedeckt: ${secretItem.id}.`;
+  addGameLog(`AUFGEGEBEN → ${secretItem.id}`);
+  renderGameStats();
+});
+
+$("next-round").addEventListener("click", startRound);
+$("guess-input").addEventListener("keydown", event => {
+  if (event.key === "Enter") $("guess-button").click();
+});
+
+/* ---------- RAWATOR und Moleküle ---------- */
+
+const Molecule = {
+  H2O: () => ({ name: "Wasser", atoms: ["H", "H", "O"], demoVital: .92 }),
+  O2: () => ({ name: "Sauerstoff", atoms: ["O", "O"], demoVital: .88 }),
+  CO2: () => ({ name: "Kohlenstoffdioxid", atoms: ["C", "O", "O"], demoVital: .81 })
+};
+
+let RAW = {
+  status: "bereit",
+  vital: 0,
+  hologram: [],
+  anime: [],
+  shuffle: [],
+  molecules: null
+};
+
+function rawInit() {
+  const co2 = Molecule.CO2();
+  const h2o = Molecule.H2O();
+  const o2 = Molecule.O2();
+  const vital = (co2.demoVital + h2o.demoVital + o2.demoVital) / 3;
+
+  RAW = {
+    status: "lokale Demo aktiv",
+    vital,
+    hologram: Array.from({ length: 81 }, (_, index) => ({ id: `RAW-${index + 1}` })),
+    anime: Array.from({ length: 81 }, (_, index) => ({
+      id: `ANIME-${index + 1}`,
+      frame: `RAW-${index + 1}`,
+      vital: vital * (0.7 + Math.random() * 0.6)
+    })),
+    shuffle: Array.from({ length: 81 }, (_, index) => ({
+      step: index + 1,
+      move: ["↻", "↺", "↑", "↓", "←", "→", "↗", "↘", "↖"][index % 9],
+      frame: `RAW-${index + 1}`,
+      vital: vital * (0.8 + Math.random() * 0.4)
+    })),
+    molecules: { co2, h2o, o2 }
+  };
+
+  $("raw-vital").textContent = vital.toFixed(3);
+  $("raw-molecules").textContent = `CO₂ ${co2.demoVital} · H₂O ${h2o.demoVital} · O₂ ${o2.demoVital}`;
+  $("raw-counts").textContent = `${RAW.hologram.length} · ${RAW.anime.length} · ${RAW.shuffle.length}`;
+  $("raw-status").textContent = RAW.status;
+
+  $("raw-output").textContent = JSON.stringify({
+    name: "RAWATOR · lokale Lebensgeber-Demo",
+    status: RAW.status,
+    vital: Number(vital.toFixed(3)),
+    hologram: RAW.hologram.length,
+    anime: RAW.anime.length,
+    shuffle: RAW.shuffle.length
+  }, null, 2);
+
+  $("shuffle-output").textContent = RAW.shuffle.slice(0, 21)
+    .map(item => `Step ${String(item.step).padStart(2, "0")}  ${item.move}  ${item.frame}  vital ${item.vital.toFixed(2)}`)
+    .join("\n");
+
+  $("molecule-output").textContent = JSON.stringify([h2o, o2, co2], null, 2);
+}
+
+$("raw-init").addEventListener("click", rawInit);
+$("raw-reset").addEventListener("click", () => {
+  RAW = { status: "bereit", vital: 0, hologram: [], anime: [], shuffle: [], molecules: null };
+  $("raw-vital").textContent = "—";
+  $("raw-molecules").textContent = "—";
+  $("raw-counts").textContent = "—";
+  $("raw-status").textContent = "bereit";
+  $("raw-output").textContent = "RAWATOR zurückgesetzt. INIT drücken.";
+  $("shuffle-output").textContent = "Noch nicht initialisiert.";
+  $("molecule-output").textContent = "";
+});
+
+$("raw-proof").addEventListener("click", () => {
+  if (!RAW.anime.length) rawInit();
+
+  $("raw-output").textContent = JSON.stringify({
+    title: "81-HOLOGRAMM-BEWEIS · DEMO",
+    total: RAW.anime.length,
+    framesAboveDemoThreshold: RAW.anime.filter(frame => frame.vital > .5).length,
+    frames: RAW.anime.slice(0, 9)
+  }, null, 2);
+});
+
+/* ---------- Runtime-Demo ---------- */
+
+const ORDER = ["·", "N", "NW", "NE", "W", "E", "SW", "SE", "S"];
+const PARENT = { "·": null, N: "·", NW: "N", NE: "NW", W: "NE", E: "W", SW: "E", SE: "SW", S: "SE" };
+const WIDTH = { "·": 1, N: 2, NW: 3, NE: 3, W: 2, E: 2, SW: 1, SE: 1, S: 1 };
+const LAYERS = ORDER.map(() => Array(9).fill(0));
+let rotation = 0;
+let runner = 0;
+let runtimeRunning = true;
+let anchor = null;
+
+function localSignals() {
+  const seed = Math.floor(Date.now() / 1000);
+  return ORDER.map((_, index) => ((seed + index * 13) % 7) !== 0);
+}
+
+function computeRuntime() {
+  const ready = localSignals();
+  const result = {};
+
+  ORDER.forEach((name, index) => {
+    const parent = PARENT[name];
+    result[name] = {
+      raw: ready[index],
+      linked: parent === null ? ready[index] : result[parent].linked && ready[index]
+    };
+  });
+
+  return result;
+}
+
+function drawNodeGraph(canvas, title) {
+  if (!canvas) return;
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  const width = canvas.width;
+  const height = canvas.height;
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const statuses = computeRuntime();
+  const positions = {};
+
+  context.clearRect(0, 0, width, height);
+
+  const glow = context.createRadialGradient(centerX, centerY, 2, centerX, centerY, Math.min(width, height) * .45);
+  glow.addColorStop(0, "rgba(255, 209, 102, .13)");
+  glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+  context.fillStyle = glow;
+  context.fillRect(0, 0, width, height);
+
+  ORDER.forEach((name, index) => {
+    const angle = index / ORDER.length * Math.PI * 2 - Math.PI / 2;
+    const radius = Math.min(width, height) * .29 + WIDTH[name] * 3;
+    positions[name] = {
+      x: centerX + Math.cos(angle) * radius,
+      y: centerY + Math.sin(angle) * radius
+    };
+  });
+
+  ORDER.forEach(name => {
+    const parent = PARENT[name];
+    if (!parent) return;
+    context.strokeStyle = "rgba(117, 201, 237, .35)";
+    context.beginPath();
+    context.moveTo(positions[parent].x, positions[parent].y);
+    context.lineTo(positions[name].x, positions[name].y);
+    context.stroke();
+  });
+
+  ORDER.forEach(name => {
+    const point = positions[name];
+    context.fillStyle = statuses[name].linked ? "#65f0b0" : "#ff647c";
+    context.beginPath();
+    context.arc(point.x, point.y, 8, 0, Math.PI * 2);
+    context.fill();
+    context.fillStyle = "#d8e3ef";
+    context.font = "11px monospace";
+    context.fillText(name, point.x + 11, point.y + 4);
+  });
+
+  context.fillStyle = "#ffd166";
+  context.beginPath();
+  context.arc(centerX, centerY, 11, 0, Math.PI * 2);
+  context.fill();
+  context.fillStyle = "#101010";
+  context.font = "bold 9px monospace";
+  context.fillText(title, centerX - 10, centerY + 3);
+}
+
+function drawGears() {
+  const canvas = $("gears");
+  const context = canvas?.getContext("2d");
+  if (!context) return;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  const status = computeRuntime();
+
+  ORDER.forEach((name, index) => {
+    const x = 36 + index * (canvas.width - 72) / (ORDER.length - 1);
+    const y = canvas.height / 2;
+
+    context.strokeStyle = status[name].linked ? "#65f0b0" : "#ff647c";
+    context.beginPath();
+    context.arc(x, y, 15, 0, Math.PI * 2);
+    context.stroke();
+
+    context.fillStyle = status[name].linked ? "#65f0b0" : "#8995a8";
+    context.font = "bold 10px monospace";
+    context.textAlign = "center";
+    context.fillText(name, x, y + 3);
+  });
+
+  $("gear-text").textContent = `Zahnräder: ${ORDER.filter(name => !status[name].linked).join(", ") || "alle verbunden"} · Breite 1-2-3-2-1`;
+  const vector = ORDER.map(name => status[name].linked);
+  const hasFixedPoint = vector.every(Boolean);
+  $("function-text").textContent = `L-Vektor: ${vector.map(value => value ? "⊤" : "⊥").join(" ")} · ${hasFixedPoint ? "handoff = ZIEL" : "handoff = verweigert (Demo)"}`;
+}
+
+function drawCylinder() {
+  const canvas = $("cylinder");
+  const context = canvas?.getContext("2d");
+  if (!context) return;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  const width = canvas.width / 9;
+
+  for (let column = 0; column < 9; column++) {
+    const row = (column + rotation) % 9;
+    const x = column * width + 7;
+    const boxWidth = width - 14;
+
+    context.strokeStyle = "#29433a";
+    context.strokeRect(x, 10, boxWidth, canvas.height - 42);
+
+    for (let cell = 0; cell < 9; cell++) {
+      const cx = x + boxWidth / 6 + (cell % 3) * boxWidth / 3;
+      const cy = 35 + Math.floor(cell / 3) * 38;
+      const value = LAYERS[row][cell];
+
+      context.beginPath();
+      context.arc(cx, cy, value === 2 ? 7 : 5, 0, Math.PI * 2);
+      context.fillStyle = value === 2 ? "#ffd166" : value === 1 ? "#65f0b0" : "#263142";
+      context.fill();
+    }
+
+    context.fillStyle = "#d8e3ef";
+    context.font = "bold 11px monospace";
+    context.textAlign = "center";
+    context.fillText(ORDER[row], x + boxWidth / 2, canvas.height - 15);
+  }
+
+  $("cylinder-text").textContent =
+    `Markiert: ${LAYERS.flat().filter(Boolean).length}/81 · Rotation ${rotation}/9 · Anker ${anchor || "—"} · Cursor ${ORDER[Math.floor(runner / 9)]}.${runner % 9}`;
+}
+
+function drawRuntime() {
+  drawNodeGraph($("canvas99"), "99");
+  drawNodeGraph($("graph"), "99");
+  drawGears();
+  drawCylinder();
+
+  const status = computeRuntime();
+  $("runtime-output").textContent =
+    `Rt(x)=Rt(parent) ∧ R(x)\nORDER ${ORDER.join(" → ")}\nL-Vektor ${ORDER.map(name => status[name].linked ? "⊤" : "⊥").join(" ∧ ")}\nHANDOFF ${ORDER.every(name => status[name].linked) ? "ZIEL" : "DEMO · NICHT BEREIT"}\nLokale Visualisierung; keine Systemmetriken.`;
+}
+
+$("runtime-run").addEventListener("click", () => {
+  runtimeRunning = !runtimeRunning;
+  $("runtime-run").textContent = runtimeRunning ? "⏸ STOP" : "▶ RUN";
+});
+
+$("runtime-move").addEventListener("click", () => {
+  rotation = (rotation + 1) % 9;
+  drawCylinder();
+});
+
+$("runtime-unmove").addEventListener("click", () => {
+  rotation = (rotation + 8) % 9;
+  drawCylinder();
+});
+
+$("runtime-use").addEventListener("click", () => {
+  anchor = anchor ? null : ORDER[(rotation + Math.floor(runner / 9)) % 9];
+  drawCylinder();
+});
+
+setInterval(() => {
+  if (runtimeRunning) {
+    const layer = Math.floor(runner / 9);
+    const cell = runner % 9;
+    const ready = computeRuntime()[ORDER[layer]].linked;
+
+    LAYERS[layer][cell] = ready ? (cell === 4 ? 2 : 1) : 0;
+    runner = (runner + 1) % 81;
+  }
+
+  if ($("page-runtime").classList.contains("active")) drawRuntime();
+}, 500);
+
+/* ---------- Axiom, KEIO, Routing ---------- */
+
+const KEIO_TRI = {
+  id: "KEIO-△",
+  origin: 0,
+  type: "triangle",
+  class: "KEIO",
+  vector: {
+    a: { x: 0, y: 1, z: 0 },
+    b: { x: -1, y: -1, z: 0 },
+    c: { x: 1, y: -1, z: 0 }
+  },
+  orbit: 3,
+  exchange: "△",
+  cluster: "◎",
+  fraction: "1/3",
+  holo: { mode: "Voyager-Class", resolution: "7482-Quantum" }
+};
+
+const INDUSTRY = {
+  id: "INDUSTRY.home",
+  origin: "◉",
+  cluster: "◎",
+  exchange: "△",
+  admin: "▣",
+  capital: "◆",
+  scale: { micro: 3, mid: 9, macro: 27, ultra: 81 },
+  route: ["◉ → 3 → 9 → ◎", "◎ → 3 → 9 → ◎", "◎ → 81 → ◆ → △", "△ → 27 → ▣ → 3 ↺"]
+};
+
+$("keio-output").textContent = JSON.stringify(KEIO_TRI, null, 2);
+$("routing-output").textContent = JSON.stringify({
+  INDUSTRY,
+  MARKT_HOME: { ...INDUSTRY, id: "MARKT.home" },
+  NC_ROOM: { engine: ["MANA(1.2)", "AURA(4)", "KRAFT(1.5)"] }
+}, null, 2);
+
+function pulseAxiom() {
+  const mana = 1 * (.95 + Math.random() * .1);
+  const aura = 3 * (.85 + Math.random() * .15);
+  const kraft = 1 * (.9 + Math.random() * .3);
+  const vital = (mana + aura + kraft) / 3;
+
+  $("axiom-output").textContent = JSON.stringify({
+    mana: Number(mana.toFixed(4)),
+    aura: Number(aura.toFixed(4)),
+    kraft: Number(kraft.toFixed(4)),
+    vital: Number(vital.toFixed(4)),
+    note: "Illustrative demo values"
+  }, null, 2);
+}
+
+$("axiom-pulse").addEventListener("click", pulseAxiom);
+
+/* ---------- Cube visualizer ---------- */
+
+const FACE_DATA = {
+  STABIL: ["ANKER", "AXI", "393", "C9", "C81", "MEM", "STABIL", "TEAM", "A01"],
+  UNFORM: ["9", "99", "999", "DASH", "IDX", "DUP", "q9", "LOST", "UNWILL"],
+  FORMER: ["81", "3^9^81", "VULKAN", "FORMER", "DRUCK", "LAVA", "MASSN", "TETRA", "81x"],
+  ANGRIFF: ["ATTACK", "run", "start", "ATK", "MATT", "DEF", "FALSCH", "ANGRIFF", "VOR"],
+  NIRWANA: ["FREE", "BIO", "GENESIS", "VOID", "SPACE", "MAL", "BOOTE", "FREE", "0"],
+  CACHE: ["GPU", "FINAL", "BORG", "CACHE", "WURM", "HOLE", "CALL", "V2", "MEM"]
+};
+
+const FACE_ORDER = Object.keys(FACE_DATA);
+const FACE_TRANSFORMS = [
+  "translateZ(100px)",
+  "rotateY(180deg) translateZ(100px)",
+  "rotateY(90deg) translateZ(100px)",
+  "rotateY(-90deg) translateZ(100px)",
+  "rotateX(90deg) translateZ(100px)",
+  "rotateX(-90deg) translateZ(100px)"
+];
+
+const CUBE_STEPS = [
+  ["Ausgang", "Demo-Werte werden dargestellt."],
+  ["Abweichung", "Einige Beschriftungen werden vertauscht."],
+  ["Prüfen", "Die Testabweichungen werden angezeigt."],
+  ["Stabilisieren", "Beschriftungen nähern sich dem Ausgang."],
+  ["Brücke", "A01 und C81 erscheinen im Diagramm."],
+  ["Ziel", "Der stabile Demo-Zustand ist wiederhergestellt."]
+];
+
+let cubeMode = "form";
+let cubeStep = 0;
+let cubeTimer = null;
+let cubePlaying = false;
+let cubeRx = -20;
+let cubeRy = 28;
+let cubeDragging = false;
+let cubeLastX = 0;
+let cubeLastY = 0;
+
+function scrambledFaces() {
+  const copy = Object.fromEntries(FACE_ORDER.map(name => [name, [...FACE_DATA[name]]]));
+  [copy.STABIL[1], copy.UNFORM[7]] = [copy.UNFORM[7], copy.STABIL[1]];
+  copy.FORMER[4] = "FALSCH";
+  copy.ANGRIFF[4] = "C81";
+  copy.CACHE[5] = "VOID";
+  return copy;
+}
+
+function cubeFaces() {
+  if (cubeMode === "form") return Object.fromEntries(FACE_ORDER.map(name => [name, [...FACE_DATA[name]]]));
+
+  if (cubeMode === "unform") {
+    const all = FACE_ORDER.flatMap(name => FACE_DATA[name]);
+    for (let i = all.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [all[i], all[j]] = [all[j], all[i]];
+    }
+
+    let offset = 0;
+    return Object.fromEntries(FACE_ORDER.map(name => {
+      const face = all.slice(offset, offset + 9);
+      offset += 9;
+      return [name, face];
+    }));
+  }
+
+  if (cubeMode === "falsch") return scrambledFaces();
+
+  const copy = scrambledFaces();
+  if (cubeStep >= 2) {
+    copy.FORMER[0] = "81";
+    copy.FORMER[4] = "DRUCK";
+  }
+  if (cubeStep >= 3) {
+    copy.CACHE[5] = "WURM";
+    copy.ANGRIFF[4] = "MATT";
+  }
+  if (cubeStep >= 4) return Object.fromEntries(FACE_ORDER.map(name => [name, [...FACE_DATA[name]]]));
+  return copy;
+}
+
+function paintCube() {
+  const faces = cubeFaces();
+  const inner = $("cube-inner");
+  inner.style.transform = `rotateX(${cubeRx}deg) rotateY(${cubeRy}deg)`;
+
+  inner.innerHTML = FACE_ORDER.map((name, faceIndex) => `
+    <div class="face" style="transform:${FACE_TRANSFORMS[faceIndex]}">
+      ${faces[name].map((value, index) => {
+        const marked = (cubeMode === "falsch" || (cubeMode === "sequencer" && cubeStep <= 3))
+          && ((name === "STABIL" && index === 1) || (name === "UNFORM" && index === 7) || (name === "FORMER" && index === 4) || (name === "ANGRIFF" && index === 4));
+
+        return `<div class="tile${index === 4 ? " center" : ""}${marked ? " bad" : ""}">${escapeHtml(value)}</div>`;
+      }).join("")}
+    </div>
+  `).join("");
+
+  $("cube-hint").textContent = `ZIEHEN ZUM DREHEN · ${cubeMode.toUpperCase()}${cubeMode === "sequencer" ? ` · SCHRITT ${cubeStep}/5` : ""}`;
+
+  const state = $("cube-state");
+  const fill = $("cube-fill");
+
+  if (cubeMode === "form") {
+    state.textContent = "SOLVED · STABIL";
+    state.style.color = "var(--green)";
+    fill.style.width = "100%";
+    $("cube-state-text").textContent = "Zielzustand der lokalen Visualisierung.";
+  } else if (cubeMode === "unform") {
+    state.textContent = "UNFORM · LOKALE MISCHUNG";
+    state.style.color = "var(--red)";
+    fill.style.width = "15%";
+    $("cube-state-text").textContent = "Beschriftungen wurden nur für die Anzeige umgeordnet.";
+  } else if (cubeMode === "falsch") {
+    state.textContent = "FALSCH FORM · TEST";
+    state.style.color = "var(--gold)";
+    fill.style.width = "65%";
+    $("cube-state-text").textContent = "Absichtlich geänderte Beschriftungen sind markiert.";
+  } else {
+    state.textContent = `SEQUENCER ${cubeStep}/5`;
+    state.style.color = "var(--gold)";
+    fill.style.width = `${Math.min(100, cubeStep / 5 * 100)}%`;
+    $("cube-state-text").textContent = CUBE_STEPS[cubeStep]?.[1] || "Sequencer abgeschlossen.";
+  }
+
+  document.querySelectorAll("#cube-modes button").forEach(button => {
+    button.classList.toggle("primary", button.dataset.cubeMode === cubeMode);
+  });
+
+  document.querySelectorAll("#cube-steps .step").forEach((step, index) => {
+    step.classList.toggle("current", cubeMode === "sequencer" && index === cubeStep);
+    step.classList.toggle("done", cubeMode === "sequencer" && index < cubeStep);
+  });
+}
+
+function stopCubeSequence() {
+  cubePlaying = false;
+  if (cubeTimer !== null) {
+    clearTimeout(cubeTimer);
+    cubeTimer = null;
+  }
+}
+
+function tickCube() {
+  if (!cubePlaying) return;
+  if (cubeStep >= 5) {
+    stopCubeSequence();
+    paintCube();
+    return;
+  }
+
+  cubeTimer = setTimeout(() => {
+    cubeStep++;
+    paintCube();
+    tickCube();
+  }, 850);
+}
+
+function startCubeSequence() {
+  stopCubeSequence();
+  cubeMode = "sequencer";
+  cubeStep = 0;
+  cubePlaying = true;
+  paintCube();
+  tickCube();
+}
+
+$("cube-modes").innerHTML = [
+  ["form", "FORM"],
+  ["unform", "UNFORM"],
+  ["falsch", "FALSCH"],
+  ["sequencer", "SEQUENCER"]
+].map(([mode, label]) => `<button class="button" type="button" data-cube-mode="${mode}">${label}</button>`).join("");
+
+$("cube-modes").querySelectorAll("button").forEach(button => {
+  button.addEventListener("click", () => {
+    stopCubeSequence();
+    cubeMode = button.dataset.cubeMode;
+    cubeStep = 0;
+
+    if (cubeMode === "sequencer") {
+      cubePlaying = true;
+      tickCube();
+    }
+
+    paintCube();
+  });
+});
+
+$("cube-steps").innerHTML = CUBE_STEPS.map(([title, description], index) => `
+  <div class="step"><b>${index + 1} · ${escapeHtml(title)}</b><div class="muted">${escapeHtml(description)}</div></div>
+`).join("");
+
+$("cube-start").addEventListener("click", startCubeSequence);
+
+const cubeElement = $("cube");
+cubeElement.addEventListener("pointerdown", event => {
+  cubeDragging = true;
+  cubeLastX = event.clientX;
+  cubeLastY = event.clientY;
+  cubeElement.setPointerCapture(event.pointerId);
+});
+
+cubeElement.addEventListener("pointermove", event => {
+  if (!cubeDragging) return;
+  cubeRy += (event.clientX - cubeLastX) * .55;
+  cubeRx = Math.max(-85, Math.min(85, cubeRx - (event.clientY - cubeLastY) * .55));
+  cubeLastX = event.clientX;
+  cubeLastY = event.clientY;
+  paintCube();
+});
+
+function endCubeDrag() { cubeDragging = false; }
+cubeElement.addEventListener("pointerup", endCubeDrag);
+cubeElement.addEventListener("pointercancel", endCubeDrag);
+cubeElement.addEventListener("lostpointercapture", endCubeDrag);
+
+/* ---------- UIme-12ALL ---------- */
+
+document.querySelectorAll("[data-uime]").forEach(button => {
+  button.addEventListener("click", () => {
+    $("uime-output").textContent =
+      `UIme-Einstiegspunkt: ${button.dataset.uime}\n12ALL-Raster aktiv.`;
+  });
+});
+
+$("vector-map").textContent = JSON.stringify({
+  N: "D",
+  NE: "R",
+  E: "E",
+  SE: "S",
+  S: "I",
+  SW: "U",
+  W: "N",
+  NW: "W",
+  CENTER: "O"
+}, null, 2);
+
+/* ---------- Initialisierung ---------- */
+
+renderNavigation();
+renderModules();
+renderTimeline();
+startRound();
+pulseAxiom();
+paintCube();
+setPage(location.hash.slice(1) || "dashboard");
+
+window.addEventListener("hashchange", () => {
+  setPage(location.hash.slice(1) || "dashboard");
+});
 </script>
 </body>
 </html>
