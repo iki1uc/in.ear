@@ -1,243 +1,545 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NC.OS · MAXIMAL · EL BURRO</title>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#02060a">
+<title>cycOS · EL BURRO · INDEX</title>
 <style>
-*{box-sizing:border-box}:root{color-scheme:dark;--bg:#04070e;--panel:#0a101e;--line:#22344a;--green:#7ce0a8;--gold:#ffcc44;--blue:#5fc8ff;--text:#c8d8e8;--muted:#829bb0}
-body{margin:0;padding:12px;background:var(--bg);color:var(--text);font:13px/1.5 Consolas,monospace}
-header,main{width:min(100%,1150px);margin:auto}
-h1{margin:0;color:var(--green);font-size:clamp(20px,4vw,28px);letter-spacing:2px}
-h2{margin:0 0 9px;color:var(--gold);font-size:14px}
-.card{margin:10px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
-.row{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.row>*{flex:1}
-button,.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);font:inherit;cursor:pointer;text-decoration:none}
-button:hover{border-color:var(--green)}button.on{border-color:var(--green);background:var(--green);color:#04100a;font-weight:700}
-button.big{width:100%;font-weight:800}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:4px 8px;font-size:11px;margin:2px}.pill.on{background:#0f0;color:#000;font-weight:800}
-.field{width:100%;background:#000;border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px;min-height:44px;font:inherit}
-.small{font-size:12px;color:var(--muted)}.big{font-size:30px;font-weight:800}
-.grid9{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:10px}
-.cell{aspect-ratio:1;border:1px solid #1e5a1e;background:#050805;color:#9fe39f;font-size:11px;border-radius:4px;cursor:pointer}
-.cell.sel{background:#0f0;color:#000;font-weight:900}.cell.follow{box-shadow:inset 0 0 0 1px #0f0;color:#fff}.cell.home{border-color:#fd0}
-.grid27{display:grid;grid-template-columns:repeat(27,1fr);gap:1px;margin-top:10px}.c729{aspect-ratio:1;background:#122;border-radius:1px;cursor:pointer}.c729.on{background:#0f0}
-.bar{height:14px;background:#061006;border:1px solid #1e5a1e;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#0f0}
+*{box-sizing:border-box}
+:root{color-scheme:dark;--bg:#02060a;--panel:#0a1220;--panel2:#111d30;--line:#ffd70044;--gold:#ffd700;--green:#00ff88;--red:#ff5555;--blue:#65cfff;--text:#d9e0f0;--muted:#8aa0c0}
+body{margin:0;background:var(--bg);color:var(--text);font:12px/1.5 Consolas,Monaco,monospace}
+button,input,textarea{font:inherit}
+button{min-height:40px;padding:8px 10px;background:#121c2e;color:var(--text);border:1px solid var(--line);border-radius:6px;cursor:pointer}
+button:hover,button.active{background:var(--gold);color:#000;font-weight:800}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+a{color:var(--gold)}
+.top{min-height:40px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top b{color:var(--gold)}.green{color:var(--green)}.muted{color:var(--muted)}
+.layout{width:min(1220px,100%);margin:auto;padding:10px}
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin:10px 0}
+.hero .card{margin:0}
+h1{font-size:clamp(18px,4vw,25px);color:var(--gold);margin:0}
+h2{font-size:13px;letter-spacing:1px;color:var(--gold);margin:0 0 8px}
+p{margin:7px 0}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:3px 7px;font-size:10px;margin:2px;color:var(--muted)}
+.pill.good{color:var(--green);border-color:#00ff8877}
+.toolbar,.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.toolbar{margin-top:9px}
+.toolbar button{flex:1}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:8px}
+.link-card{display:block;padding:10px;background:#070d17;border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--text)}
+.link-card b{display:block;color:var(--green)}
+.link-card span{color:var(--muted);font-size:10px}
+.workspace{position:relative;min-height:360px;height:calc(100vh - 150px);max-height:760px;overflow:hidden;margin-top:10px;padding:0;
+background:radial-gradient(ellipse at 30% 20%,rgba(255,215,0,.08),transparent 60%),linear-gradient(180deg,#02060a,#070e1e)}
+.desk-grid{position:absolute;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(#ffd7000e 1px,transparent 1px),linear-gradient(90deg,#ffd7000e 1px,transparent 1px);background-size:28px 28px}
+.desk-heading{position:absolute;top:10px;left:10px;right:10px;z-index:1;pointer-events:none;color:var(--muted)}
+.win{position:absolute;width:min(92vw,600px);max-height:calc(100% - 18px);background:var(--panel);border:1px solid #ffd70066;border-radius:7px;box-shadow:0 0 22px #ffd7001f;overflow:hidden;display:flex;flex-direction:column}
+.win.hide{display:none}
+.win-title{min-height:39px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 8px;background:var(--panel2);border-bottom:1px solid var(--line);color:var(--gold);font-weight:800;cursor:move;touch-action:none}
+.win-title button{min-height:30px;padding:3px 8px}
+.win-body{padding:10px;overflow:auto}
+.win-body h3{font-size:12px;color:var(--gold);margin:4px 0}
+.field{width:100%;min-height:40px;padding:8px;background:#000;color:#fff;border:1px solid var(--line);border-radius:6px}
+.term{min-height:140px;max-height:36vh;overflow:auto;padding:8px;background:#000;border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.grid9{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:3px}
+.cell{display:grid;place-items:center;aspect-ratio:1;min-width:0;border-radius:3px;font-size:10px}
+.cell.green-cell{background:var(--green);color:#00150b}
+.cell.yellow-cell{background:var(--gold);color:#161000}
+.cell.red-cell{background:#ff3b3b;color:#fff}
+table{width:100%;border-collapse:collapse}
+td,th{border:1px solid #ffd70022;padding:5px;text-align:left;font-size:10px}
+th{color:var(--gold)}
+.bar{height:14px;border:1px solid var(--line);background:#000;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold)}
+.log{max-height:140px;overflow:auto;padding:7px;background:#000;border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.dock{position:sticky;bottom:0;z-index:10;min-height:64px;display:flex;align-items:center;gap:5px;padding:5px;background:var(--panel);border-top:1px solid var(--line);overflow-x:auto}
+.dock button{flex:1;min-width:56px;height:52px;padding:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.dock button span{font-size:8px;margin-top:4px;letter-spacing:.5px}
+.small{font-size:10px;color:var(--muted)}
+.status{min-height:18px;color:var(--muted)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .hide{display:none!important}
-.burro{border:2px solid #ffcc44!important;background:#1a1400!important}
-.burroBox{border:2px solid #ffcc44;border-radius:12px;padding:12px;background:#120e00}
-nav{position:sticky;bottom:0;background:#020502;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:6px;z-index:5}
-nav button{background:transparent;color:#a8d8a8;border:0;min-height:52px;font-size:10px}nav button.on{background:#0f0;color:#000;font-weight:900}
-.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.kpi div{border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}.kpi b{display:block;color:var(--green);font-size:16px}
-textarea.field{min-height:100px}
-table{width:100%;border-collapse:collapse}td,th{border:1px solid var(--line);padding:6px;text-align:left;font-size:12px}
-</style></head><body>
-<header><h1>◈ NC.OS · MAXIMAL · EL BURRO</h1>
-<p class="small">QI / RUN21 · EL BURRO = Arbeitstier · ALLE KI / AI / EYE / BRAIN = CLOSED · MINI-MANN = DU BESTIMMST · MAXIMAL KÖNNEN</p>
-<div class="burroBox">
-<b style="color:#ffcc44">🐴 EL BURRO MODUS</b> <span id="burroState" class="pill on">BURRO AN · KI AUS · EYE ZU · BRAIN ZU</span>
-<p class="small" style="margin:6px 0">In BURRO macht NICHTS von allein. Kein Auto, kein Vorschlagen, kein EYE. Nur: Du tippst → Es speichert → Es zeigt. Das ist das Gesetz.</p>
-<div class="row"><button id="burroBtn" class="big">🐴 BURRO: AN → AUSSCHALTEN? (KI WÜRDE AN GEHEN)</button></div>
-<div class="row" style="margin-top:7px"><button id="miniBtn">MINI-MANN: AN</button><button id="maxBtn" class="on">MAXIMAL: AN</button><button id="haltBtn">HALT AUS</button></div>
-<div id="topPills" style="margin-top:8px"></div>
+@media(max-width:650px){
+ .layout{padding:7px}.hero{grid-template-columns:1fr}.workspace{height:62vh;min-height:380px}
+ .win{width:calc(100% - 14px)!important;left:7px!important;top:54px!important;max-height:calc(100% - 62px)}
+ .toolbar button{min-width:30%}.two-col{grid-template-columns:1fr}
+ .top{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <div><b>cycOS</b> · BORG 7482 · <span class="green">RAM <span id="ramAvg">—</span>%</span></div>
+  <div id="clock">--:--</div>
+  <div><span class="pill">HH.EYE CPU 98% · Anzeige</span></div>
 </div>
-<div class="row" style="margin-top:10px">
-<a class="button" href="rolle.html">◈ ROLLE</a><a class="button" href="com.html">COM · SYMBIOSE</a><a class="button" href="729.html">729</a><a class="button" href="ctrl.html">CTRL</a><a class="button" href="anker.html">ANKER</a>
-</div></header>
-<main>
-<!-- MATRIX -->
-<section id="tab-matrix">
-<div class="card"><b>VOY.EUR.EN · 9 → 81 → 9 · 729</b><div class="big">9 → 81 → 9</div><p class="small">Pfad: <b id="path" style="color:#fff"></b> · Zelle: <b id="curCell"></b></p>
-<div class="row" id="starts"></div><div class="grid9" id="grid"></div><div class="small" id="cellInfo"></div>
-<div class="row" style="margin-top:8px"><button id="rootBtn">↩ ROOT / HOME 40</button><button id="undoBtn">↩ UNDO LETZTER MOVE</button><button id="clearPathBtn">PFAD LEEREN</button></div></div>
-<div class="card"><b>9 FOLGESCHRITTE · 3×3</b><div class="row" id="follow"></div><div class="small" id="moves"></div></div>
-<div class="card"><b>729 · ZOOM ALLER ZOOMS · MANUELL</b><p class="small">729 = 9×81. Tippe eine Zelle, sie wird markiert. Kein Auto. <span id="c729count"></span></p>
-<div class="row"><button id="c729clear">729 LEEREN</button><button id="c729all">729 ALLE AN</button><button id="c729rand">729: 9 ZUFALL (NUR WENN BURRO AUS)</button></div>
-<div class="grid27" id="grid729"></div></div>
-<div class="card"><b>AUA · KERNACHSE</b><div class="big" id="auaScore"></div><div class="small" id="auaDetail"></div>
-<div class="row"><button data-aua="hit">ERKANNT +1</button><button data-aua="block">BLOCK +1</button></div>
-<div class="row"><button data-aua="save">GESICHERT +1</button><button data-aua="tmp">TMP +1</button></div><button class="big" data-aua="resolved" style="margin-top:6px">GELÖST +1</button>
-<label class="small">AUA-Notiz (deine Worte, kein KI-Text)</label><input class="field" id="auaNote" placeholder="Was ist passiert? Was lernst du?"><button id="auaNoteBtn" style="margin-top:6px">AUA-NOTIZ SPEICHERN</button><div class="small" id="auaNotes"></div></div>
-<div class="card"><b>ORG / REORG / ZE</b><span class="small" id="orgStatus"></span><div class="small" id="orgDetail"></div><div id="orgPills"></div><div id="niPills"></div>
-<div class="row"><button id="orgBtn">ORG SAMMELN · 9</button><button id="niBtn">NI BILDEN · 4</button></div>
-<div class="row"><button id="zeBtn">ZE · 81 GEISTER</button><button id="reorgBtn">REORG</button></div><button id="orgReset" style="margin-top:6px">ORG-RESET</button></div>
-<div class="card"><b>CTRL.LER · 5 SCHRITTE · MANUELL</b><div id="ctrlPills"></div><button id="ctrlBtn" style="margin-top:8px">CTRL: NÄCHSTER SCHRITT →</button><p class="small">Kein GEBAUT, kein Fake-READY. Ergebnis zählt erst nach echter Prüfung durch DICH.</p></div>
-<div class="card"><b>⏱ MINI-TIMER · HAND</b><div class="big" id="timer">00:00</div><div class="row"><button id="tStart">START</button><button id="tStop">STOP</button><button id="tReset">RESET</button></div><p class="small" id="tLog"></p></div>
-</section>
-<!-- EXPLORER -->
-<section id="tab-explorer" class="hide">
-<div class="card"><b>ZOOM · ZO.OM · Z.O.O.M · DREIECK</b>
-<svg id="zoomExplorer" viewBox="0 0 600 520" style="width:100%;height:auto;background:#081018;border:1px solid #1e5a1e;border-radius:12px"><rect width="600" height="520" fill="#081018"/><path d="M300 80 L120 380 L480 380 Z" stroke="#4ade80" stroke-width="3" fill="none"/>
-<g class="znode" data-node="ZOOM"><circle cx="300" cy="80" r="55" fill="#111827" stroke="#4ade80" stroke-width="2"/><text x="300" y="75" fill="#e6edf7" font-size="22" text-anchor="middle">ZOOM</text><text x="300" y="98" fill="#9ca3af" font-size="14" text-anchor="middle">sehen</text></g>
-<g class="znode" data-node="ZO.OM"><circle cx="120" cy="380" r="55" fill="#111827" stroke="#4ade80" stroke-width="2"/><text x="120" y="375" fill="#e6edf7" font-size="22" text-anchor="middle">ZO.OM</text><text x="120" y="398" fill="#9ca3af" font-size="14" text-anchor="middle">trennen</text></g>
-<g class="znode" data-node="Z.O.O.M"><circle cx="480" cy="380" r="55" fill="#111827" stroke="#4ade80" stroke-width="2"/><text x="480" y="375" fill="#e6edf7" font-size="22" text-anchor="middle">Z.O.O.M</text><text x="480" y="398" fill="#9ca3af" font-size="14" text-anchor="middle">zerlegen</text></g>
-<text x="300" y="260" fill="#f59e0b" font-size="18" text-anchor="middle">ZOOMEND</text><text x="300" y="285" fill="#f59e0b" font-size="18" text-anchor="middle">bewegen</text>
-<circle r="10" fill="#4ade80"><animateMotion dur="6s" repeatCount="indefinite" path="M300 80 L120 380 L480 380 L300 80"/></circle></svg>
-<p class="small" id="zoomStatus">Bereit.</p><button id="zoomRestart">ANIMATION NEU STARTEN</button></div>
-<div class="card"><b>CHECKLISTE · MINI-MANN · 9 PUNKTE · DU HAKST AB</b><div id="checkList"></div><p class="small" id="checkSum"></p></div>
-<div class="card"><b>NOTIZBUCH · FREI · MAXIMAL</b><label class="small">Titel</label><input class="field" id="noteT" placeholder="Titel"><label class="small">Text</label><textarea class="field" id="noteX" placeholder="Schreib alles. Kein KI-Text. Nur deiner."></textarea><button id="noteSave" style="margin-top:6px">NOTIZ SPEICHERN</button><div id="noteList"></div></div>
-</section>
-<!-- EDITOR -->
-<section id="tab-editor" class="hide">
-<div class="card"><b id="edTitle">EDITOR</b><div class="small" id="edMeta"></div>
-<label class="small">Titel</label><input class="field" id="edT"><label class="small">Text</label><textarea class="field" id="edX" style="min-height:160px"></textarea>
-<label class="small">Tags (mit Komma)</label><input class="field" id="edTags" placeholder="z.B. ROOT, AUA, ZE">
-<div class="row"><button id="saveBtn">SPEICHERN</button><button id="clearBtn">EINGABE LEEREN</button></div><div class="small" id="savedCount"></div></div>
-<div class="card"><b>SUCHE · MANUELL</b><input class="field" id="searchBox" placeholder="Suche in Titeln + Texten + Tags …"><div id="savedList"></div></div>
-</section>
-<!-- BEWERTUNG -->
-<section id="tab-bewertung" class="hide">
-<div class="card"><b>RANG + BEWERTUNG</b><div class="big" id="rang"></div><div class="small" id="rangDetail"></div><div class="bar"><i id="rangBar"></i></div><div class="small" id="rangNext"></div><div id="rangPills"></div></div>
-<div class="card"><b>XP PRO ACHSE</b><div id="xpList"></div><div class="small" id="skillLine"></div><label class="small" id="eloLabel"></label><input type="range" min="100" max="3000" step="10" id="elo"><div class="row"><button data-elo="100">ELO 100</button><button data-elo="1400">ELO 1400</button><button data-elo="3000">ELO 3000</button></div></div>
-<div class="card"><b>9×9 KALIBRIERUNG</b><div id="calibList"></div><div class="big" id="cube"></div><div class="small" id="cubeDetail"></div></div>
-<div class="card"><b>SCHACH</b><div id="chessList"></div><div class="small" id="chessSum"></div></div>
-<div class="card"><b>MODERATION · AUDIT, NICHT WORT-BANN</b><input class="field" id="modCtx" placeholder="Zitat + Situation + Zeitfenster …"><div class="small" id="modCounts"></div>
-<div class="row"><button data-mod="warnings">WARNUNG +1</button><button data-mod="reviews">PRÜFUNG +1</button></div><div class="row"><button data-mod="blocks">SPERRE +1</button><button data-mod="severe">SCHWERER +1</button></div></div>
-<div class="card"><b>QUANT NC · QC · PIPE()</b><div class="kpi" id="kpi"></div><div class="row" style="margin-top:8px"><button data-z="1">1</button><button data-z="3">3</button><button data-z="9">9</button><button data-z="81" class="on">81</button><button data-z="729">729</button></div><div id="quantZoom" style="display:grid;gap:2px;margin-top:10px"></div><p class="small" id="zoomTxt"></p>
-<div class="row"><input class="field" id="quantIn" placeholder="z.B. 41 / 729 / 9"><button id="quantGo">PIPE →</button></div><p class="small" id="quantOut"></p><div id="qc"></div></div>
-</section>
-<!-- LOG -->
-<section id="tab-log" class="hide">
-<div class="card"><b>AUDIT · ECHTE PASS/FAIL</b><div class="small" id="auditHead">Noch nicht gelaufen</div><button id="auditBtn">AUDIT JETZT</button><div id="auditList"></div></div>
-<div class="card"><b>LOG · ALLE AKTIONEN</b><div id="logList"></div><button id="logBtn">LOG AKTUALISIEREN</button><button id="logExport" style="margin-top:6px">LOG ALS .TXT LADEN</button></div>
-<div class="card"><b>1–9 VIEWER · LOKALE DATEIEN</b><p class="small">Lädt 1.html bis 9.html aus demselben Ordner im iframe.</p><div class="row" id="numberButtons"></div><p class="small" id="viewerStatus">Bereit.</p><iframe id="numberViewer" style="width:100%;height:420px;background:#fff;border-radius:9px" src="about:blank"></iframe></div>
-</section>
-<!-- ZEUGUNG -->
-<section id="tab-zeugung" class="hide">
-<div class="card"><b>ZEUGUNG · NEUES KIND</b><label class="small">Regel</label><textarea class="field" id="z1">9 → 81 → 9 · EL BURRO · KI AUS · MINI-MANN BESTIMMT · ALT bleibt, NEU ist ADD</textarea>
-<label class="small">HTML-Inhalt</label><textarea class="field" id="z2"><h2>Hallo aus der Zeugung</h2><p>EL BURRO Kind. Kein KI-Text.</p></textarea>
-<label class="small">JS</label><textarea class="field" id="z3">console.log('NC.OS Kind läuft');</textarea><button id="kindBtn">ZEUGUNG · ncos-kind.html LADEN</button></div>
-<div class="card"><b>IMPORT / EXPORT · MAXIMAL</b><input type="file" id="loadFile" accept=".json"><div class="row"><button id="expJson">EXPORT JSON</button><button id="expHtml">EXPORT HTML</button></div><div class="row"><button id="expCsv">EXPORT CSV (Zellen)</button><button id="expMd">EXPORT .MD (Notizen)</button></div></div>
-<div class="card" style="border-color:#f33"><b>RESET · NUR EXPLIZIT · 2× TIPPEN</b><button id="resetBtn" style="background:#220505;border-color:#f33">RESET · ZWEIMAL TIPPEN</button><button id="resetCancel" class="hide" style="margin-top:6px">ABBRECHEN</button></div>
-<div class="card"><b>REGELN · FEST</b><p class="small">ALT bleibt gültig, NEU ist ADD. ?.html parkt, q.d.f.html ist eingefroren, 6.html wird nicht überschrieben ohne dass du es sagst. Founder = Bestimmer. EL BURRO: Kein Auto-KI, kein EYE, kein Brain. MINI-MANN: Du tippst, du prüfst, du entscheidest. MAXIMAL: Alles in einer Datei, alles klickbar, alles speicherbar.</p>
-<table><tr><th>Was</th><th>Wert</th></tr><tr><td>9×9</td><td>81 Felder · Mitte 5/5 · HOME 40 · MITTE 41</td></tr><tr><td>9×9×9</td><td>Bewertungsraum, keine 729 echten Spielfelder</td></tr><tr><td>BOOT</td><td>BOOT H B T → ZÜGEL Q D F → PRODMATICUM → PENTAGRAMM → WHIRLPOOL → PUMPE AN → PIPELINE LOOP AN → KATAPULT AN → EYE BRAIN OPEN (nur wenn DU es sagst)</td></tr></table></div>
-</section>
-<!-- BURRO -->
-<section id="tab-burro" class="hide">
-<div class="card burro"><b>🐴 EL BURRO · DAS GESETZ</b><ol><li>KI / AI / EYE / BRAIN = CLOSED, außer DU machst sie auf.</li><li>MINI-MANN = DU. Du tippst, du prüfst, du entscheidest.</li><li>MAXIMAL = Alle Funktionen in einer Datei, offline, ohne CDN.</li><li>ALT bleibt, NEU ist ADD. Nichts wird still überschrieben.</li><li>HALT = ZIEL. Wenn fertig, HALT. Nicht weiterlaufen lassen.</li></ol>
-<p class="small">Wenn BURRO AN ist, sind alle Zufalls- und Auto-Knöpfe gesperrt. Das ist Absicht. So bleibt es dein Werk.</p>
-<button id="burroLawBtn">GESETZ BESTÄTIGT · IN LOG SCHREIBEN</button></div>
-<div class="card"><b>BURRO-PROTOKOLL · DEINE HAND</b><textarea class="field" id="burroProto" placeholder="Was hast du heute mit EL BURRO gemacht? Schreib es selbst."></textarea><button id="burroProtoBtn" style="margin-top:6px">PROTOKOLL SPEICHERN</button><div id="burroProtoList"></div></div>
-<div class="card"><b>ZÄHLER · MANUELL</b><div class="row"><button id="cntBurro">🐴 BURRO-SCHRITT +1</button><button id="cntMini">🧍 MINI-MANN +1</button></div><div class="row"><button id="cntHalt">🛑 HALT +1</button><button id="cntMax">💪 MAXIMAL +1</button></div><div class="big" id="cntShow"></div></div>
-</section>
+
+<main class="layout">
+  <section class="hero">
+    <div class="card">
+      <h1>🐴 EL BURRO · HAUPTSTEUERUNG</h1>
+      <p class="muted">Du bestimmst. Keine KI-Steuerung, keine automatische Eye-/Brain-Auswertung. Die Werte und Demos dieser Seite sind lokal und simuliert.</p>
+      <div id="burroPill" class="pill good">BURRO AN · KI AUS · EYE ZU · BRAIN ZU</div>
+      <div class="toolbar">
+        <button id="burroBtn" type="button">🐴 BURRO: AN</button>
+        <button id="haltBtn" type="button">HALT AUS</button>
+        <button id="openIndex" type="button">INDEX</button>
+      </div>
+      <p class="small">HALT pausiert die simulierten Schleifen und EARN-Läufe. Es steuert keine echten Geräte oder externen Dienste.</p>
+    </div>
+    <div class="card">
+      <h2>LABAR MATAHARI )9( · VEC-OS</h2>
+      <p class="muted">MIND + CONTROLLER + RAM + GPU · lokale Demo</p>
+      <div id="pills"></div>
+      <div class="toolbar">
+        <button data-open="ram">◫ RAM</button><button data-open="term">&gt;_ TERM</button>
+        <button data-open="ball">● BALL</button><button data-open="rolle">⟁ ROLLE</button>
+        <button data-open="wetter">☁ WETTER</button><button data-open="earn">⚡ EARN</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="indexPanel" class="card">
+    <h2>INDEX · PROJEKTDATEIEN</h2>
+    <div class="grid">
+      <a class="link-card" href="rolle.html"><b>ROLLE.HTML</b><span>Dateierklärung, falls vorhanden</span></a>
+      <a class="link-card" href="729.html"><b>729 · ZOOM</b><span>Standalone-Seite, falls vorhanden</span></a>
+      <a class="link-card" href="NC_ROOT_JA_mobile_canvas_729.html"><b>NC_ROOT_JA · 729 CANVAS</b><span>Lokale Projektdatei</span></a>
+      <a class="link-card" href="NC-MK-atom-ctrl-MAINBOARD.html"><b>NC MK.atom.ctrl</b><span>Mainboard, falls vorhanden</span></a>
+      <a class="link-card" href="NC-SC-QUANT-NC.html"><b>QUANT NC</b><span>Projektseite, falls vorhanden</span></a>
+      <a class="link-card" href="BLACK-HOLE-PENTAGRAM.html"><b>BLACK HOLE PENTAGRAM</b><span>Projektseite, falls vorhanden</span></a>
+      <a class="link-card" href="GEO-Y-X-Z.html"><b>GEO.Y.X.Z</b><span>Projektseite, falls vorhanden</span></a>
+      <a class="link-card" href="ctrl.html"><b>CTRL / LER</b><span>Steuerung</span></a>
+      <a class="link-card" href="rom.htm"><b>ROM</b><span>Rechnung und Gegenrechnung</span></a>
+      <a class="link-card" href="ram.htm"><b>RAM</b><span>Bestandsansicht</span></a>
+      <a class="link-card" href="elementary.html"><b>ELEMENTARY</b><span>Basis-Übersicht</span></a>
+      <a class="link-card" href="k.z.z.html"><b>K.Z.Z</b><span>Kern-Zone</span></a>
+      <a class="link-card" href="vol.1.html"><b>VOL.1</b><span>Band 1</span></a>
+      <a class="link-card" href="vol.2.html"><b>VOL.2</b><span>Band 2</span></a>
+      <a class="link-card" href="vol.3.html"><b>VOL.3</b><span>Band 3</span></a>
+    </div>
+    <p class="small">Links funktionieren, wenn die Dateien im selben Ordner liegen und exakt so heißen.</p>
+  </section>
+
+  <section class="workspace" id="desk" aria-label="cycOS Desktop">
+    <div class="desk-grid"></div>
+    <div class="desk-heading">DESKTOP · Fenster lassen sich an der Titelleiste verschieben</div>
+
+    <section class="win" id="w-ram" style="left:14px;top:54px;width:min(92vw,590px)">
+      <div class="win-title"><span>◫ RAM · CHECK.ROM 81</span><span><button data-min="ram">—</button><button class="x" data-close="ram">✕</button></span></div>
+      <div class="win-body">
+        <div class="row">
+          <button id="loopBtn">SCHLEIFE START</button>
+          <label><input type="checkbox" id="wloch"> WLOCH SPRUNG</label>
+          <label>TIEFE <input type="range" id="tiefe" min="1" max="81" value="27"><span id="tiefeV">27</span></label>
+        </div>
+        <p class="small">Demo-Werte: Grün ≥73%, Gelb 60–72%, Rot &lt;60%. Keine echte RAM-Messung.</p>
+        <div class="grid9" id="ramGrid"></div>
+        <div id="ramDetail" class="status"></div>
+        <div id="ramTable"></div>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-term" style="left:40px;top:50px;width:min(92vw,600px)">
+      <div class="win-title"><span>&gt;_ TERMINAL · VEC-OS</span><span><button data-min="term">—</button><button data-close="term">✕</button></span></div>
+      <div class="win-body">
+        <div class="term" id="termOut">VEC-OS terminal · BORG 7482
+Tippe help für lokale Demo-Befehle.
+KI: AUS · EYE: ZU · BRAIN: ZU</div>
+        <div class="row" style="margin-top:6px"><span class="green">vec@borg:~$</span><input class="field" id="termIn" placeholder="help, ls, check.rom, ram, ball, wetter, earn"></div>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-ball" style="left:58px;top:62px;width:min(92vw,590px)">
+      <div class="win-title"><span>● BALL · 2in1</span><span><button data-min="ball">—</button><button data-close="ball">✕</button></span></div>
+      <div class="win-body">
+        <p><b style="color:var(--gold)">BALL</b> · lokales Bewegungssimulations-Demo.</p>
+        <canvas id="ballCv" width="520" height="220" style="width:100%;background:#02060a;border:1px solid var(--line);border-radius:6px"></canvas>
+        <div class="row" style="margin-top:7px"><button id="ballKick">BALL KICK → TOR</button><button id="ballReset">RESET</button></div>
+        <p id="ballLog" class="status">Bereit. Kick = ein Demo-Punkt.</p>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-rolle" style="left:76px;top:66px;width:min(92vw,580px)">
+      <div class="win-title"><span>⟁ ROLLE · ABHÄNGIGKEITEN</span><span><button data-min="rolle">—</button><button data-close="rolle">✕</button></span></div>
+      <div class="win-body">
+        <p class="muted">Projektrollen und interne Demo-Zuordnung. Die Angaben sind keine Messung realer Hardware.</p>
+        <table><tr><th>Modul</th><th>Rolle in dieser Demo</th></tr>
+          <tr><td>EL BURRO</td><td>Manuelle Steuerung und Nutzerentscheidung</td></tr>
+          <tr><td>RAM</td><td>81 lokale Demo-Datensätze</td></tr>
+          <tr><td>BALL</td><td>Canvas-Bewegungsdemo</td></tr>
+          <tr><td>WETTER</td><td>Manueller Regler I + W = 1</td></tr>
+          <tr><td>EARN</td><td>Lokaler Fortschrittslauf; kein echtes CPU-/Geldverdienen</td></tr>
+          <tr><td>PY-BATCHES</td><td>21 Demo-Einträge in drei Batches</td></tr>
+          <tr><td>QC</td><td>Lokale Plausibilitätsprüfungen</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-wetter" style="left:34px;top:72px;width:min(92vw,580px)">
+      <div class="win-title"><span>☁ WETTER · I + W</span><span><button data-min="wetter">—</button><button data-close="wetter">✕</button></span></div>
+      <div class="win-body">
+        <label>INTERNET-ANTEIL <input type="range" id="iw" min="0" max="100" value="50" style="width:100%"></label>
+        <p id="iwTxt">I(0.50) + W(0.50) = 1.0</p>
+        <canvas id="wetterCv" width="520" height="140" style="width:100%;background:#020a12;border:1px solid var(--line)"></canvas>
+        <p class="small">Nur eine manuelle Visualisierung. Es werden weder Internetdaten noch Wetterdaten abgerufen.</p>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-earn" style="left:50px;top:78px;width:min(92vw,580px)">
+      <div class="win-title"><span>⚡ EARN · DEMO-PROGRESS</span><span><button data-min="earn">—</button><button data-close="earn">✕</button></span></div>
+      <div class="win-body">
+        <p><b>Ziel:</b> Fortschrittsanzeige 0–100%. Kein echtes CPU-Rendering oder Einkommen.</p>
+        <label>IQQ <input type="range" id="iqq" min="1" max="144" value="81" style="width:100%"> <span id="iqqV">81</span></label>
+        <div class="bar"><i id="earnBar"></i></div>
+        <p id="earnTxt" class="status">Demo bereit.</p>
+        <div class="row"><button id="earnBtn">DEMO START</button><button id="earnReset">ZURÜCKSETZEN</button></div>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-matrix" style="left:20px;top:54px;width:min(92vw,590px)">
+      <div class="win-title"><span>▦ MATRIX · 9 × 9</span><span><button data-min="matrix">—</button><button data-close="matrix">✕</button></span></div>
+      <div class="win-body">
+        <p>HOME 40 · Auswahl wird lokal gespeichert.</p>
+        <div class="grid9" id="matrixGrid"></div>
+        <p id="matrixInfo" class="status">Wähle eine Zelle.</p>
+        <div class="row"><button id="matrixHome">ROOT / HOME 40</button><button id="matrixExport">EXPORT JSON</button></div>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-qc" style="left:34px;top:55px;width:min(92vw,580px)">
+      <div class="win-title"><span>◎ QUANT · QC</span><span><button data-min="qc">—</button><button data-close="qc">✕</button></span></div>
+      <div class="win-body">
+        <h3>ZOOM · 1 → 3 → 9 → 81 → 729</h3>
+        <div class="row" id="zoomButtons"></div>
+        <div id="quantGrid" class="grid9" style="max-height:220px;overflow:auto;margin-top:7px"></div>
+        <p id="zoomTxt" class="status"></p>
+        <h3>PIPE()</h3>
+        <div class="row"><input id="quantIn" class="field" placeholder="Zahl eingeben"><button id="quantGo">PIPE →</button></div>
+        <p id="quantOut" class="status">Eingabe → HOME(40) → MITTE(41) → QUANT.</p>
+        <h3>QC · LOKALE TESTS</h3><div id="qcResults"></div>
+      </div>
+    </section>
+
+    <section class="win hide" id="w-batches" style="left:45px;top:58px;width:min(92vw,590px)">
+      <div class="win-title"><span>▤ PY-BATCHES · 3 × 7 = 21</span><span><button data-min="batches">—</button><button data-close="batches">✕</button></span></div>
+      <div class="win-body">
+        <div class="row"><button id="batchBoot">BOOT</button><button id="batchHalt" disabled>HALT</button><button id="batchTheme">THEME</button></div>
+        <div class="row">
+          <div class="pill">TREFFER <b id="sTreffer">0</b></div><div class="pill">DANEBEN <b id="sDaneben">0</b></div>
+          <div class="pill">OFFEN <b id="sOffen">21</b></div><div class="pill">BATCH <b id="sBatch">—</b></div>
+        </div>
+        <div class="grid9" id="batchGrid" style="grid-template-columns:repeat(7,1fr);margin-top:8px"></div>
+        <div class="term" id="batchOut" style="margin-top:8px">Demo bereit. BOOT drücken.</div>
+        <h3>FEHLERLISTE</h3><div id="batchErrors"></div>
+        <h3>729-TESTKARTE</h3><div id="batch729"></div>
+      </div>
+    </section>
+  </section>
 </main>
-<nav id="nav"></nav>
+
+<nav class="dock" id="dock" aria-label="cycOS Module"></nav>
+
 <script>
 "use strict";
-const KR=["PUSH","PULL","SHIFT","FLOW","BREAK","SPIN","RISE","DROP","ROOT"],RI=["EDITport","IMport","EXport","ID"],JL=["Klarheit","Sicherheit","Lernbarkeit","Verantwortung","Stabilität","Praxis","Theorie","Audit","AUA"],SR=["AUFTRAG","PRÜFEN","FREIGEBEN","AUSFÜHREN","ERGEBNIS"],FM=[-10,-9,-8,-1,0,1,8,9,10];
-const RANGES=[{n:"ANFÄNGER",min:0,max:8},{n:"LERNEND",min:9,max:26},{n:"FORTGESCHRITTEN",min:27,max:80},{n:"EXPERTE",min:81,max:242},{n:"VETERAN",min:243,max:479},{n:"MEISTER",min:480,max:728},{n:"ARCHITEKT",min:729,max:999999}];
-const CHECKS=["BURRO AN · KI AUS","MINI-MANN BESTIMMT","ALT bleibt · NEU ist ADD","HALT = ZIEL","9 → 81 → 9 geprüft","AUA notiert","ORG / NI geprüft","AUDIT gelaufen","EXPORT gemacht"];
-function fresh(){let c={};JL.forEach(k=>c[k]=0);return{burro:true,mini:true,maximal:true,xp:{Technik:0,Kreativ:0,Zusammenarbeit:0},elo:1200,aua:{hit:0,block:0,save:0,tmp:0,resolved:0},auaNotes:[],moderation:{warnings:0,reviews:0,blocks:0,severe:0},calib:c,chess:{clarity:0,balance:0,mobility:0,learning:0},org:{collected:[],niches:[],geister:0,reorg:0},canvas:{},notes:[],proto:[],checks:CHECKS.map(()=>false),counts:{burro:0,mini:0,halt:0,max:0},c729:[],selectedCell:40,path:["ROOT"],halted:false,nextId:419,log:["NC.OS MAXIMAL · EL BURRO geladen · KI AUS · EYE ZU · BRAIN ZU"],moves:[],moveCount:0,ctrl:0,explorerNode:"",timerSec:0}}
-let S;try{S=JSON.parse(localStorage.getItem("ncos_max_burro")||"null")||fresh()}catch(e){S=fresh()}
-let tab="matrix",audit=null,confirmReset=false,timerInt=null,zoomLevel=81;
-const $=id=>document.getElementById(id),now=()=>new Date().toLocaleTimeString("de-DE"),esc=v=>String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
-function save(){try{localStorage.setItem("ncos_max_burro",JSON.stringify(S))}catch(e){}}
-function log(m){S.log=[...S.log,now()+" · "+m].slice(-200);save();render()}
-function lvl(x){return Math.floor(Math.max(0,x)/27)+1} function rankName(s){return RANGES.find(r=>s>=r.min&&s<=r.max)?.n||"ARCHITEKT"} function follow(){return FM.map(d=>(S.selectedCell+d+81)%81)}
-function dl(n,c,t){let b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-function show(id){tab=id;document.querySelectorAll("main>section").forEach(s=>s.classList.add("hide"));$("tab-"+id).classList.remove("hide");render()}
-function btn(label,fn,cls){let b=document.createElement("button");b.textContent=label;if(cls)b.className=cls;b.onclick=fn;return b}
-function render(){
- let skill=["Technik","Kreativ","Zusammenarbeit"].reduce((a,k)=>a+lvl(S.xp[k]),0),evo=Object.values(S.xp).reduce((a,b)=>a+b,0),score=evo+skill+Math.floor(S.elo/100),rang=rankName(score),rg=RANGES.find(r=>score>=r.min&&score<=r.max)||RANGES[0],learn=S.aua.hit+S.aua.save,aua=learn+S.aua.resolved-S.moderation.warnings;
- $("burroState").textContent=S.burro?"BURRO AN · KI AUS · EYE ZU · BRAIN ZU":"⚠ BURRO AUS · KI MÖGLICH · VORSICHT";$("burroState").className="pill "+(S.burro?"on":"");
- $("burroBtn").textContent=S.burro?"🐴 BURRO: AN → AUSSCHALTEN? (KI WÜRDE AN GEHEN)":"🐴 BURRO: AUS → WIEDER AN (KI AUS)";
- $("miniBtn").textContent="MINI-MANN: "+(S.mini?"AN":"AUS");$("miniBtn").className=S.mini?"on":"";$("maxBtn").textContent="MAXIMAL: "+(S.maximal?"AN":"AUS");$("maxBtn").className=S.maximal?"on":"";
- $("haltBtn").textContent=S.halted?"HALT = ZIEL":"HALT AUS";$("haltBtn").style.background=S.halted?"#0f0":"";$("haltBtn").style.color=S.halted?"#000":"";
- $("topPills").innerHTML=`<span class="pill">SKILL ${skill}</span><span class="pill">EVO ${evo}</span><span class="pill">ELO ${S.elo}</span><span class="pill">MOVES ${S.moveCount}</span><span class="pill">729 ${S.c729.length}/729</span><span class="pill">NOTIZEN ${S.notes.length}</span><span class="pill">ZELLEN ${Object.keys(S.canvas).length}</span>`;
- $("path").textContent=S.path.join(" · ");$("curCell").textContent=S.selectedCell;
- let st=$("starts");st.replaceChildren();for(let i=0;i<9;i++)st.appendChild(btn(`START ${i+1} · Zelle ${i}`,()=>{S.selectedCell=i;S.path=["ROOT"];log(`MATRIX · Start ${i}`)}));
- let f=follow(),g=$("grid");g.replaceChildren();for(let i=0;i<81;i++){let b=btn(String(i),()=>{S.selectedCell=i;S.path=["ROOT"];log(`MATRIX · Zelle ${i}`)});b.className="cell"+(S.selectedCell===i?" sel":"")+(f.includes(i)?" follow":"")+(i===40?" home":"");g.appendChild(b)}
- let cur=S.canvas[String(S.selectedCell)];$("cellInfo").innerHTML=cur?`<b>Zelle ${S.selectedCell} · ${esc(cur.title||"")}</b><br>${esc(cur.text||"")}<br><span class="small">Tags: ${esc(cur.tags||"")}</span>`:"";
- let fb=$("follow");fb.replaceChildren();f.forEach((c,i)=>fb.appendChild(btn(`F${i+1} → ${c}`,()=>{let from=S.selectedCell;S.path=S.path.length>=7?[...S.path.slice(0,6),String(c%3+1)]:[...S.path,String(c%3+1)];S.selectedCell=c;S.moves=[...S.moves,{from,to:c,at:now()}].slice(-100);S.moveCount++;log(`MOVE · ${from} → ${c} · ${S.path.join(".")}`)})));
- $("moves").innerHTML="Moves (6 neueste):<br>"+(S.moves.length?S.moves.slice(-6).reverse().map(m=>`· ${esc(m.at)} · ${m.from} → ${m.to}`).join("<br>"):"Noch kein Move.");
- // 729
- $("c729count").textContent=`Markiert: ${S.c729.length}/729`;let g729=$("grid729");g729.replaceChildren();for(let i=0;i<729;i++){let d=document.createElement("div");d.className="c729"+(S.c729.includes(i)?" on":"");d.title="729 Zelle "+i;d.onclick=()=>{S.c729=S.c729.includes(i)?S.c729.filter(x=>x!==i):[...S.c729,i];log(`729 · Zelle ${i} ${S.c729.includes(i)?"AN":"AUS"}`);render()};g729.appendChild(d)}
- $("auaScore").textContent="AUA SCORE "+aua;$("auaDetail").textContent=`Learn ${learn} · Gelöst ${S.aua.resolved} · Warnungen ${S.moderation.warnings}`;
- $("auaNotes").innerHTML=S.auaNotes.slice(-5).reverse().map(n=>`<div class="small">· ${esc(n)}</div>`).join("");
- let orgOk=S.org.collected.length===9&&S.org.niches.length===4&&S.org.geister===81;$("orgStatus").textContent=orgOk?"GRÜN":"GELB/ROT";$("orgDetail").textContent=`ORG ${S.org.collected.length}/9 · NI ${S.org.niches.length}/4 · ZE ${S.org.geister}/81 · REORG ${S.org.reorg}`;
- $("orgPills").innerHTML=KR.map(k=>`<span class="pill ${S.org.collected.includes(k)?"on":""}">${k}</span>`).join("");$("niPills").innerHTML=RI.map(k=>`<span class="pill ${S.org.niches.includes(k)?"on":""}">${k}</span>`).join("");
- $("ctrlPills").innerHTML=SR.map((v,i)=>`<span class="pill ${S.ctrl===i?"on":""}">${i+1} ${v}</span>`).join("");$("ctrlBtn").textContent=`CTRL: NÄCHSTER → ${SR[(S.ctrl+1)%5]}`;
- // timer
- let mm=String(Math.floor(S.timerSec/60)).padStart(2,"0"),ss=String(S.timerSec%60).padStart(2,"0");$("timer").textContent=mm+":"+ss;
- // checklist
- let cl=$("checkList");cl.replaceChildren();CHECKS.forEach((c,i)=>{let b=btn((S.checks[i]?"☑ ":"☐ ")+c,()=>{S.checks[i]=!S.checks[i];log(`CHECK · ${c} = ${S.checks[i]?"JA":"NEIN"}`);render()});b.style.textAlign="left";cl.appendChild(b)});$("checkSum").textContent=`Erledigt: ${S.checks.filter(Boolean).length}/9`;
- // notes
- $("noteList").innerHTML=S.notes.slice().reverse().map((n,i)=>`<div class="card"><b>${esc(n.t||"")}</b><div class="small">${esc(n.x||"")} · ${esc(n.at||"")}</div></div>`).join("");
- // editor
- $("edTitle").textContent=`EDITOR · ZELLE #${S.selectedCell}`;$("edMeta").textContent=`ID #${419+S.selectedCell} · Pfad ${S.path.join(".")}`;
- if(document.activeElement!==$("edT"))$("edT").value=cur?.title||"";if(document.activeElement!==$("edX"))$("edX").value=cur?.text||"";if(document.activeElement!==$("edTags"))$("edTags").value=cur?.tags||"";
- $("savedCount").textContent=`Zellen: ${Object.keys(S.canvas).length} · nextId ${S.nextId}`;
- let q=($("searchBox").value||"").toLowerCase();let sl=$("savedList");sl.replaceChildren();Object.entries(S.canvas).sort((a,b)=>+a[0]-+b[0]).filter(([k,v])=>!q||(v.title+v.text+(v.tags||"")).toLowerCase().includes(q)).forEach(([k,v])=>{let b=btn(`Zelle #${k} · ${v.title||""} — ${(v.text||"").slice(0,80)}`,()=>{S.selectedCell=+k;show("editor")});b.style.textAlign="left";sl.appendChild(b)});
- // bewertung
- $("rang").textContent=rang;$("rangDetail").textContent=`Score ${score} = EVO ${evo} + SKILL ${skill} + ELO/100 ${Math.floor(S.elo/100)} · ${rg.min}–${rg.max>=999999?"∞":rg.max}`;
- $("rangBar").style.width=(rg.max>=999999?100:Math.max(0,Math.min(100,(score-rg.min)/Math.max(1,rg.max-rg.min+1)*100)))+"%";$("rangNext").textContent=`Nächster Rang ab ${rg.max>=999999?"—":rg.max+1}`;
- $("rangPills").innerHTML=RANGES.map(r=>`<span class="pill ${r.n===rang?"on":""}">${r.n} ${r.min}–${r.max>=999999?"∞":r.max}</span>`).join("");
- let xl=$("xpList");xl.replaceChildren();["Technik","Kreativ","Zusammenarbeit"].forEach(k=>{let d=document.createElement("div");d.className="row";d.innerHTML=`<div><b>${k}</b><div class="small">XP ${S.xp[k]} · LEVEL ${lvl(S.xp[k])}</div></div><div class="bar"><i style="width:${S.xp[k]%27/27*100}%"></i></div>`;d.appendChild(btn("+9 XP",()=>{S.xp[k]+=9;log(`XP · ${k} +9`)}));xl.appendChild(d)});$("skillLine").textContent=`SKILL ${skill} · EVO ${evo}`;
- $("eloLabel").textContent=`ELO · ${S.elo}`;if(document.activeElement!==$("elo"))$("elo").value=S.elo;
- let cal=$("calibList");cal.replaceChildren();JL.forEach(k=>{let d=document.createElement("div");d.className="row";d.innerHTML=`<span>${k} · ${S.calib[k]}</span><div class="bar"><i style="width:${S.calib[k]/9*100}%"></i></div>`;d.appendChild(btn("−",()=>{S.calib[k]=Math.max(0,S.calib[k]-1);log(`KALIB · ${k}=${S.calib[k]}`)}));d.appendChild(btn("+",()=>{S.calib[k]=Math.min(9,S.calib[k]+1);log(`KALIB · ${k}=${S.calib[k]}`)}));cal.appendChild(d)});
- let cube=lvl(S.xp.Technik)*lvl(S.xp.Kreativ)*lvl(S.xp.Zusammenarbeit);$("cube").textContent=cube+" / 125";$("cubeDetail").textContent=`${lvl(S.xp.Technik)} × ${lvl(S.xp.Kreativ)} × ${lvl(S.xp.Zusammenarbeit)}`;
- let ch=$("chessList");ch.replaceChildren();let chSum=0;Object.entries(S.chess).forEach(([k,v])=>{chSum+=v;let d=document.createElement("div");d.className="row";d.innerHTML=`<span>${k} · ${v}</span><div class="bar"><i style="width:${v/9*100}%"></i></div>`;d.appendChild(btn("−",()=>{S.chess[k]=Math.max(0,v-1);log(`SCHACH · ${k}=${S.chess[k]}`)}));d.appendChild(btn("+",()=>{S.chess[k]=Math.min(9,v+1);log(`SCHACH · ${k}=${S.chess[k]}`)}));ch.appendChild(d)});$("chessSum").textContent=`Summe ${chSum}/36`;
- $("modCounts").textContent=`WARN ${S.moderation.warnings} · PRÜF ${S.moderation.reviews} · SPERR ${S.moderation.blocks} · SCHWER ${S.moderation.severe}`;
- // quant
- $("kpi").innerHTML=[["CORE",6],["CROWN",9],["MITTE",41],["HOME",40],["RASTER",81],["ZOOM",729]].map(([l,v])=>`<div>${l}<b>${v}</b></div>`).join("");
- let qg=$("quantZoom");qg.style.gridTemplateColumns=`repeat(${Math.ceil(Math.sqrt(zoomLevel))},1fr)`;qg.replaceChildren();for(let i=0;i<zoomLevel;i++){let d=document.createElement("div");d.style.cssText="aspect-ratio:1;background:#122;border-radius:2px";if(i===40)d.style.background="#0f0";qg.appendChild(d)};$("zoomTxt").textContent=`${zoomLevel} Zellen · MITTE 41 · HOME 40`;
- // log
- $("auditHead").textContent=audit?`${audit.filter(a=>a.ok).length}/${audit.length} PASS`:"Noch nicht gelaufen";$("auditList").innerHTML=audit?audit.map(a=>`<div class="small" style="display:flex;justify-content:space-between;border:1px solid #1e5a1e;border-radius:8px;padding:8px;margin-top:5px"><span>${esc(a.label)}</span><span style="color:${a.ok?"#0f0":"#f33"}">${a.ok?"PASS":"FAIL"} · ${esc(a.detail)}</span></div>`).join(""):"";
- $("logList").innerHTML=S.log.slice().reverse().map(l=>`<div class="small" style="border-bottom:1px solid #0f1f0f;padding:4px 0">${esc(l)}</div>`).join("");
- // burro
- $("burroProtoList").innerHTML=S.proto.slice(-5).reverse().map(p=>`<div class="small">· ${esc(p)}</div>`).join("");
- $("cntShow").textContent=`🐴 ${S.counts.burro} · 🧍 ${S.counts.mini} · 🛑 ${S.counts.halt} · 💪 ${S.counts.max}`;
- // nav
- let tabs=[["matrix","◼","Matrix"],["explorer","△","Explorer"],["editor","✎","Editor"],["bewertung","★","Bewertung"],["log","☰","Log"],["zeugung","⚙","Zeugung"],["burro","🐴","BURRO"]];
- let nv=$("nav");nv.replaceChildren();tabs.forEach(([id,ic,lb])=>{let b=btn(`${ic} ${lb}`,()=>show(id));b.className=tab===id?"on":"";nv.appendChild(b)});
+const $=id=>document.getElementById(id);
+const MODS=[
+ ["ram","◫","RAM"],["term",">_","TERM"],["ball","●","BALL"],
+ ["wetter","☁","WETTER"],["rolle","⟁","ROLLE"],["earn","⚡","EARN"],
+ ["matrix","▦","MATRIX"],["qc","◎","QC"],["batches","▤","BATCHES"]
+];
+const STORE="cycos_burro_index_v1";
+const fresh=()=>({burro:true,halt:false,loop:false,score:0,earn:0,matrixCell:40,zoom:81});
+let S=fresh();
+try{S={...S,...JSON.parse(localStorage.getItem(STORE)||"{}")}}catch(_){}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(_){}}
+function log(message){
+ const out=$("termOut");
+ if(out){out.textContent+="\n"+new Date().toLocaleTimeString("de-DE")+" · "+message;out.scrollTop=out.scrollHeight}
+ save();
 }
-// handlers
-$("burroBtn").onclick=()=>{S.burro=!S.burro;log(`BURRO · ${S.burro?"AN · KI AUS · EYE ZU · BRAIN ZU":"AUS · VORSICHT · KI MÖGLICH"}`);render()};
-$("miniBtn").onclick=()=>{S.mini=!S.mini;log(`MINI-MANN · ${S.mini?"AN":"AUS"}`);render()};
-$("maxBtn").onclick=()=>{S.maximal=!S.maximal;log(`MAXIMAL · ${S.maximal?"AN":"AUS"}`);render()};
-$("haltBtn").onclick=()=>{S.halted=!S.halted;log(`HALT · ${S.halted?"ZIEL":"AUS"}`);render()};
-$("rootBtn").onclick=()=>{S.path=["ROOT"];S.selectedCell=40;log("ROOT · HOME 40");render()};
-$("undoBtn").onclick=()=>{let m=S.moves.pop();if(m){S.selectedCell=m.from;S.moveCount=Math.max(0,S.moveCount-1);log(`UNDO · zurück zu ${m.from}`)}else log("UNDO · kein Move");render()};
-$("clearPathBtn").onclick=()=>{S.path=["ROOT"];log("PFAD · geleert");render()};
-$("c729clear").onclick=()=>{S.c729=[];log("729 · geleert");render()};
-$("c729all").onclick=()=>{S.c729=Array.from({length:729},(_,i)=>i);log("729 · alle an");render()};
-$("c729rand").onclick=()=>{if(S.burro){log("729 ZUFALL · BLOCKIERT · BURRO AN · Du wählst selbst");render();return}let s=new Set();while(s.size<9)s.add(Math.floor(Math.random()*729));S.c729=[...s];log("729 · 9 Zufall (BURRO AUS)");render()};
-document.querySelectorAll("[data-aua]").forEach(b=>b.onclick=()=>{S.aua[b.dataset.aua]++;log(`AUA · ${b.dataset.aua} +1`);render()});
-$("auaNoteBtn").onclick=()=>{let v=$("auaNote").value.trim();if(!v)return;S.auaNotes.push(now()+" · "+v);$("auaNote").value="";log("AUA-NOTIZ · gespeichert");render()};
-$("orgBtn").onclick=()=>{S.org.collected=[...KR];log("ORG · 9/9");render()};
-$("niBtn").onclick=()=>{S.org.niches=[...RI];log("NI · 4");render()};
-$("zeBtn").onclick=()=>{S.org.geister=81;log("ZE · 81");render()};
-$("reorgBtn").onclick=()=>{let a=S.org.collected;S.org.collected=a.length?[...a.slice(1),a[0]]:[...KR];S.org.reorg++;log(`REORG · ${S.org.reorg}`);render()};
-$("orgReset").onclick=()=>{S.org={collected:[],niches:[],geister:0,reorg:0};log("ORG · RESET");render()};
-$("ctrlBtn").onclick=()=>{let o=S.ctrl;S.ctrl=(S.ctrl+1)%5;log(`CTRL · ${SR[o]} → ${SR[S.ctrl]}`);render()};
-$("tStart").onclick=()=>{if(timerInt)return;timerInt=setInterval(()=>{S.timerSec++;save();render()},1000);log("TIMER · START")};
-$("tStop").onclick=()=>{clearInterval(timerInt);timerInt=null;log(`TIMER · STOP bei ${S.timerSec}s`);render()};
-$("tReset").onclick=()=>{clearInterval(timerInt);timerInt=null;S.timerSec=0;log("TIMER · RESET");render()};
-document.querySelectorAll(".znode").forEach(g=>g.addEventListener("click",()=>{S.explorerNode=g.dataset.node;log(`EXPLORER · ${S.explorerNode}`);$("zoomStatus").textContent=`Ausgewählt: ${S.explorerNode}`;render()}));
-$("zoomRestart").onclick=()=>{let a=document.querySelector("#zoomExplorer animateMotion");if(a)a.beginElement();$("zoomStatus").textContent="Animation neu gestartet."};
-$("noteSave").onclick=()=>{let t=$("noteT").value.trim(),x=$("noteX").value.trim();if(!t&&!x)return;S.notes.push({t,x,at:now()});$("noteT").value="";$("noteX").value="";log("NOTIZ · gespeichert");render()};
-$("saveBtn").onclick=()=>{S.canvas[String(S.selectedCell)]={title:$("edT").value.slice(0,120),text:$("edX").value.slice(0,3000),tags:$("edTags").value.slice(0,200)};S.nextId=Math.max(S.nextId,420+S.selectedCell);log(`EDITOR · Zelle ${S.selectedCell} gespeichert`);render()};
-$("clearBtn").onclick=()=>{$("edT").value="";$("edX").value="";$("edTags").value="";log("EDITOR · Eingabe geleert");render()};
-$("searchBox").oninput=()=>render();
-$("elo").oninput=e=>{S.elo=+e.target.value;save();render()};
-document.querySelectorAll("[data-elo]").forEach(b=>b.onclick=()=>{S.elo=+b.dataset.elo;log(`ELO · ${S.elo}`);render()});
-document.querySelectorAll("[data-mod]").forEach(b=>b.onclick=()=>{S.moderation[b.dataset.mod]++;log(`MOD · ${b.dataset.mod} +1 · ${$("modCtx").value.trim()||"kein Kontext"}`);$("modCtx").value="";render()});
-document.querySelectorAll("[data-z]").forEach(b=>b.onclick=()=>{zoomLevel=+b.dataset.z;document.querySelectorAll("[data-z]").forEach(x=>x.classList.toggle("on",+x.dataset.z===zoomLevel));render()});
-$("quantGo").onclick=()=>{let v=Number($("quantIn").value);if(!isFinite(v)){$("quantOut").textContent="KEINE ZAHL";return}let home=Math.min(v,40);$("quantOut").textContent=`EIN ${v} → HOME ${home} → MITTE 41 → ABSTAND ${41-home} → ${home===40?"HALTE":"LAUFE"} · CORE 6 · CROWN 9`;log(`PIPE · ${v} → ${home}`);render()};
-function runAudit(){let skill=["Technik","Kreativ","Zusammenarbeit"].reduce((a,k)=>a+lvl(S.xp[k]),0),evo=Object.values(S.xp).reduce((a,b)=>a+b,0),cube=lvl(S.xp.Technik)*lvl(S.xp.Kreativ)*lvl(S.xp.Zusammenarbeit);
-audit=[{label:"BURRO lesbar",ok:typeof S.burro==="boolean",detail:S.burro?"BURRO AN":"BURRO AUS"},{label:"Rang vorhanden",ok:!!rankName(evo+skill+Math.floor(S.elo/100)),detail:rankName(evo+skill+Math.floor(S.elo/100))},{label:"ELO 100–3000",ok:S.elo>=100&&S.elo<=3000,detail:String(S.elo)},{label:"Grid 81",ok:$("grid").children.length===81,detail:"9×9"},{label:"Folge 9",ok:follow().length===9,detail:"3×3"},{label:"Kalib 0–9",ok:JL.every(k=>S.calib[k]>=0&&S.calib[k]<=9),detail:"9"},{label:"Schach 0–9",ok:Object.values(S.chess).every(v=>v>=0&&v<=9),detail:"4"},{label:"Cube 1–125",ok:cube>=1&&cube<=125,detail:String(cube)},{label:"Pfad gültig",ok:S.path[0]==="ROOT"&&S.path.slice(1).every(x=>["1","2","3"].includes(x)),detail:S.path.join(".")},{label:"nextId >0",ok:Number.isSafeInteger(S.nextId)&&S.nextId>0,detail:String(S.nextId)},{label:"729 0–729",ok:S.c729.length>=0&&S.c729.length<=729,detail:String(S.c729.length)},{label:"Notizen Array",ok:Array.isArray(S.notes),detail:String(S.notes.length)},{label:"Checks 9",ok:S.checks.length===9,detail:String(S.checks.filter(Boolean).length)+"/9"},{label:"HALT lesbar",ok:typeof S.halted==="boolean",detail:S.halted?"ZIEL":"AUS"}];return audit}
-$("auditBtn").onclick=()=>{let a=runAudit();log(`AUDIT · ${a.filter(x=>x.ok).length}/${a.length} PASS`);render()};
-$("logBtn").onclick=()=>{log("LOG · aktualisiert");render()};
-$("logExport").onclick=()=>{dl("ncos-log.txt",S.log.join("\n"),"text/plain");log("LOG · als TXT geladen");render()};
-let nb=$("numberButtons");for(let i=1;i<=9;i++){let b=btn(i+" · "+i+".html",()=>{ $("numberViewer").src=i+".html";$("viewerStatus").textContent="Lädt: "+i+".html";log(`VIEWER · ${i}.html`)});nb.appendChild(b)}
-$("numberViewer").addEventListener("load",()=>{$("viewerStatus").textContent="Viewer geöffnet."});
-$("kindBtn").onclick=()=>{let rule=$("z1").value,html=$("z2").value,js=$("z3").value.replace(/<\/script/gi,"<\\/script");let out=`<!doctype html><html lang="de"><head><meta charset="utf-8"><title>NC.OS Kind</title></head><body style="background:#000;color:#0f0;font-family:monospace;padding:16px"><h1>NC.OS · Kind · EL BURRO</h1><p>${esc(rule)}</p><div>${html}</div><script>${js}<\/script></body></html>`;dl("ncos-kind.html",out,"text/html");log("ZEUGUNG · Kind geladen");render()};
-$("expJson").onclick=()=>{dl("ncos-max-export.json",JSON.stringify(S,null,2),"application/json");log("EXPORT · JSON");render()};
-$("expHtml").onclick=()=>{dl("ncos-max-export.html",`<!doctype html><meta charset="utf-8"><title>NC.OS Export</title><pre>${esc(JSON.stringify(S,null,2))}</pre>`,"text/html");log("EXPORT · HTML");render()};
-$("expCsv").onclick=()=>{let rows=[["zelle","titel","text","tags"]];Object.entries(S.canvas).forEach(([k,v])=>rows.push([k,(v.title||"").replaceAll('"',''),(v.text||"").replaceAll('"','').slice(0,200),v.tags||""]));dl("ncos-zellen.csv",rows.map(r=>r.map(c=>`"${c}"`).join(",")).join("\n"),"text/csv");log("EXPORT · CSV");render()};
-$("expMd").onclick=()=>{let md="# NC.OS MAXIMAL · EL BURRO\n\n"+S.notes.map(n=>`## ${n.t}\n${n.x}\n`).join("\n");dl("ncos-notizen.md",md,"text/markdown");log("EXPORT · MD");render()};
-$("loadFile").onchange=async e=>{let f=e.target.files?.[0];e.target.value="";if(!f)return;try{let j=JSON.parse(await f.text());S={...fresh(),...j};save();log("IMPORT · JSON OK")}catch(err){log("IMPORT · FEHLER")}render()};
-$("resetBtn").onclick=()=>{if(!confirmReset){confirmReset=true;$("resetBtn").textContent="WIRKLICH? NOCHMAL TIPPEN";$("resetCancel").classList.remove("hide");return}S=fresh();S.log=[now()+" · RESET · Neu"];confirmReset=false;save();show("matrix")};
-$("resetCancel").onclick=()=>{confirmReset=false;$("resetBtn").textContent="RESET · ZWEIMAL TIPPEN";$("resetCancel").classList.add("hide")};
-$("burroLawBtn").onclick=()=>{log("BURRO-GESETZ · BESTÄTIGT · KI AUS · EYE ZU · BRAIN ZU · MINI-MANN BESTIMMT");render()};
-$("burroProtoBtn").onclick=()=>{let v=$("burroProto").value.trim();if(!v)return;S.proto.push(now()+" · "+v);$("burroProto").value="";log("BURRO-PROTOKOLL · gespeichert");render()};
-["Burro","Mini","Halt","Max"].forEach(k=>{let id="cnt"+k;$(id).onclick=()=>{let key=k.toLowerCase();S.counts[key]++;log(`ZÄHLER · ${k} = ${S.counts[key]}`);render()}});
-// QC
-(function(){function val(m){let e=[];if(!m||typeof m!=="object"||Array.isArray(m))return{ok:false,errors:["MODEL_MISSING"]};if(!("ready" in m))e.push("READY_MISSING");if(!("state" in m))e.push("STATE_MISSING");if(!Array.isArray(m.kern_felder))e.push("KERN_FELDER_INVALID");if(!Array.isArray(m.rand_felder))e.push("RAND_FELDER_INVALID");return{ok:e.length===0,errors:e}}let tests=[[ {ready:1,state:"RUN",kern_felder:[41],rand_felder:[1,81]},true,[]],[null,false,["MODEL_MISSING"]],[{},false,["READY_MISSING","STATE_MISSING","KERN_FELDER_INVALID","RAND_FELDER_INVALID"]]];let p=0;$("qc").innerHTML=tests.map(([m,exp,err],i)=>{let r=val(m);let ok=r.ok===exp&&err.length===r.errors.length;if(ok)p++;return `<div class="small"><span style="color:${ok?"#0f0":"#f33"}">${ok?"PASS":"FAIL"}</span> · QC Test ${i+1} · ${r.errors.join(",")||"OK"}</div>`}).join("")+`<p class="small"><b>${p}/${tests.length} QC</b> · 729 = 9×9×9</p>`})();
-render();
-</script></body></html>
+function openWin(id){
+ const win=$("w-"+id);if(!win)return;
+ win.classList.remove("hide");win.style.zIndex=String(++zTop);
+ log("FENSTER · "+id+" geöffnet");
+}
+function closeWin(id){$("w-"+id)?.classList.add("hide");log("FENSTER · "+id+" geschlossen")}
+function minWin(id){$("w-"+id)?.classList.add("hide")}
+let zTop=10;
+
+const E=Array.from({length:81},(_,i)=>{
+ const t=i+1;
+ const score=Math.max(34,Math.min(98,Math.round(58+Math.sin(t*.7)*22+Math.cos(t*1.3)*12+(t%9===0?18:0))));
+ const diff=Number((((t*37)%120)/10).toFixed(1));
+ return{id:t,wer:"ROM-"+String(t).padStart(2,"0"),mit:"TURBO-"+String((t*7)%81+1).padStart(2,"0"),score,diff};
+});
+const avg=Math.round(E.reduce((sum,x)=>sum+x.score,0)/E.length);
+const green=E.filter(x=>x.score>=73).length;
+
+function renderTop(){
+ $("ramAvg").textContent=avg;
+ $("clock").textContent=new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});
+ $("pills").innerHTML=`<span class="pill">FUNDAMENT ${avg}% · Demo</span><span class="pill">${green}/81 GRÜN</span><span class="pill">27 GRUPPEN · Anzeige</span><span class="pill">SCORE ${S.score}</span>`;
+ $("burroPill").textContent=S.burro?"BURRO AN · KI AUS · EYE ZU · BRAIN ZU":"BURRO AUS · MANUELLE STEUERUNG";
+ $("burroBtn").textContent="🐴 BURRO: "+(S.burro?"AN":"AUS");
+ $("haltBtn").textContent=S.halt?"HALT = ZIEL":"HALT AUS";
+ $("haltBtn").style.background=S.halt?"var(--green)":"";
+ $("haltBtn").style.color=S.halt?"#000":"";
+}
+function makeDock(){
+ const dock=$("dock");dock.replaceChildren();
+ MODS.forEach(([id,icon,label])=>{
+  const button=document.createElement("button");button.type="button";
+  button.innerHTML=`${icon}<span>${label}</span>`;
+  button.addEventListener("click",()=>openWin(id));dock.appendChild(button);
+ });
+}
+document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openWin(b.dataset.open));
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeWin(b.dataset.close));
+document.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>minWin(b.dataset.min));
+$("openIndex").onclick=()=>{const panel=$("indexPanel");panel.classList.toggle("hide");panel.scrollIntoView({behavior:"smooth",block:"start"})};
+
+$("burroBtn").onclick=()=>{S.burro=!S.burro;log("BURRO · "+(S.burro?"AN":"AUS"));renderTop()};
+$("haltBtn").onclick=()=>{
+ S.halt=!S.halt;
+ if(S.halt){S.loop=false;S.earnOn=false;clearInterval(loopTimer);clearInterval(earnTimer)}
+ log("HALT · "+(S.halt?"ZIEL · Demo-Schleifen pausiert":"AUS"));renderTop();renderRAM();renderEarn();
+};
+
+/* RAM */
+function renderRAM(){
+ const depth=Number($("tiefe").value);$("tiefeV").textContent=depth;
+ const grid=$("ramGrid");grid.replaceChildren();
+ E.slice(0,depth).forEach(x=>{
+  const cell=document.createElement("button");
+  cell.type="button";cell.className="cell "+(x.score>=73?"green-cell":x.score>=60?"yellow-cell":"red-cell");cell.textContent=x.id;
+  cell.setAttribute("aria-label",`Eintrag ${x.id}, Demo-Score ${x.score} Prozent`);
+  cell.onclick=()=>{
+   $("ramDetail").textContent=`${x.wer} · ${x.mit} · Demo-Score ${x.score}% · Demo-Diff ${x.diff}% · ${x.diff<5?"WAHR-KATEGORIE":"PRÜFEN"}`;
+   log(`RAM · ID ${x.id} · Demo-Score ${x.score}%`);
+  };
+  grid.appendChild(cell);
+ });
+ $("ramTable").innerHTML="<table><tr><th>ID</th><th>WER</th><th>MIT</th><th>SCORE</th><th>DIFF</th></tr>"+
+ E.slice(0,Math.min(9,depth)).map(x=>`<tr><td>${x.id}</td><td>${x.wer}</td><td>${x.mit}</td><td>${x.score}%</td><td>${x.diff}%</td></tr>`).join("")+"</table>";
+}
+$("tiefe").oninput=renderRAM;
+let loopTimer=null;
+$("loopBtn").onclick=()=>{
+ if(S.halt){$("ramDetail").textContent="HALT aktiv · zuerst HALT AUS drücken.";return}
+ S.loop=!S.loop;$("loopBtn").textContent=S.loop?"SCHLEIFE STOP":"SCHLEIFE START";
+ if(S.loop){
+  loopTimer=setInterval(()=>{
+   if(S.halt||!S.loop)return;
+   const x=E[(Date.now()>>>4)%E.length];
+   $("ramDetail").textContent=`Demo-Messung · ${x.wer} · ${x.score}%`;
+   log(`MESS · ${x.wer} · Demo-Score ${x.score}%`);
+  },3000);
+ }else clearInterval(loopTimer);
+ save();
+};
+
+/* Terminal: nur harmlose, lokale Demo-Befehle */
+$("termIn").addEventListener("keydown",event=>{
+ if(event.key!=="Enter")return;
+ const value=event.currentTarget.value.trim();if(!value)return;
+ event.currentTarget.value="";
+ const out=$("termOut");out.textContent+="\n> "+value;
+ const command=value.toLowerCase();
+ const commands={
+  help:"Befehle: help, ls, check.rom, borg, boot, ram, ball, wetter, rolle, earn, matrix, qc, batches, clear",
+  ls:"index.html · eingebaute Module: ram, term, ball, wetter, rolle, earn, matrix, qc, batches",
+  "check.rom":`check.rom · lokale Demo-Daten · ${green}/81 über Schwelle · Mittelwert ${avg}%`,
+  borg:"BORG 7482 · lokale Demo · KI AUS · EYE ZU · BRAIN ZU",
+  boot:"cycOS Demo bereit · keine Systemfunktionen werden gestartet",
+  clear:""
+ };
+ if(command in commands){if(command==="clear")out.textContent="VEC-OS terminal · lokale Demo";else out.textContent+="\n"+commands[command]}
+ else if(["ram","ball","wetter","rolle","earn","matrix","qc","batches"].includes(command)){openWin(command)}
+ else out.textContent+="\nUnbekannter Demo-Befehl · help zeigt die Liste.";
+ out.scrollTop=out.scrollHeight;save();
+});
+
+/* BALL canvas */
+let bx=24,ballFrame=0,ballBusy=false;
+function drawBall(){
+ const canvas=$("ballCv"),c=canvas.getContext("2d");
+ c.clearRect(0,0,canvas.width,canvas.height);c.fillStyle="#02060a";c.fillRect(0,0,520,220);
+ c.strokeStyle="#ffd700";c.lineWidth=2;c.strokeRect(20,20,480,180);
+ c.fillStyle="#00ff88";c.fillRect(440,78,45,64);c.fillStyle="#00ff88";c.font="10px monospace";c.fillText("TOR",451,113);
+ c.fillStyle="#ffd700";c.beginPath();c.arc(bx,110,10,0,Math.PI*2);c.fill();
+}
+function ballKick(){
+ if(S.halt||ballBusy)return;
+ ballBusy=true;log("BALL · DEMO-KICK");
+ const move=()=>{
+  if(S.halt){ballBusy=false;return}
+  bx+=5;drawBall();
+  if(bx>=448){
+   bx=24;ballBusy=false;S.score++;$("ballLog").textContent=`Demo-Tor! Punktestand ${S.score}.`;
+   log(`BALL · DEMO-TOR · Punktestand ${S.score}`);renderTop();save();return;
+  }
+  ballFrame=requestAnimationFrame(move);
+ };
+ move();
+}
+function ballReset(){cancelAnimationFrame(ballFrame);ballBusy=false;bx=24;drawBall();$("ballLog").textContent="Ball zurückgesetzt."}
+$("ballKick").onclick=ballKick;$("ballReset").onclick=ballReset;
+
+/* Wetter-Regler: nur Visualisierung */
+function drawWetter(){
+ const value=Number($("iw").value)/100;
+ $("iwTxt").textContent=`I(${value.toFixed(2)}) + W(${(1-value).toFixed(2)}) = 1.0`;
+ const c=$("wetterCv").getContext("2d");
+ c.clearRect(0,0,520,140);c.fillStyle="#020a12";c.fillRect(0,0,520,140);
+ c.fillStyle="#2a5bd7";c.fillRect(10,25,500*value,8);
+ c.fillStyle="#ffd700";c.fillRect(10,65,500*(1-value),8);
+ c.fillStyle="#00ff88";c.font="12px monospace";
+ c.fillText(`Internet-Anteil ${Math.round(value*100)}% · Wetter-Anteil ${Math.round((1-value)*100)}%`,10,112);
+}
+$("iw").oninput=drawWetter;
+
+/* EARN: rein lokale Fortschrittsdemo */
+let earnTimer=null;
+function renderEarn(){$("earnBar").style.width=`${S.earn}%`;$("earnTxt").textContent=S.earn>=100?"Demo-Ziel 100% erreicht.":S.earnOn?"Demo läuft …":`Demo bereit · ${Math.round(S.earn)}%`}
+$("iqq").oninput=e=>$("iqqV").textContent=e.target.value;
+$("earnBtn").onclick=()=>{
+ if(S.halt){$("earnTxt").textContent="HALT aktiv · Demo nicht gestartet.";return}
+ if(S.earnOn){S.earnOn=false;clearInterval(earnTimer);$("earnBtn").textContent="DEMO START";renderEarn();save();return}
+ S.earnOn=true;$("earnBtn").textContent="DEMO STOP";
+ earnTimer=setInterval(()=>{
+  if(S.halt||!S.earnOn){clearInterval(earnTimer);return}
+  S.earn=Math.min(100,S.earn+1);
+  renderEarn();save();
+  if(S.earn>=100){S.earnOn=false;clearInterval(earnTimer);$("earnBtn").textContent="DEMO START";log("EARN · Demo-Ziel 100% erreicht")}
+ },120);
+};
+$("earnReset").onclick=()=>{S.earn=0;S.earnOn=false;clearInterval(earnTimer);$("earnBtn").textContent="DEMO START";renderEarn();save()};
+
+/* Matrix 81 */
+function renderMatrix(){
+ const grid=$("matrixGrid");grid.replaceChildren();
+ for(let i=0;i<81;i++){
+  const b=document.createElement("button");b.type="button";b.className="cell "+(i===S.matrixCell?"yellow-cell":"green-cell");b.textContent=i;
+  b.onclick=()=>{S.matrixCell=i;$("matrixInfo").textContent=`Zelle ${i}${i===40?" · HOME":""} ausgewählt.`;renderMatrix();save()};
+  grid.appendChild(b);
+ }
+ $("matrixInfo").textContent=`Zelle ${S.matrixCell} ausgewählt.${S.matrixCell===40?" · HOME":""}`;
+}
+$("matrixHome").onclick=()=>{S.matrixCell=40;renderMatrix();save()};
+$("matrixExport").onclick=()=>{
+ const data={selectedCell:S.matrixCell,cells:81,home:40,exportedAt:new Date().toISOString()};
+ const link=document.createElement("a"),url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
+ link.href=url;link.download="cycos-matrix.json";link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+
+/* QC / Quant */
+const zoomLevels=[1,3,9,81,729];let zoom=zoomLevels.includes(Number(S.zoom))?Number(S.zoom):81;
+function renderZoom(){
+ const buttons=$("zoomButtons");buttons.replaceChildren();
+ zoomLevels.forEach(count=>{
+  const b=document.createElement("button");b.textContent=String(count);b.classList.toggle("active",zoom===count);
+  b.onclick=()=>{zoom=count;S.zoom=count;renderZoom();save()};buttons.appendChild(b);
+ });
+ const grid=$("quantGrid");grid.style.gridTemplateColumns=`repeat(${Math.ceil(Math.sqrt(zoom))},minmax(0,1fr))`;grid.replaceChildren();
+ for(let i=0;i<zoom;i++){const cell=document.createElement("div");cell.className="cell "+(i===40?"yellow-cell":"green-cell");cell.textContent=zoom<=81?String(i):"";grid.appendChild(cell)}
+ $("zoomTxt").textContent=`${zoom} Demo-Zellen · HOME=40 · MITTE=41 · 729 = 9×9×9`;
+}
+$("quantGo").onclick=()=>{
+ const raw=$("quantIn").value.trim(),n=Number(raw);
+ if(!raw||!Number.isFinite(n)){$("quantOut").textContent="Ungültige Eingabe · bitte eine Zahl eingeben.";return}
+ const home=Math.min(n,40);
+ $("quantOut").textContent=`EIN ${n} → HOME ${home} → MITTE 41 → ABSTAND ${41-home} → ${home===40?"HALTE":"LAUFE"} · CORE 6 · CROWN 9`;
+};
+$("quantIn").addEventListener("keydown",e=>{if(e.key==="Enter")$("quantGo").click()});
+const qcCases=[
+ ["729 ÷ 9 = 81",729/9===81],["81 ÷ 9 = 9",81/9===9],["9 ÷ 3 = 3",9/3===3],
+ ["3 ÷ 3 = 1",3/3===1],["7 + 7 + 7 = 21",7+7+7===21]
+];
+$("qcResults").innerHTML=qcCases.map(([label,ok])=>`<div class="${ok?"green":"":"muted"}">${ok?"PASS":"FAIL"} · ${label}</div>`).join("");
+
+/* PY-Batches 3×7 */
+const py=Array(21).fill("offen");
+const batch1={hits:[2,4,5,7],misses:[1,3,6]};
+const batch2={hits:[10,11,13,14],misses:[8,9,12]};
+let batchTimer=null,batchRunning=false,batchRunId=0;
+function renderBatches(){
+ const count=state=>py.filter(x=>x===state).length;
+ $("sTreffer").textContent=String(count("treffer")+count("korrigiert"));
+ $("sDaneben").textContent=String(count("daneben"));$("sOffen").textContent=String(count("offen"));
+ const grid=$("batchGrid");grid.replaceChildren();
+ py.forEach((state,i)=>{const d=document.createElement("div");d.className="cell "+(state==="treffer"||state==="korrigiert"?"green-cell":state==="daneben"?"red-cell":"");d.textContent=`PY ${i+1}`;grid.appendChild(d)});
+ const errors=[];
+ py.forEach((state,i)=>{
+  if(state==="daneben")errors.push(`PY ${i+1} — DANEBEN`);
+  if(state==="korrigiert")errors.push(`PY ${i+1} — DANEBEN → TARGETEER → TREFFER`);
+ });
+ $("batchErrors").textContent=errors.join(" · ")||"Noch keine Fehler.";
+}
+function batchLog(text){const out=$("batchOut");out.textContent+=(out.textContent?"\n":"")+text;out.scrollTop=out.scrollHeight}
+function finishBatch(){
+ batchRunning=false;$("batchBoot").disabled=false;$("batchHalt").disabled=true;clearTimeout(batchTimer);
+}
+function bootBatches(){
+ clearTimeout(batchTimer);const run=++batchRunId;py.fill("offen");
+ $("batchOut").textContent="";$("sBatch").textContent="—";batchRunning=true;
+ $("batchBoot").disabled=true;$("batchHalt").disabled=false;renderBatches();
+ const steps=[];
+ function addBatch(number,data,correct){
+  steps.push(()=>{if(run!==batchRunId)return;$("sBatch").textContent=String(number);batchLog(`BATCH ${number} — 7 PY`)});
+  for(let k=1;k<=7;k++){
+   const index=(number-1)*7+k;
+   steps.push(()=>{
+    if(run!==batchRunId)return;
+    py[index-1]=data.hits.includes(index)?"treffer":"daneben";
+    batchLog(`PY ${index}: ${py[index-1].toUpperCase()}`);renderBatches();
+   });
+  }
+  if(correct)steps.push(()=>{
+   if(run!==batchRunId)return;
+   data.misses.forEach(index=>py[index-1]="korrigiert");
+   batchLog("TARGETEER → Fehler markiert und korrigiert.");renderBatches();
+  });
+ }
+ addBatch(1,batch1,false);addBatch(2,batch2,true);
+ steps.push(()=>{if(run!==batchRunId)return;$("sBatch").textContent="3";batchLog("BATCH 3 — noch offen · keine Einträge verarbeitet.")});
+ steps.push(()=>{if(run!==batchRunId)return;batchLog("21 PY · Demo-Lauf beendet · HALT = ZIEL");finishBatch()});
+ let i=0;
+ const next=()=>{if(run!==batchRunId||!batchRunning)return;if(i>=steps.length){finishBatch();return}steps[i++]();batchTimer=setTimeout(next,location.search.includes("fast=1")?10:180)};
+ next();
+}
+$("batchBoot").onclick=bootBatches;
+$("batchHalt").onclick=()=>{
+ if(!batchRunning)return;
+ batchRunning=false;batchRunId++;clearTimeout(batchTimer);
+ batchLog("HALT · Demo-Lauf angehalten.");$("batchBoot").disabled=false;$("batchHalt").disabled=true;
+};
+$("batchTheme").onclick=()=>document.body.classList.toggle("light-demo");
+$("batch729").innerHTML=[[729,9,81],[81,9,9],[9,3,3],[3,3,1]].map(([a,b,c])=>`<div>${a} ÷ ${b} = ${c} · ${a/b===c?"PASS":"FAIL"}</div>`).join("")+`<div>7 + 7 + 7 = 21 · ${7+7+7===21?"PASS":"FAIL"}</div>`;
+
+/* Fenster verschieben: Maus und Touch */
+document.querySelectorAll(".win-title").forEach(title=>{
+ title.addEventListener("pointerdown",event=>{
+  if(event.target.closest("button"))return;
+  const win=title.parentElement,desk=$("desk"),deskRect=desk.getBoundingClientRect(),winRect=win.getBoundingClientRect();
+  const dx=event.clientX-winRect.left,dy=event.clientY-winRect.top;
+  win.style.zIndex=String(++zTop);title.setPointerCapture(event.pointerId);
+  const move=e=>{
+   const left=Math.max(0,Math.min(deskRect.width-win.offsetWidth,e.clientX-deskRect.left-dx));
+   const top=Math.max(38,Math.min(deskRect.height-50,e.clientY-deskRect.top-dy));
+   win.style.left=left+"px";win.style.top=top+"px";
+  };
+  const stop=()=>{title.removeEventListener("pointermove",move);title.removeEventListener("pointerup",stop);title.removeEventListener("pointercancel",stop)};
+  title.addEventListener("pointermove",move);title.addEventListener("pointerup",stop);title.addEventListener("pointercancel",stop);
+ });
+});
+
+makeDock();renderTop();renderRAM();renderMatrix();renderZoom();renderBatches();drawBall();drawWetter();renderEarn();
+setInterval(renderTop,1000);
+</script>
+</body>
+</html>
