@@ -1,325 +1,652 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080d0a">
-<title>NC.OS · CO₂ → O₂ + H₂O · Emulation</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💃 TANZ · SHUFFLE · DREH · 2 SPIELER</title>
+
 <style>
-:root{
-  color-scheme:dark;
-  --bg:#080d0a;--panel:#101812;--panel2:#17221a;
-  --border:#2a3b2d;--text:#e8f1e9;--muted:#a4b4a5;
-  --green:#59ed82;--blue:#77d9ff;--orange:#ffae55;
-  --shadow:0 6px 24px #0005
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background: #0a0a0f;
+  color: #c8d0d0;
+  font-family: 'Consolas', 'Courier New', monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background: radial-gradient(ellipse at 50% 50%, #0a0a1a, #000000);
 }
-*{box-sizing:border-box}
-body{
-  margin:0;padding:20px 14px 40px;background:var(--bg);color:var(--text);
-  font:14px/1.5 Consolas,ui-monospace,monospace
+.container {
+  max-width: 1000px;
+  width: 100%;
+  background: rgba(10,10,20,0.3);
+  border: 1px solid rgba(255,170,0,0.03);
+  border-radius: 20px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 100px rgba(0,0,0,0.8);
 }
-main{max-width:1050px;margin:auto}
-h1{margin:0;color:var(--green);font-size:clamp(19px,4vw,27px);letter-spacing:.04em}
-h2{margin:0 0 10px;color:var(--blue);font-size:15px}
-p{margin:7px 0}
-.subtitle{margin:6px 0 18px;color:var(--muted);font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px}
-.block{min-width:0;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow)}
-.block.active{border-color:var(--green);box-shadow:0 0 18px #59ed8222}
-.title{margin-bottom:9px;color:var(--blue);font-size:13px;font-weight:bold}
-pre{
-  min-height:86px;max-height:260px;overflow:auto;margin:0 0 9px;padding:10px;
-  background:#050806;border-left:3px solid var(--blue);border-radius:3px;
-  color:var(--text);font:12px/1.5 Consolas,ui-monospace,monospace;
-  white-space:pre-wrap;overflow-wrap:anywhere
+.header {
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+  margin-bottom: 16px;
 }
-button{
-  min-height:38px;margin:3px 3px 0 0;padding:7px 10px;
-  color:var(--green);background:var(--panel2);border:1px solid var(--green);
-  border-radius:6px;font:inherit;font-size:12px;cursor:pointer
+.header h1 {
+  font-size: 26px;
+  background: linear-gradient(90deg, #ff4444, #ffaa00, #00ff88, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 4px;
 }
-button:hover:not(:disabled){color:#061008;background:var(--green)}
-button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-button:disabled{opacity:.45;cursor:not-allowed}
-.big{margin:10px 0;color:var(--green);font-size:clamp(18px,4vw,27px);text-align:center;white-space:pre-wrap}
-.green{color:var(--green)}.blue{color:var(--blue)}.orange{color:var(--orange)}
-.note{color:var(--muted);font-size:11px}
-.wide{margin-top:12px}
-footer{margin-top:14px;color:var(--muted);font-size:11px}
+.header .sub {
+  color: #445555;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+.header .sub .p1 { color: #ff4444; }
+.header .sub .p2 { color: #00ccff; }
+
+.canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  aspect-ratio: 16/9;
+  background: rgba(0,0,0,0.4);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+#tanzCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.key-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+@media (max-width:600px){ .key-grid { grid-template-columns:1fr; } }
+.key-panel {
+  background: rgba(10,10,20,0.2);
+  border: 1px solid rgba(255,255,255,0.02);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.key-panel .title {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.key-panel .title.p1 { color: #ff4444; }
+.key-panel .title.p2 { color: #00ccff; }
+.key-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin: 2px 0;
+}
+.key-btn {
+  background: rgba(20,35,35,0.2);
+  color: #668888;
+  border: 1px solid rgba(255,255,255,0.02);
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  transition: all 0.15s;
+  min-width: 32px;
+  text-align: center;
+  position: relative;
+}
+.key-btn:hover { background: rgba(40,80,70,0.08); color: #aaeedd; }
+.key-btn.active-p1 {
+  background: #ff444455;
+  border-color: #ff4444aa;
+  color: #ff4444;
+  box-shadow: 0 0 30px rgba(255,68,68,0.15);
+  animation: pulseP1 0.3s ease;
+}
+.key-btn.active-p2 {
+  background: #00ccff55;
+  border-color: #00ccffaa;
+  color: #00ccff;
+  box-shadow: 0 0 30px rgba(0,204,255,0.15);
+  animation: pulseP2 0.3s ease;
+}
+@keyframes pulseP1 {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); background: #ff444477; }
+  100% { transform: scale(1); }
+}
+@keyframes pulseP2 {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); background: #00ccff77; }
+  100% { transform: scale(1); }
+}
+.key-btn.p1 { color: #ff4444; border-color: rgba(255,68,68,0.1); }
+.key-btn.p2 { color: #00ccff; border-color: rgba(0,204,255,0.1); }
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+.info-card {
+  background: rgba(10,10,20,0.2);
+  border: 1px solid rgba(255,255,255,0.02);
+  border-radius: 8px;
+  padding: 6px 8px;
+  text-align: center;
+  font-size: 9px;
+}
+.info-card .value {
+  font-size: 18px;
+  font-weight: bold;
+  font-family: monospace;
+}
+.info-card .label {
+  color: #445555;
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.controls {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+.controls button {
+  background: rgba(20,35,35,0.2);
+  color: #668888;
+  border: 1px solid rgba(255,255,255,0.02);
+  padding: 5px 16px;
+  border-radius: 18px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 9px;
+  transition: all 0.3s;
+}
+.controls button:hover { background: rgba(40,80,70,0.08); color: #aaeedd; }
+.controls button.active { background: rgba(40,80,70,0.06); color: #00ff88; }
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  margin-top: 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  font-size: 8px;
+  color: #445555;
+  border: 1px solid rgba(255,255,255,0.01);
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.footer {
+  text-align: center;
+  margin-top: 8px;
+  color: #222;
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+.footer span { color: #ffaa00; }
 </style>
 </head>
 <body>
-<main>
-  <h1>challenges → use → user → ort → home</h1>
-  <div class="subtitle">Eigenständige Demo · lokale Emulation · keine externen Module · keine Elben gebaut</div>
 
-  <div class="grid">
-    <section class="block" id="b-challenges">
-      <div class="title">challenges · Challenge und „beste Wette“</div>
-      <pre id="log-challenges" aria-live="polite"></pre>
-      <button type="button" data-action="bet">Beste Wette zeigen</button>
-      <button type="button" data-slide="use">Nächste Slide → use</button>
-    </section>
+<div class="container">
 
-    <section class="block" id="b-use">
-      <div class="title">use · vereinfachte Stoffbilanz-Emulation</div>
-      <pre id="log-use" aria-live="polite"></pre>
-      <button type="button" data-action="use">Emulation ausführen</button>
-      <button type="button" data-slide="user">Nächste Slide → user</button>
-    </section>
+<div class="header">
+  <h1>💃 SHUFFLE · DREH · 2 SPIELER</h1>
+  <div class="sub"><span class="p1">🔴 SPIELER 1 · 1-9</span> vs <span class="p2">🔵 SPIELER 2 · QWEAZDYXC</span></div>
+</div>
 
-    <section class="block" id="b-user">
-      <div class="title">user · eine Demo-Aktion auslösen</div>
-      <pre id="log-user" aria-live="polite"></pre>
-      <button type="button" data-action="user">Aktion ausführen</button>
-      <button type="button" data-slide="ort">Nächste Slide → ort</button>
-    </section>
+<div class="canvas-wrap">
+  <canvas id="tanzCanvas"></canvas>
+</div>
 
-    <section class="block" id="b-ort">
-      <div class="title">ort · virtueller Ort der Emulation</div>
-      <pre id="log-ort" aria-live="polite"></pre>
-      <button type="button" data-action="ort">Ort anzeigen</button>
-      <button type="button" data-slide="home">Nächste Slide → home</button>
-    </section>
-
-    <section class="block" id="b-home">
-      <div class="title">home · Ergebnis der Demo-Kette</div>
-      <pre id="log-home" aria-live="polite"></pre>
-      <div class="big" id="home-big">🏠 Home · wartet</div>
-      <button type="button" data-action="home">Home-Ergebnis anzeigen</button>
-      <button type="button" data-action="all">Alles ausführen</button>
-    </section>
+<div class="key-grid">
+  <div class="key-panel">
+    <div class="title p1">🔴 SPIELER 1 · 1-9</div>
+    <div class="key-row"><span class="key-btn p1" data-key="1">1</span><span class="key-btn p1" data-key="2">2</span><span class="key-btn p1" data-key="3">3</span></div>
+    <div class="key-row"><span class="key-btn p1" data-key="4">4</span><span class="key-btn p1" data-key="5">5</span><span class="key-btn p1" data-key="6">6</span></div>
+    <div class="key-row"><span class="key-btn p1" data-key="7">7</span><span class="key-btn p1" data-key="8">8</span><span class="key-btn p1" data-key="9">9</span></div>
   </div>
+  <div class="key-panel">
+    <div class="title p2">🔵 SPIELER 2 · QWEAZDYXC</div>
+    <div class="key-row"><span class="key-btn p2" data-key="q">Q</span><span class="key-btn p2" data-key="w">W</span><span class="key-btn p2" data-key="e">E</span></div>
+    <div class="key-row"><span class="key-btn p2" data-key="a">A</span><span class="key-btn p2" data-key="z">Z</span><span class="key-btn p2" data-key="d">D</span></div>
+    <div class="key-row"><span class="key-btn p2" data-key="y">Y</span><span class="key-btn p2" data-key="x">X</span><span class="key-btn p2" data-key="c">C</span></div>
+  </div>
+</div>
 
-  <section class="block wide">
-    <h2>Emuliertes Ergebnis</h2>
-    <pre id="log-solution" aria-live="polite">Noch keine Emulation ausgeführt.</pre>
-    <p class="note">
-      Hinweis: Das ist ein illustratives Zahlenmodell. Echte Photosynthese benötigt unter anderem Licht,
-      Wasser und biologische Prozesse; diese Demo bildet sie nicht naturgetreu ab.
-    </p>
-  </section>
+<div class="info-grid">
+  <div class="info-card"><div class="value" id="p1Score" style="color:#ff4444;">0</div><div class="label">🔴 SPIELER 1</div></div>
+  <div class="info-card"><div class="value" id="moveDisplay" style="color:#ffaa00;">—</div><div class="label">🎯 MOVE</div></div>
+  <div class="info-card"><div class="value" id="p2Score" style="color:#00ccff;">0</div><div class="label">🔵 SPIELER 2</div></div>
+</div>
 
-  <footer id="status" aria-live="polite">Bereit.</footer>
-</main>
+<div class="controls">
+  <button class="active" id="btnStart">▶ START</button>
+  <button id="btnMove">🎯 MOVE</button>
+  <button id="btnShuffle">🔀 SHUFFLE</button>
+  <button id="btnSpin">🔄 DREH</button>
+  <button id="btnProof">🔮 PROOF</button>
+  <button id="btnReset">⟲ RESET</button>
+</div>
+
+<div class="status-bar">
+  <span>💃 STATUS: <span id="statusText">tanzt</span></span>
+  <span>🎯 MOVE: <span id="moveStatus">—</span></span>
+  <span>🔄 DREH: <span id="spinStatus">0°</span></span>
+</div>
+
+<div class="footer">
+  <span>💃</span> SHUFFLE · DREH · 2 SPIELER · <span>wieimmer4u</span>
+</div>
+
+</div>
 
 <script>
-"use strict";
+// ============================================================
+// SHUFFLE · DREH · 2 SPIELER · 9 TASTEN – KORRIGIERT
+// ============================================================
 
-/*
-  Illustratives Spielzeugmodell, keine Chemie-Simulation:
-  Eine „Einheit“ CO₂ wird rechnerisch in Demo-Werte für O₂,
-  Wasserrest und Zucker umgewandelt. Die Koeffizienten sind
-  nur für die Visualisierung gewählt.
-*/
-const CHALLENGES = Object.freeze([
-  {id:"C01",name:"Virtuelles Gewächshaus",co2:12,o2:8,h2o:6,ort:"Gewächshaus"},
-  {id:"C02",name:"Küstenstation",co2:9,o2:7,h2o:8,ort:"Küste"},
-  {id:"C03",name:"Waldlabor",co2:15,o2:9,h2o:5,ort:"Waldlabor"},
-  {id:"C04",name:"Stadtgarten",co2:7,o2:6,h2o:9,ort:"Stadtgarten"}
-]);
+const canvas = document.getElementById('tanzCanvas');
+const ctx = canvas.getContext('2d');
+let running = true;
+let time = 0;
+let p1Score = 0, p2Score = 0;
+let currentMove = '—';
+let frame = 0;
+let spinAngle = 0;
+let shuffleMode = false;
+let spinSpeed = 0;
 
-const state = {
-  challenge:null,
-  useResult:null,
-  userResult:null,
-  ortResult:null,
-  homeResult:null
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width || 700;
+  canvas.height = rect.height || (rect.width * 9/16) || 390;
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ===== POSEN – KORRIGIERT & ERWEITERT =====
+const POSES = {
+  '1': { armL: -0.6, armR: -0.4, legL: -0.3, legR: -0.1, body: 0, head: 0, label: 'Step L' },
+  '2': { armL: -0.4, armR: -0.6, legL: -0.1, legR: -0.3, body: 0.05, head: 0.05, label: 'Step R' },
+  '3': { armL: -0.8, armR: 0.3, legL: -0.4, legR: 0.1, body: 0.1, head: 0.1, label: 'Arm L' },
+  '4': { armL: 0.3, armR: -0.8, legL: 0.1, legR: -0.4, body: 0.15, head: 0.15, label: 'Arm R' },
+  '5': { armL: 0.6, armR: 0.6, legL: 0, legR: 0, body: 0.2, head: 0.2, label: 'Jump' },
+  '6': { armL: -0.9, armR: 0.9, legL: -0.3, legR: 0.3, body: 0.25, head: 0.25, label: 'Spread' },
+  '7': { armL: 0, armR: 0, legL: -0.6, legR: 0.6, body: 0.3, head: 0.3, label: 'Split' },
+  '8': { armL: 0.5, armR: -0.5, legL: -0.3, legR: -0.3, body: 0.35, head: 0.35, label: 'Twist' },
+  '9': { armL: -0.3, armR: 0.3, legL: 0.3, legR: -0.3, body: 0.4, head: 0.4, label: 'Spin' },
+  'q': { armL: -0.5, armR: -0.5, legL: -0.2, legR: -0.2, body: 0.02, head: 0.02, label: 'Sway L' },
+  'w': { armL: 0.5, armR: 0.5, legL: 0.2, legR: 0.2, body: 0.08, head: 0.08, label: 'Sway R' },
+  'e': { armL: -0.7, armR: 0.15, legL: -0.35, legR: 0.05, body: 0.12, head: 0.12, label: 'Wave L' },
+  'a': { armL: 0.15, armR: -0.7, legL: 0.05, legR: -0.35, body: 0.18, head: 0.18, label: 'Wave R' },
+  'z': { armL: 0.7, armR: -0.3, legL: 0.15, legR: -0.15, body: 0.22, head: 0.22, label: 'Power' },
+  'd': { armL: -0.3, armR: 0.7, legL: -0.15, legR: 0.15, body: 0.28, head: 0.28, label: 'Grace' },
+  'y': { armL: 0.3, armR: 0.3, legL: -0.4, legR: 0.4, body: 0.32, head: 0.32, label: 'Float' },
+  'x': { armL: -0.6, armR: -0.6, legL: 0.4, legR: -0.4, body: 0.38, head: 0.38, label: 'Cross' },
+  'c': { armL: 0, armR: 0, legL: 0, legR: 0, body: 0, head: 0, label: 'Center' }
 };
 
-const $ = id => document.getElementById(id);
-const round1 = value => Math.round(value * 10) / 10;
-const showJSON = value => JSON.stringify(value,null,2);
+// ===== TÄNZER =====
+let p1 = { x: 0.28, y: 0.55, pose: '5', color: '#ff4444', label: 'P1', rot: 0 };
+let p2 = { x: 0.72, y: 0.55, pose: 'c', color: '#00ccff', label: 'P2', rot: 0 };
 
-function besteWette(){
-  // Demo-Heuristik: höchste CO₂-Zahl auswählen; kein Wett- oder Erfolgsversprechen.
-  return [...CHALLENGES].sort((a,b)=>b.co2-a.co2)[0];
+// ===== DRAW STICKMAN – KORRIGIERT =====
+function drawStickman(ctx, x, y, pose, color, label, scale, alpha, rot) {
+  const p = POSES[pose] || POSES['5'];
+  const s = scale * 1.8;
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot + p.body * 0.2);
+  ctx.globalAlpha = alpha || 1;
+
+  // Glow
+  ctx.shadowColor = color + '55';
+  ctx.shadowBlur = 25;
+
+  // Kopf
+  ctx.shadowBlur = 15;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(0, -s * 1.1 + p.head * 0.3 * s, s * 0.2, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Körper
+  ctx.shadowBlur = 10;
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(0, -s * 0.85 + p.body * 0.3 * s);
+  ctx.lineTo(0, s * 0.25 + p.body * 0.3 * s);
+  ctx.stroke();
+
+  // Arme
+  ctx.lineWidth = 4.5;
+  ctx.beginPath();
+  ctx.moveTo(0, -s * 0.65 + p.body * 0.3 * s);
+  ctx.lineTo(-s * 0.45 + p.armL * 0.5 * s, -s * 0.15 + p.body * 0.3 * s);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, -s * 0.65 + p.body * 0.3 * s);
+  ctx.lineTo(s * 0.45 + p.armR * 0.5 * s, -s * 0.15 + p.body * 0.3 * s);
+  ctx.stroke();
+
+  // Beine
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(0, s * 0.25 + p.body * 0.3 * s);
+  ctx.lineTo(-s * 0.3 + p.legL * 0.6 * s, s * 0.7 + p.legL * 0.6 * s);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, s * 0.25 + p.body * 0.3 * s);
+  ctx.lineTo(s * 0.3 + p.legR * 0.6 * s, s * 0.7 + p.legR * 0.6 * s);
+  ctx.stroke();
+
+  // Label
+  ctx.shadowBlur = 0;
+  ctx.globalAlpha = 0.6;
+  ctx.fillStyle = color;
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(label, 0, -s * 1.5);
+
+  // Pose-Name
+  ctx.globalAlpha = 0.3;
+  ctx.font = '7px monospace';
+  ctx.textBaseline = 'top';
+  ctx.fillText(p.label || pose, 0, s * 1.0);
+
+  ctx.restore();
 }
 
-function use(){
-  const challenge = state.challenge || besteWette();
-  const input = {co2:challenge.co2,h2o:challenge.h2o};
+// ===== RENDER =====
+function render() {
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
 
-  // Nur illustrative Skalierung, keine reale Stoffbilanz.
-  const co2Used = round1(input.co2 * 0.6);
-  const output = {
-    co2Verwendet:co2Used,
-    o2:round1(co2Used * 0.8),
-    wasserRest:round1(Math.max(0,input.h2o - co2Used * 0.25)),
-    zucker:round1(co2Used * 0.3)
-  };
+  // Hintergrund
+  const grad = ctx.createRadialGradient(w/2, h/2, 10, w/2, h/2, w/2);
+  grad.addColorStop(0, '#0a0a1a');
+  grad.addColorStop(0.5, '#050510');
+  grad.addColorStop(1, '#000000');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
 
-  const result = {
-    modell:"Illustrative Demo, keine naturgetreue Chemie-Simulation",
-    challenge:challenge.name,
-    input,
-    output,
-    elben:{gebaut:false,emuliert:false},
-    lösung:"Virtuelle Umwandlung wurde berechnet; es wurden weder Lebewesen noch Elben erzeugt."
-  };
+  // Tanzfläche
+  ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(0, h * 0.8);
+  ctx.lineTo(w, h * 0.8);
+  ctx.stroke();
 
-  state.useResult=result;
-  return result;
-}
-
-function user(){
-  const result = state.useResult || use();
-  const userAction = {
-    aktion:"Emulationsdaten anzeigen",
-    challenge:result.challenge,
-    ausgeführt:true,
-    hinweis:"Die Aktion verändert keine reale Umgebung."
-  };
-  state.userResult={userAction,useResult:result};
-  return state.userResult;
-}
-
-function ort(){
-  const userResult = state.userResult || user();
-  const challenge = state.challenge || besteWette();
-  const emulationAmOrt = {
-    ort:challenge.ort,
-    modus:"virtuell",
-    challenge:challenge.name,
-    input:userResult.useResult.input,
-    output:userResult.useResult.output,
-    realeUmgebungVerändert:false
-  };
-  state.ortResult={emulationAmOrt,userResult};
-  return state.ortResult;
-}
-
-function home(){
-  const ortResult = state.ortResult || ort();
-  const finalEmulation = {
-    ort:ortResult.emulationAmOrt.ort,
-    vorher:ortResult.emulationAmOrt.input,
-    nachher:ortResult.emulationAmOrt.output,
-    wieElben:"Nur als Zahlenmodell emuliert; keine Elben gebaut.",
-    system:{
-      eigenständig:true,
-      externeDateien:false,
-      realeChemie:false,
-      realeUmgebungVerändert:false
+  // Shuffle-Lichter
+  if (shuffleMode) {
+    for (let i = 0; i < 30; i++) {
+      const x = (i / 30) * w;
+      const y = h * 0.8 + Math.sin(i * 0.5 + time / 500) * 6;
+      const alpha = 0.02 + Math.sin(i * 0.3 + time / 700) * 0.015;
+      ctx.fillStyle = `rgba(255,170,0,${alpha})`;
+      ctx.beginPath();
+      ctx.arc(x, y, 2 + Math.sin(time / 400 + i) * 1, 0, Math.PI * 2);
+      ctx.fill();
     }
-  };
-  const result={
-    finalEmulation,
-    esBlüht:"🌸 Demo abgeschlossen · virtuelles Ergebnis bereit."
-  };
-  state.homeResult=result;
-  return result;
+  }
+
+  // Move
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffaa0044';
+  ctx.font = '14px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`🎯 MOVE: ${currentMove}`, w/2, h * 0.82);
+
+  // Score
+  ctx.fillStyle = '#ff444466';
+  ctx.font = '14px monospace';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`🔴 ${p1Score}`, 12, 10);
+  ctx.fillStyle = '#00ccff66';
+  ctx.textAlign = 'right';
+  ctx.fillText(`🔵 ${p2Score}`, w - 12, 10);
+
+  // Dreh
+  ctx.fillStyle = '#445555';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(`🔄 ${Math.round(spinAngle)}°`, w/2, 4);
+
+  // Schatten
+  const scale = Math.min(w, h) * 0.075;
+  const p1x = w * p1.x, p1y = h * 0.7;
+  const p2x = w * p2.x, p2y = h * 0.7;
+
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.beginPath();
+  ctx.ellipse(p1x, h * 0.82, scale * 0.45, scale * 0.12, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(p2x, h * 0.82, scale * 0.45, scale * 0.12, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Tänzer zeichnen
+  drawStickman(ctx, p1x, p1y, p1.pose, p1.color, 'P1', scale, 1, p1.rot + spinAngle * 0.02);
+  drawStickman(ctx, p2x, p2y, p2.pose, p2.color, 'P2', scale, 1, p2.rot + spinAngle * 0.02);
+
+  // Verbindung
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 0.5;
+  ctx.setLineDash([4, 8]);
+  ctx.beginPath();
+  ctx.moveTo(p1x, p1y - scale * 1.2);
+  ctx.lineTo(p2x, p2y - scale * 1.2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  if (shuffleMode) {
+    ctx.fillStyle = '#ffaa0044';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('🔀 SHUFFLE', w/2, h * 0.78);
+  }
 }
 
-function clearActive(){
-  document.querySelectorAll(".block").forEach(block=>block.classList.remove("active"));
-}
-function activate(id){
-  clearActive();
-  $(id).classList.add("active");
-}
-function write(id,text){
-  $(id).textContent=typeof text==="string"?text:showJSON(text);
-}
-function renderChallenges(){
-  write("log-challenges",CHALLENGES.map(c=>
-    `${c.id} ${c.name} · CO₂ ${c.co2} · O₂ ${c.o2} · H₂O ${c.h2o} · Ort: ${c.ort}`
-  ).join("\n"));
-}
-function renderSolution(result){
-  write("log-solution",
-`Illustrative Emulation · ${result.challenge}
-Eingabe: CO₂ ${result.input.co2} · H₂O ${result.input.h2o}
-Demo-Ausgabe: O₂ ${result.output.o2} · Wasserrest ${result.output.wasserRest} · Zucker ${result.output.zucker}
+// ===== UPDATE – KORRIGIERT =====
+function update() {
+  if (!running) return;
+  time += 16;
+  frame++;
 
-${result.lösung}
-Keine reale Chemie-Simulation; keine Lebewesen erzeugt.`);
-}
-function slideTo(name){
-  const ids={use:"b-use",user:"b-user",ort:"b-ort",home:"b-home"};
-  const target=$(ids[name]);
-  if(!target)return;
-  target.scrollIntoView({behavior:"smooth",block:"center"});
-  activate(ids[name]);
-}
-function runAll(){
-  state.challenge=besteWette();
-  const useResult=use();
-  const userResult=user();
-  const ortResult=ort();
-  const homeResult=home();
+  // Move rotieren
+  const moveKeys = Object.keys(POSES);
+  if (frame % 120 === 0) {
+    const randomKey = moveKeys[Math.floor(Math.random() * moveKeys.length)];
+    currentMove = POSES[randomKey]?.label || '—';
+    document.getElementById('moveDisplay').textContent = currentMove;
+    document.getElementById('moveStatus').textContent = currentMove;
+  }
 
-  write("log-challenges",`Beste Wette (Demo-Heuristik):\n${showJSON(state.challenge)}`);
-  write("log-use",`${showJSON(useResult)}\n\n${useResult.lösung}`);
-  write("log-user",showJSON(userResult.userAction));
-  write("log-ort",showJSON(ortResult.emulationAmOrt));
-  write("log-home",`${showJSON(homeResult.finalEmulation)}\n\n${homeResult.esBlüht}`);
-  $("home-big").textContent=homeResult.esBlüht;
-  renderSolution(useResult);
-  document.querySelectorAll(".block").forEach(block=>block.classList.add("active"));
-  $("status").textContent="Kette abgeschlossen: challenges → use → user → ort → home.";
+  // Spieler 1 – automatische Bewegung
+  if (frame % 8 === 0) {
+    const keys = shuffleMode ? ['5','6','7','8','9','1','2','3','4'] : ['1','2','3','4','5','6','7','8','9'];
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    p1.pose = key;
+    if (p1.pose === currentMove || Math.random() < 0.15) p1Score++;
+    document.getElementById('p1Score').textContent = p1Score;
+    // Tastatur-Highlight
+    document.querySelectorAll('.key-btn.p1').forEach(b => {
+      b.classList.toggle('active-p1', b.dataset.key === key);
+    });
+    if (shuffleMode) p1.rot += (Math.random() - 0.5) * 0.05;
+  }
+
+  // Spieler 2 – automatische Bewegung
+  if (frame % 8 === 0) {
+    const keys = shuffleMode ? ['y','x','c','q','w','e','a','z','d'] : ['q','w','e','a','z','d','y','x','c'];
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    p2.pose = key;
+    if (p2.pose === currentMove || Math.random() < 0.15) p2Score++;
+    document.getElementById('p2Score').textContent = p2Score;
+    document.querySelectorAll('.key-btn.p2').forEach(b => {
+      b.classList.toggle('active-p2', b.dataset.key === key);
+    });
+    if (shuffleMode) p2.rot += (Math.random() - 0.5) * 0.05;
+  }
+
+  // Dreh
+  if (spinSpeed !== 0) {
+    spinAngle += spinSpeed * 8;
+    document.getElementById('spinStatus').textContent = `${Math.round(spinAngle)}°`;
+  }
+
+  // Status
+  const status = p1Score > p2Score ? '🔴 P1 führt' : p2Score > p1Score ? '🔵 P2 führt' : '⚖️ Gleichstand';
+  document.getElementById('statusText').textContent = status;
+
+  render();
+  requestAnimationFrame(update);
 }
 
-document.addEventListener("click",event=>{
-  const button=event.target.closest("button");
-  if(!button)return;
+// ===== TASTATUR – KORRIGIERT =====
+document.addEventListener('keydown', (e) => {
+  const key = e.key.toLowerCase();
 
-  if(button.dataset.slide){
-    slideTo(button.dataset.slide);
+  // Spieler 1: 1-9
+  if (key >= '1' && key <= '9') {
+    e.preventDefault();
+    p1.pose = key;
+    document.querySelectorAll('.key-btn.p1').forEach(b => {
+      b.classList.toggle('active-p1', b.dataset.key === key);
+    });
+    if (key === currentMove || Math.random() < 0.2) {
+      p1Score++;
+      document.getElementById('p1Score').textContent = p1Score;
+    }
+    if (shuffleMode) p1.rot += 0.1;
     return;
   }
 
-  switch(button.dataset.action){
-    case "bet":{
-      state.challenge=besteWette();
-      write("log-challenges",`Beste Wette nach Demo-Heuristik (höchster CO₂-Wert):\n${showJSON(state.challenge)}\n\nDas ist keine echte Wette und keine Vorhersage.`);
-      activate("b-challenges");
-      $("status").textContent="Demo-Challenge ausgewählt.";
-      break;
+  // Spieler 2: q,w,e,a,z,d,y,x,c
+  if (['q','w','e','a','z','d','y','x','c'].includes(key)) {
+    e.preventDefault();
+    p2.pose = key;
+    document.querySelectorAll('.key-btn.p2').forEach(b => {
+      b.classList.toggle('active-p2', b.dataset.key === key);
+    });
+    if (key === currentMove || Math.random() < 0.2) {
+      p2Score++;
+      document.getElementById('p2Score').textContent = p2Score;
     }
-    case "use":{
-      state.challenge=state.challenge||besteWette();
-      const result=use();
-      write("log-use",`${showJSON(result)}\n\n${result.lösung}`);
-      renderSolution(result);
-      activate("b-use");
-      $("status").textContent="Illustrative Emulation berechnet.";
-      break;
-    }
-    case "user":{
-      const result=user();
-      write("log-user",showJSON(result.userAction));
-      activate("b-user");
-      $("status").textContent="Demo-Aktion ausgeführt.";
-      break;
-    }
-    case "ort":{
-      const result=ort();
-      write("log-ort",showJSON(result.emulationAmOrt));
-      activate("b-ort");
-      $("status").textContent="Virtueller Ort ausgewählt.";
-      break;
-    }
-    case "home":{
-      const result=home();
-      write("log-home",`${showJSON(result.finalEmulation)}\n\n${result.esBlüht}`);
-      $("home-big").textContent=result.esBlüht;
-      renderSolution(state.useResult);
-      activate("b-home");
-      $("status").textContent="Home-Ergebnis angezeigt.";
-      break;
-    }
-    case "all":
-      runAll();
-      break;
+    if (shuffleMode) p2.rot += 0.1;
+    return;
   }
 });
 
-renderChallenges();
-write("log-use","Warte auf Emulation …");
-write("log-user","Warte auf Nutzeraktion …");
-write("log-ort","Warte auf Ort …");
-write("log-home","Warte auf Ergebnis …");
+// ===== BUTTONS =====
+document.getElementById('btnStart').addEventListener('click', () => {
+  running = !running;
+  document.getElementById('btnStart').classList.toggle('active');
+  document.getElementById('btnStart').textContent = running ? '▶ START' : '⏸ PAUSE';
+  if (running) update();
+});
+
+document.getElementById('btnMove').addEventListener('click', () => {
+  const keys = Object.keys(POSES);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  currentMove = POSES[randomKey]?.label || '—';
+  document.getElementById('moveDisplay').textContent = currentMove;
+  document.getElementById('moveStatus').textContent = currentMove;
+});
+
+document.getElementById('btnShuffle').addEventListener('click', () => {
+  shuffleMode = !shuffleMode;
+  document.getElementById('btnShuffle').classList.toggle('active');
+  document.getElementById('btnShuffle').textContent = shuffleMode ? '🔀 SHUFFLE·ON' : '🔀 SHUFFLE';
+});
+
+document.getElementById('btnSpin').addEventListener('click', () => {
+  spinSpeed = spinSpeed === 0 ? 0.02 : spinSpeed === 0.02 ? 0.05 : 0;
+  document.getElementById('btnSpin').classList.toggle('active');
+  document.getElementById('btnSpin').textContent = spinSpeed ? `🔄 DREH ${Math.round(spinSpeed*100)}%` : '🔄 DREH';
+});
+
+document.getElementById('btnProof').addEventListener('click', () => {
+  const proof = document.createElement('div');
+  proof.style.cssText = `
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999; backdrop-filter: blur(20px);
+    font-family: 'Consolas', monospace;
+  `;
+  proof.innerHTML = `
+    <div style="text-align:center; padding:40px; border:1px solid rgba(255,170,0,0.1); border-radius:20px; background:rgba(10,10,20,0.6); max-width:450px;">
+      <div style="font-size:48px;">💃</div>
+      <div style="color:#ffaa00; font-size:20px; margin:12px 0; letter-spacing:4px;">SHUFFLE · DREH</div>
+      <div style="color:#88ddbb; font-size:13px; line-height:1.8;">
+        🔴 P1: ${p1Score} · 🔵 P2: ${p2Score}<br>
+        🎯 MOVE: ${currentMove}<br>
+        🔄 DREH: ${Math.round(spinAngle)}°<br>
+        🔀 SHUFFLE: ${shuffleMode ? 'AN' : 'AUS'}
+      </div>
+      <button onclick="this.parentElement.parentElement.remove()" style="
+        margin-top:14px; background:rgba(20,35,35,0.2); color:#668888;
+        border:1px solid rgba(255,255,255,0.02); padding:6px 20px;
+        border-radius:18px; cursor:pointer; font-family:inherit; font-size:9px;
+      ">⏎ SCHLIESSEN</button>
+    </div>
+  `;
+  document.body.appendChild(proof);
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  p1Score = 0; p2Score = 0; currentMove = '—';
+  p1.pose = '5'; p2.pose = 'c';
+  p1.rot = 0; p2.rot = 0;
+  spinAngle = 0; shuffleMode = false; spinSpeed = 0;
+  document.getElementById('p1Score').textContent = '0';
+  document.getElementById('p2Score').textContent = '0';
+  document.getElementById('moveDisplay').textContent = '—';
+  document.getElementById('moveStatus').textContent = '—';
+  document.getElementById('spinStatus').textContent = '0°';
+  document.getElementById('btnShuffle').textContent = '🔀 SHUFFLE';
+  document.getElementById('btnShuffle').classList.remove('active');
+  document.getElementById('btnSpin').textContent = '🔄 DREH';
+  document.getElementById('btnSpin').classList.remove('active');
+  document.querySelectorAll('.key-btn').forEach(b => b.className = 'key-btn');
+  document.getElementById('statusText').textContent = 'reset';
+});
+
+// ===== INIT =====
+resizeCanvas();
+setTimeout(resizeCanvas, 200);
+update();
+
+console.log('💃 SHUFFLE · DREH · 2 SPIELER – KORRIGIERT');
+console.log('🔴 P1: 1-9 · 🔵 P2: QWEAZDYXC');
+console.log('🔀 SHUFFLE · 🔄 DREH');
 </script>
+
 </body>
 </html>
