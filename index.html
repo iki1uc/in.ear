@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#04070e">
+  <title>NC.OS · INDEX — QI / RUN21</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #04070e;
+      --panel: #0a101e;
+      --line: #22344a;
+      --green: #7ce0a8;
+      --gold: #ffcc44;
+      --blue: #5fc8ff;
+      --text: #c8d8e8;
+      --muted: #829bb0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      font: 13px/1.6 Consolas, Monaco, monospace;
+    }
+
+    header, main, footer {
+      width: min(100%, 1100px);
+      margin-inline: auto;
+    }
+
+    header {
+      padding: 8px 0 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-size: clamp(19px, 4vw, 27px);
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      margin: 0 0 9px;
+      color: var(--gold);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .sub, .muted { color: var(--muted); }
+
+    .toolbar, .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .toolbar { margin-top: 12px; }
+
+    button, .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:hover, .button:hover, a.card:hover {
+      border-color: var(--green);
+    }
+
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    button.on {
+      border-color: var(--green);
+      background: var(--green);
+      color: #04100a;
+      font-weight: 700;
+    }
+
+    main { padding-top: 14px; }
+
+    .card {
+      margin: 10px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    a.card {
+      display: block;
+      min-width: 0;
+      margin: 0;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    a.card strong {
+      display: block;
+      color: var(--green);
+      font-size: 14px;
+    }
+
+    a.card span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    a.card.rolle { border-color: #806820; }
+    a.card.rolle strong { color: var(--gold); }
+
+    .number-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .number-grid button { width: 100%; }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: min(65vh, 700px);
+      min-height: 300px;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    code { color: #b0ffd8; }
+
+    footer {
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      color: #60778b;
+      font-size: 11px;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 11px; }
+      .number-grid { grid-template-columns: repeat(3, 1fr); }
+      iframe { min-height: 250px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>◈ NC.OS · INDEX</h1>
+    <p class="sub">QI / RUN21 · Einstieg zu den empfohlenen Seiten · HALT = ZIEL</p>
+    <div class="toolbar">
+      <a class="button" href="rolle.html">◈ Rolle / Dateierklärung</a>
+      <a class="button" href="729.html">729 · Zoom aller Zooms</a>
+      <a class="button" href="NC_ROOT_JA_mobile_canvas_729.html">NC_ROOT_JA · Canvas</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="best-title">
+      <h2 id="best-title">EMPFOHLENE SEITEN</h2>
+      <div class="grid">
+        <a class="card rolle" href="rolle.html">
+          <strong>◈ ROLLE.HTML</strong>
+          <span>Wer ist was · Dateierklärung · QI-Nummern</span>
+        </a>
+        <a class="card" href="729.html">
+          <strong>729 · ZOOM ALLER ZOOMS</strong>
+          <span>Standalone · 9 × 81</span>
+        </a>
+        <a class="card" href="NC_ROOT_JA_mobile_canvas_729.html">
+          <strong>NC_ROOT_JA · 729 CANVAS</strong>
+          <span>27 × 27 · ROOT · TOOLOMAT · PQ · PIPELINE</span>
+        </a>
+        <a class="card" href="vol.1.html">
+          <strong>VOL.1</strong>
+          <span>Band 1</span>
+        </a>
+        <a class="card" href="vol.2.html">
+          <strong>VOL.2</strong>
+          <span>Band 2</span>
+        </a>
+        <a class="card" href="vol.3.html">
+          <strong>VOL.3</strong>
+          <span>Band 3</span>
+        </a>
+        <a class="card" href="ctrl.html">
+          <strong>CTRL / LER</strong>
+          <span>Steuerung · 9.ctrl.ler</span>
+        </a>
+        <a class="card" href="rom.htm">
+          <strong>ROM</strong>
+          <span>NEU ROM · Rechnung und Gegenrechnung</span>
+        </a>
+        <a class="card" href="ram.htm">
+          <strong>RAM</strong>
+          <span>RAM real · Statusanzeige</span>
+        </a>
+        <a class="card" href="elementary.html">
+          <strong>ELEMENTARY</strong>
+          <span>Basis · glasklar</span>
+        </a>
+        <a class="card" href="k.z.z.html">
+          <strong>K.Z.Z</strong>
+          <span>Kern-Zone</span>
+        </a>
+        <a class="card" href="anker.html">
+          <strong>ANKER</strong>
+          <span>Cache · Organismus · Canvas</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="number-title">
+      <h2 id="number-title">1–9 · DATEI-VIEWER</h2>
+      <p class="muted">Wählt eine vorhandene Ziffern-Datei im selben Ordner. Bei fehlender Datei zeigt der Browser einen Fehler.</p>
+
+      <div class="number-grid" id="numberButtons" aria-label="Ziffernseiten"></div>
+
+      <p class="status" id="viewerStatus" role="status" aria-live="polite">
+        Bereit. Wähle eine Datei von 1.html bis 9.html.
+      </p>
+
+      <iframe
+        id="numberViewer"
+        title="Viewer für die Ziffernseiten 1 bis 9"
+        src="about:blank"
+        loading="lazy"
+      ></iframe>
+    </section>
+
+    <section class="card">
+      <h2>QUANT NC · QC</h2>
+      <p>Die kompakte Offline-Version liegt – falls gespeichert – als eigene Datei vor:</p>
+      <p><a class="button" href="quant.html">QUANT NC öffnen</a></p>
+      <p class="muted">Falls deine Datei anders heißt, ändere den Link <code>href="quant.html"</code> entsprechend.</p>
+    </section>
+
+    <section class="card">
+      <h2>ORDNERHINWEIS</h2>
+      <p class="muted">
+        Lege diese <code>index.html</code> neben die verlinkten Dateien.
+        Dateinamen müssen exakt übereinstimmen, einschließlich Groß-/Kleinschreibung
+        auf Systemen, die diese unterscheiden.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    NC.OS · INDEX · 1 Einstieg · lokale HTML-Dateien · keine externen Frameworks
+  </footer>
+
+  <script>
+    "use strict";
+
+    const buttonBox = document.getElementById("numberButtons");
+    const viewer = document.getElementById("numberViewer");
+    const status = document.getElementById("viewerStatus");
+    const numberFiles = Array.from({ length: 9 }, (_, i) => `${i + 1}.html`);
+    let currentButton = null;
+
+    function selectFile(file, button) {
+      if (!numberFiles.includes(file)) return;
+
+      if (currentButton) currentButton.classList.remove("on");
+      currentButton = button;
+      currentButton.classList.add("on");
+
+      status.textContent = `Lädt: ${file} · index.html → ${file}`;
+      viewer.src = file;
+
+      try {
+        localStorage.setItem("nc_os_last", file);
+      } catch (_) {
+        // Lokaler Speicher kann bei file:// durch den Browser gesperrt sein.
+      }
+    }
+
+    numberFiles.forEach(file => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `${file[0]} · ${file}`;
+      button.addEventListener("click", () => selectFile(file, button));
+      buttonBox.appendChild(button);
+    });
+
+    viewer.addEventListener("load", () => {
+      if (currentButton) {
+        status.textContent =
+          `Viewer geöffnet: ${currentButton.textContent}. ` +
+          "Wenn die Seite leer oder nicht verfügbar ist, prüfe den Dateinamen und Ordner.";
+      }
+    });
+
+    try {
+      const last = localStorage.getItem("nc_os_last");
+      if (numberFiles.includes(last)) {
+        const index = numberFiles.indexOf(last);
+        selectFile(last, buttonBox.children[index]);
+      }
+    } catch (_) {
+      // Ohne gespeicherte Auswahl bleibt der Viewer leer.
+    }
+  </script>
+</body>
+</html>
