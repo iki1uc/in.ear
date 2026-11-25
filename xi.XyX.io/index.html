@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050505">
+<title>NC.OS · INDEX · CTRL · TOOLATOR · ROOT</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#050505;--panel:#0b0b0b;--line:#282828;
+  --green:#00ff88;--bios:#00ff41;--gold:#ffd700;
+  --red:#ff3b30;--muted:#aaa;--cyan:#00e5ff
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:#e8f0fa;font:13px ui-monospace,Menlo,Consolas,monospace}
+header{position:sticky;top:0;z-index:20;background:#050505;border-bottom:2px solid var(--green);padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+header b{color:var(--green);letter-spacing:.08em}
+.mut,.muted{color:var(--muted);font-size:11px;line-height:1.6}
+button{min-height:42px;background:transparent;color:#fff;border:1px solid #777;padding:9px 12px;border-radius:6px;cursor:pointer;font:inherit;font-weight:700;touch-action:manipulation}
+button:hover{border-color:var(--green)}
+button.on,button.primary{background:var(--green);color:#000;border-color:var(--green)}
+button.gold{background:var(--gold);color:#000;border-color:var(--gold)}
+button.danger{border-color:var(--red);color:var(--red)}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select{width:100%;min-height:42px;background:#000;color:#fff;border:1px solid #444;padding:9px 10px;border-radius:6px;font:inherit;font-size:16px}
+input::placeholder{color:#777}
+.tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;padding:9px 12px;border-bottom:1px solid #222}
+.tabs button{flex:0 0 auto;border-color:var(--green);color:var(--green)}
+.tabs button.on{background:var(--green);color:#000}
+.wrap{max-width:1180px;margin:auto;padding:14px 12px 32px}
+.page{display:none}.page.active{display:block}
+.card{min-width:0;border:1px solid #222;background:var(--panel);padding:14px;margin:10px 0;border-radius:10px;overflow-wrap:anywhere}
+.card.green{border-color:var(--green)}.card.gold{border-color:var(--gold)}
+.big{font-size:34px;font-weight:900;line-height:1.1;overflow-wrap:anywhere}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1 1 150px}
+.row button{flex:0 1 auto}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.kpi{min-width:0;border:1px solid #282828;padding:12px;overflow-wrap:anywhere}
+.kpi b{font-size:20px;color:var(--green)}.kpi span{color:var(--muted);font-size:10px}
+.bar{height:8px;background:#222;border-radius:8px;overflow:hidden}
+.bar i{display:block;width:100%;height:100%;background:var(--green);transition:width .2s}
+.log{max-height:220px;overflow:auto;background:#000;border:1px solid #222;padding:10px;white-space:pre-wrap;overflow-wrap:anywhere}
+pre{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;overflow-x:auto;background:#000;border:1px solid #222;padding:10px;font-size:11px;line-height:1.5;color:var(--green)}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.qgrid button{text-align:left}.qgrid button.used{border-color:#4ade80;color:#4ade80}.qgrid button.no{border-color:var(--red);color:var(--red)}
+.grid81{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;max-width:560px}
+.cell{aspect-ratio:1;min-height:0;padding:0;display:grid;place-items:center;border:1px solid #222;border-radius:2px;font-size:9px;color:#888;background:#0a0a0a;cursor:pointer}
+.cell.on{border-color:var(--green);color:var(--green);background:#00ff8811}
+.cell.center{background:var(--gold);color:#000}
+canvas{display:block;width:100%;max-width:100%;background:#02040a;border:1px solid #222}
+.canvas-scroll{overflow-x:auto;overscroll-behavior-x:contain}
+.step{padding:8px;border:1px solid #222;margin:4px 0}
+.step.on{background:var(--green);color:#000}
+footer{padding:16px;border-top:2px solid var(--green);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+a{color:var(--green)}
+.badge{display:inline-block;border:1px solid #31523c;padding:4px 7px;font-size:10px}
+.badge.on{background:var(--green);color:#000}
+#moveCanvas{position:fixed;inset:0;z-index:40;width:100vw;height:100dvh;border:0;background:#050505;display:none;touch-action:none}
+#moveCanvas.open{display:block}
+.move-ui{position:fixed;z-index:42;top:10px;left:10px;display:none;gap:6px;flex-wrap:wrap}
+.move-ui.open{display:flex}
+.move-ui button{background:#111;color:var(--green);border-color:var(--green)}
+.move-ui button.halt{color:var(--gold);border-color:var(--gold)}
+#moveFocus,#moveLog,#moveClose{position:fixed;z-index:42;display:none}
+#moveFocus.open{display:block;top:10px;right:10px;background:#111;border:1px solid #333;border-radius:8px;padding:10px;text-align:right}
+#moveLog.open{display:block;left:0;right:0;bottom:0;height:130px;overflow:auto;white-space:pre-wrap;background:#000;border-top:1px solid var(--green);padding:9px}
+#moveClose.open{display:block;right:10px;bottom:140px}
+@media(max-width:800px){
+  .grid2,.grid3,.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .wrap{padding-inline:9px}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr}
+  .big{font-size:28px}
+  .card{padding:11px}
+  .tabs button{font-size:11px;padding:8px}
+}
+</style>
+</head>
+<body>
+<header>
+  <b>● NC.OS · INDEX · CTRL / CTRL.LER</b>
+  <span class="mut">TOOLATOR · ROOT · HALT = ZIEL</span>
+  <span style="flex:1"></span>
+  <span class="mut" id="haltLabel">HALT AUS</span>
+  <button id="haltBtn" class="danger" type="button">HALT</button>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Hauptnavigation"></nav>
+
+<div class="wrap">
+
+<section class="page active" data-page="index">
+  <div class="card green">
+    <div class="mut">INDEX · ROOT</div>
+    <div class="big">INDEX</div>
+    <p class="mut">Räume öffnen die jeweiligen Bereiche. HALT hält den Ablauf an.</p>
+    <div class="row" id="indexBtns"></div>
+  </div>
+  <div class="card">
+    <h2>WO BIN ICH?</h2>
+    <div id="where">INDEX · ROOT</div>
+    <div class="log" id="mainLog" aria-live="polite">INDEX bereit.</div>
+  </div>
+  <div class="card">
+    <h2>STATUS</h2>
+    <div class="grid3">
+      <div class="kpi"><span>HALT</span><br><b id="haltState">AUS</b></div>
+      <div class="kpi"><span>INDEX UM</span><br><b id="umState">1</b></div>
+      <div class="kpi"><span>TOOLATOR</span><br><b id="bootState">OFFLINE</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" data-page="spiel">
+  <div class="card gold">
+    <div class="mut">ICH BIN … ? · WAS BIN ICH</div>
+    <div class="big" id="mask">? ? ?</div>
+    <div class="mut" id="roundInfo"></div>
+    <div class="bar"><i id="fill"></i></div>
+  </div>
+  <div class="card"><h2>1 · FRAGEN — JA / NEIN</h2><p class="mut">Jede Frage kostet einen Schritt. Maximal 21 Schritte.</p><div class="qgrid" id="qs"></div></div>
+  <div class="card"><h2>2 · HINWEISE</h2><div id="hints"></div><button id="hintBtn" class="gold" type="button">+ HINWEIS</button></div>
+  <div class="card">
+    <h2>3 · RATEN</h2>
+    <input id="guess" placeholder="Was bin ich? z. B. 81 RAUM">
+    <div class="row" style="margin-top:8px"><button id="guessBtn" class="primary" type="button">ICH BIN …</button><button id="giveUp" type="button">AUFGEBEN / ZEIGEN</button><button id="nextBtn" type="button">NÄCHSTE RUNDE →</button></div>
+    <div id="result" class="mut" style="margin-top:8px" aria-live="polite"></div>
+  </div>
+  <div class="card"><h2>LOG</h2><div class="log" id="gameLog"></div></div>
+  <div class="card mut">Start: 81 Punkte · Frage −3 · Hinweis −3 · falscher Tipp −9 · richtig im ersten Schritt +27.<br>Punkte: <b id="score">81</b> · Richtig: <b id="wins">0</b> · Runden: <b id="rounds">0</b></div>
+</section>
+
+<section class="page" data-page="um">
+  <div class="card gold">
+    <div class="mut">INDEX UM · EINMAL RUM</div>
+    <div class="big" id="umBig">1</div>
+    <p class="mut">1 → 3 → 9 → 81 → 729 → 81 → 9 → 3 → 1</p>
+    <div class="row"><button id="umNext" class="primary" type="button">UM → WEITER</button><button id="umBack" type="button">← ZURÜCK</button><button id="umReset" type="button">RESET 1</button></div>
+  </div>
+  <div class="card"><h2>81 FELDER</h2><div class="grid81" id="gridUM"></div></div>
+</section>
+
+<section class="page" data-page="ctrl">
+  <div class="card green">
+    <div class="mut">CTRL · STEUERUNG</div><div class="big">CTRL</div>
+    <p class="mut">Lokale Demo-Befehle. Save erstellt einen Download; es wird nichts serverseitig gespeichert.</p>
+    <div class="row"><button id="scout" class="primary" type="button">SCOUT</button><button id="build" type="button">BUILD</button><button id="save" type="button">SAVE</button></div>
+    <pre id="ctrlOut">CTRL bereit.</pre>
+  </div>
+</section>
+
+<section class="page" data-page="ler">
+  <div class="card gold">
+    <div class="mut">CTRL.LER · LERNER</div><div class="big">CTRL.LER</div>
+    <p class="mut">Einfache Erklärung der lokalen Demo-Aktionen.</p>
+    <div id="lerOut">CTRL.LER: Ich schaue zu. Drück SCOUT, dann erkläre ich dir, was ich gesehen habe.</div>
+    <div class="row" style="margin-top:10px"><button id="lerAsk" class="gold" type="button">WAS IST DAS HIER?</button></div>
+  </div>
+</section>
+
+<section class="page" data-page="pilot">
+  <div class="grid4">
+    <div class="kpi"><span>PILOT</span><br><b>RIDVAN</b><br><span>rolle pilot · level 6 · Demo</span></div>
+    <div class="kpi"><span>CARRIER</span><br><b>NOAH</b><br><span>WELCOME · WETTER</span></div>
+    <div class="kpi"><span>STATION</span><br><b>START</b><br><span>lokale Demo</span></div>
+    <div class="kpi"><span>ROUTE</span><br><b>master.boot.block</b><br><span>evotaal · evocity · cockpit</span></div>
+  </div>
+  <div class="card green">
+    <h2>RAWATOR · LOKALE 81-FRAME-DEMO</h2>
+    <p class="mut">Vitalitätswerte sind illustrative Zufalls-/Beispielwerte, keine biologischen Messungen.</p>
+    <div class="grid3">
+      <div class="kpi"><span>DEMO-VITAL</span><br><b id="vital">—</b></div>
+      <div class="kpi"><span>CO₂ / H₂O / O₂</span><br><b id="mol">—</b></div>
+      <div class="kpi"><span>HOLO / ANIME / SHUFFLE</span><br><b id="holoCount">—</b></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button id="rawInit" class="primary" type="button">RAWATOR INIT</button><button id="rawProof" type="button">81-FRAME-DEMO</button><button id="rawReset" type="button">RESET</button></div>
+    <pre id="rawOut">RAWATOR bereit. INIT drücken.</pre>
+    <pre id="molOut"></pre>
+    <div class="log" id="shuffleOut"></div>
+  </div>
+</section>
+
+<section class="page" data-page="runtime">
+  <div class="card green"><h2>RUNTIME · LOKALE VISUALISIERUNG</h2><p class="mut">Keine vollständige CPU-/GPU-Messung. Alle dargestellten Zustände sind Demo-Visualisierungen.</p></div>
+  <div class="grid2">
+    <div class="card"><h2>99 ROOT · GRAPH</h2><canvas id="c99" width="480" height="360"></canvas><pre id="out99">Demo bereit.</pre></div>
+    <div class="card"><h2>UHRWERK · 9 ZAHNRÄDER</h2><canvas id="gears" width="900" height="110"></canvas><div id="gearTxt" class="mut"></div><div id="fn" class="mut"></div></div>
+  </div>
+  <div class="card"><h2>ZYLINDER · 9×9</h2><div class="canvas-scroll"><canvas id="zyl" width="900" height="190"></canvas></div><div class="mut" id="zTxt"></div>
+    <div class="row" style="margin-top:8px"><button id="zRun" type="button">⏸ STOP</button><button id="zMove" type="button">◐ MOVE</button><button id="zUnmove" type="button">◑ UNMOVE</button><button id="zUse" type="button">◈ USE</button></div>
+  </div>
+  <div class="card"><h2>GRAPH</h2><canvas id="graph" width="900" height="280"></canvas></div>
+</section>
+
+<section class="page" data-page="cube">
+  <div class="card"><h2>FORM / UNFORM / FALSCH FORM / SEQUENCER</h2>
+    <div class="row" id="modes"></div>
+    <div class="big" style="margin-top:10px">ZAUBERWÜRFEL</div>
+    <div class="mut" id="cubeHint">Demo-Würfel · ziehen zum Drehen</div>
+    <div class="canvas-scroll"><canvas id="cubeCanvas" width="600" height="360"></canvas></div>
+    <div class="row"><button id="startSeq" class="primary" type="button">SEQUENCER STARTEN</button></div>
+    <div class="bar"><i id="cubeFill"></i></div><div id="cubeState" class="mut">FORM · stabil</div>
+    <div id="steps"></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>KEIO TRI · DEMO</h2><pre id="keioOut"></pre></div>
+    <div class="card"><h2>AXIOM · DEMO</h2><button id="pulseBtn" class="primary" type="button">PULSE BERECHNEN</button><pre id="axiomOut"></pre></div>
+  </div>
+</section>
+
+<section class="page" data-page="nc">
+  <div class="card green"><h2>NC · 81 GRID · 9×9</h2><p class="mut">Mitte = Feld 41. Markierungen bleiben nur in dieser Sitzung.</p>
+    <div class="grid81" id="gridNC"></div>
+    <div class="row" style="margin-top:10px"><button id="ncClear" type="button">MARKIERUNGEN LÖSCHEN</button><button id="ncCount" class="primary" type="button">ZÄHLEN</button></div>
+    <div id="ncOut" class="mut">NC bereit.</div>
+  </div>
+  <div class="card"><h2>MOCK-ZEUGEN</h2><p class="mut">Beispielereignisse, keine echte API oder Blockchain.</p>
+    <div class="row"><input id="ncSearch" placeholder="TX, Typ oder Hash"><select id="ncFilter"><option value="">Alle Typen</option><option>BOOT</option><option>UPDATE</option><option>HALT</option><option>RECOVERY</option></select><button id="ncJson" type="button">JSON</button><button id="ncCsv" type="button">CSV</button></div>
+    <div id="ncStatus" class="mut"></div><pre id="ncEvents"></pre>
+  </div>
+</section>
+
+<section class="page" data-page="netz">
+  <div class="card green"><h2>NETZ · VERWEISE</h2><p class="mut">Lokales Netz im Browser-Speicher. IDs werden nicht überschrieben.</p>
+    <div class="row"><input id="netzId" placeholder="Canvas-ID, optional"><input id="netzTitel" placeholder="Titel"><button id="netzAdd" class="primary" type="button">CANVAS ANLEGEN</button></div>
+    <div class="row" style="margin-top:8px"><input id="netzFrom" placeholder="VON Canvas-ID"><input id="netzTo" placeholder="NACH Canvas-ID"><button id="netzLink" type="button">LINK SETZEN</button><button id="netzClear" class="danger" type="button">NETZ LEEREN</button></div>
+    <div class="card"><h3>VERWEISE</h3><div id="netzOut" class="mut">Noch keine Verweise.</div></div>
+    <pre id="netzAll">Noch kein Canvas.</pre>
+  </div>
+  <div class="card"><h2>NET · VOL. 3</h2><p>NET verbindet, zwingt nicht. AF-Logik.</p><a href="https://github.com/iki1uc/NET/tree/main" target="_blank" rel="noopener noreferrer">NET auf GitHub ↗</a></div>
+</section>
+
+<section class="page" data-page="move">
+  <div class="card green"><h2>MOVE DASHBOARD · VISUALISIERT</h2>
+    <p class="mut">Schematischer Ablauf. Tippe auf ein Modul für Fokus; ziehe zum Verschieben und nutze Mausrad oder Pinch zum Zoomen.</p>
+    <div class="row"><button id="moveStart" class="primary" type="button">START MOVE</button><button id="moveError" type="button">ERROR TEST</button><button id="moveHalt" class="gold" type="button">HALT</button><button id="moveSave" type="button">LOG SPEICHERN</button><button id="moveFull" type="button">VOLLANSICHT</button></div>
+    <div id="moveFocusInline" class="mut">FOKUS: —</div>
+    <canvas id="movePreview" width="1100" height="340"></canvas>
+    <div id="moveLogInline" class="log"></div>
+  </div>
+</section>
+
+<section class="page" data-page="toolator">
+  <div class="card green">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+      <h2>TOOLATOR KERNEL · BIOS · OS</h2>
+      <div><span class="badge">BIOS v0.39.0 · Demo</span> <span class="badge" id="toolStatus">○ HALT</span></div>
+    </div>
+    <div class="grid4">
+      <div class="kpi"><span>SUBGRIDS</span><br><b>3×4 · 3×5 · 3×6</b></div>
+      <div class="kpi"><span>SLOTS</span><br><b>18 Demo-Werte</b></div>
+      <div class="kpi"><span>PROTOKOLL</span><br><b>3×4 · 01–09</b></div>
+      <div class="kpi"><span>ZOOM</span><br><b id="zoomLabel">4×</b></div>
+    </div>
+    <div class="row" style="margin:10px 0">
+      <button id="boot" class="primary" type="button">▶ BOOT KERNEL</button>
+      <button class="zoomBtn on" data-zoom="4" type="button">4×</button>
+      <button class="zoomBtn" data-zoom="16" type="button">16×</button>
+      <button class="zoomBtn" data-zoom="64" type="button">64×</button>
+      <button class="zoomBtn" data-zoom="128" type="button">128×</button>
+    </div>
+    <div id="zoomMsg" class="mut">Lokale Kernel-Demo bereit.</div>
+    <div class="canvas-scroll"><canvas id="toolCanvas" width="1000" height="280"></canvas></div>
+    <div class="log" id="toolLog">[SYSTEM] TOOLATOR KERNEL OFFLINE
+[INFO] BOOT KERNEL startet die lokale Demo.</div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2>KERNEL · JAVA-REFERENZ</h2><pre id="javaCode"></pre></div>
+    <div class="card"><h2>BIOS · JAVASCRIPT-REFERENZ</h2><pre id="jsCode"></pre></div>
+  </div>
+</section>
+
+<section class="page" data-page="root">
+  <div class="card green"><h2>ROOT · JA</h2><p class="mut">Lokale Darstellung der gelieferten Root-Notizen.</p>
+    <pre id="rootOut">ROOT bereit.</pre><button id="rootCalc" type="button">ROOT RECHNEN</button>
+  </div>
+  <div class="card"><h2>SEEK · PROTOKOLL</h2><div class="log" id="seekLog">SEEK gestartet. HALT = AUS.</div><button id="seekButton" type="button">SEEK PROTOKOLLIEREN</button></div>
+</section>
+
+<section class="page" data-page="too">
+  <div class="card"><h2>TOOLOMAT · LAUF · CYC.L · WETTER</h2>
+    <h3>LAUF</h3>
+    <div class="row"><label>81 RAUM<input id="raum" type="number" value="81"></label><label>3 LINIE<input id="linie" type="number" value="3"></label><label>9 RICHTUNG<input id="richtung" type="number" value="9"></label><button id="laufBtn" class="primary" type="button">LAUF</button></div><pre id="o1">—</pre>
+    <h3>CYC.L</h3><div class="row"><label>M<input id="m" type="number" value="1.2984" step="0.0001"></label><button id="cyclBtn" type="button">CYC.L</button></div><pre id="o2">—</pre>
+    <h3>WETTER · ILLUSTRATIVE EINGABEN</h3>
+    <div class="grid3" id="weatherInputs"></div>
+    <div class="row"><label>GATE<input id="gate" type="number" value="0.85" step="0.01"></label><button id="weatherBtn" type="button">WETTER BERECHNEN</button></div><pre id="o3">—</pre>
+  </div>
+</section>
+
+<section class="page" data-page="pq">
+  <div class="card"><h2>PQ 3× LIVE · MEDIAN + FAIRNESS</h2><p class="mut">Demoformel. Die angezeigten Scores sind keine extern bestätigten Messwerte.</p>
+    <div id="pqRows"></div><button id="pqCalc" class="primary" type="button">PQ RECHNEN</button><pre id="pqOut">—</pre>
+  </div>
+</section>
+
+<section class="page" data-page="pipeline">
+  <div class="card"><h2>PIPELINE · DEMO</h2><p class="mut">B=(DER+DIE+DAS)/3 · Ebene wird auf 40 begrenzt.</p>
+    <div class="grid4"><label>DER<input id="der" type="number" value="1" step="0.01"></label><label>DIE<input id="die" type="number" value="1" step="0.01"></label><label>DAS<input id="das" type="number" value="1" step="0.01"></label><label>EBENE<input id="ebene" type="number" value="0"></label></div>
+    <div class="row" style="margin-top:8px"><button data-pipe="add" type="button">ADD ON</button><button data-pipe="more" type="button">MORE</button><button data-pipe="wunder" class="gold" type="button">WUNDER → HOME 40</button></div>
+    <pre id="pipeOut">—</pre>
+  </div>
+</section>
+
+<section class="page" data-page="ver">
+  <div class="card"><h2>VER · 3 FENSTER</h2><p class="mut">Drei illustrative Textkarten aus den gelieferten Notizen.</p><div id="verOut"></div><button id="verShow" type="button">VER ZEIGEN</button></div>
+</section>
+
+<section class="page" data-page="domino">
+  <div class="card"><h2>OBSERVER · DOMINO</h2><p class="mut">Lokales Demo. DOMINO zieht einen Beispielstein; BAUER zählt einen Schritt.</p>
+    <div class="row"><button id="dominoBtn" class="primary" type="button">DOMINO ZIEHEN</button><button id="bauerBtn" type="button">BAUER SCHRITT</button></div><pre id="domOut">Noch kein Stein.</pre>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <b>NC.OS · INDEX · CTRL · TOOLATOR · ROOT</b>
+  <span class="mut">Eine Datei · lokale Demo · HALT = ZIEL</span>
+</footer>
+
+<div class="move-ui" id="moveUi">
+  <button id="moveStartFull" type="button">START MOVE</button>
+  <button id="moveErrorFull" type="button">ERROR TEST</button>
+  <button id="moveHaltFull" class="halt" type="button">HALT</button>
+  <button id="moveSaveFull" type="button">LOG SPEICHERN</button>
+</div>
+<div id="moveFocus" class="mut">FOKUS: —</div>
+<div id="moveLog"></div>
+<button id="moveClose" type="button">VOLLANSICHT SCHLIESSEN</button>
+<canvas id="moveCanvas" aria-label="MOVE Dashboard Vollansicht"></canvas>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let HALT=false,umIndex=0,ctrlLog=[],seekLog=[],gameSecret=null,gameSteps=0,gameHints=0,gameOver=false,gameScore=81,gameWins=0,gameRounds=0,gameGuesses=0;
+
+const TABS=[
+ ["index","INDEX"],["spiel","WAS BIN ICH"],["um","INDEX UM"],["ctrl","CTRL"],["ler","CTRL.LER"],
+ ["pilot","RIDVAN / RAWATOR"],["runtime","RUNTIME"],["cube","CUBE"],["nc","NC"],["netz","NETZ"],
+ ["move","MOVE"],["toolator","TOOLATOR"],["root","ROOT"],["too","TOOLOMAT"],["pq","PQ"],
+ ["pipeline","PIPELINE"],["ver","VER"],["domino","DOMINO"]
+];
+$("tabs").innerHTML=TABS.map(([key,label])=>`<button type="button" data-tab="${key}">${label}</button>`).join("");
+
+function writeMain(text){
+  const el=$("mainLog");
+  el.textContent+=(el.textContent?"\n":"")+text;
+  el.scrollTop=el.scrollHeight;
+}
+function setHalt(value){
+  HALT=Boolean(value);
+  $("haltLabel").textContent=HALT?"HALT AKTIV":"HALT AUS";
+  $("haltState").textContent=HALT?"AN":"AUS";
+  $("haltBtn").textContent=HALT?"HALT ✓":"HALT";
+  $("haltBtn").setAttribute("aria-pressed",String(HALT));
+  writeMain(HALT?"HALT AN — neue Abläufe pausiert.":"HALT AUS — weiter.");
+  seek("HALT = "+(HALT?"ZIEL":"AUS"));
+}
+function showPage(key,fromNavigation=false){
+  if(!TABS.some(([id])=>id===key))key="index";
+  if(HALT&&key!=="index"&&key!=="root"){
+    writeMain("HALT aktiv — Navigation gesperrt. Öffne INDEX oder löse HALT.");
+    return;
+  }
+  document.querySelectorAll(".page").forEach(page=>page.classList.toggle("active",page.dataset.page===key));
+  document.querySelectorAll("#tabs button").forEach(button=>button.classList.toggle("on",button.dataset.tab===key));
+  $("where").textContent="INDEX → "+key.toUpperCase();
+  if(fromNavigation)writeMain("GEHEN: INDEX → "+key.toUpperCase());
+  if(key==="runtime")drawRuntime();
+  if(key==="move")drawMovePreview();
+  if(key==="toolator")drawToolator();
+}
+$("tabs").addEventListener("click",event=>{
+  const button=event.target.closest("[data-tab]");
+  if(button)showPage(button.dataset.tab,true);
+});
+$("haltBtn").addEventListener("click",()=>setHalt(!HALT));
+window.addEventListener("hashchange",()=>showPage(location.hash.slice(1)));
+$("tabs").addEventListener("click",event=>{
+  const button=event.target.closest("[data-tab]");
+  if(button)history.replaceState(null,"","#"+button.dataset.tab);
+});
+
+/* INDEX room links */
+const ROOMS=TABS.filter(([key])=>key!=="index").map(([key,label])=>[key,label]);
+$("indexBtns").innerHTML=ROOMS.map(([key,label])=>`<button type="button" data-room="${key}">${label}</button>`).join("");
+$("indexBtns").addEventListener("click",event=>{
+  const button=event.target.closest("[data-room]");
+  if(button)showPage(button.dataset.room,true);
+});
+
+/* INDEX UM */
+const UM_PATH=[1,3,9,81,729,81,9,3,1];
+function umRender(){
+  $("umBig").textContent=UM_PATH[umIndex];
+  $("umState").textContent=UM_PATH[umIndex];
+}
+$("umNext").addEventListener("click",()=>{
+  if(HALT){writeMain("HALT — INDEX UM steht.");return;}
+  umIndex=Math.min(UM_PATH.length-1,umIndex+1);umRender();writeMain("UM: "+UM_PATH[umIndex]);
+});
+$("umBack").addEventListener("click",()=>{umIndex=Math.max(0,umIndex-1);umRender();});
+$("umReset").addEventListener("click",()=>{umIndex=0;umRender();});
+function makeGrid(id){
+  const root=$(id);
+  for(let i=1;i<=81;i++){
+    const cell=document.createElement("button");
+    cell.type="button";cell.className="cell"+(i===41?" center":"");cell.textContent=i;
+    cell.setAttribute("aria-label",`Feld ${i}`);
+    cell.addEventListener("click",()=>{if(i!==41)cell.classList.toggle("on");});
+    root.appendChild(cell);
+  }
+}
+makeGrid("gridUM");makeGrid("gridNC");umRender();
+
+/* CTRL / CTRL.LER */
+function ctrlOutput(text){
+  ctrlLog.push({time:new Date().toISOString(),text});
+  $("ctrlOut").textContent=text;
+  $("lerOut").textContent="CTRL.LER: "+text;
+}
+$("scout").addEventListener("click",()=>ctrlOutput("SCOUT: 18 Bereiche, zwei 81-Felder-Raster und eine 9-stufige INDEX-UM-Demo gefunden. SCOUT hat nur gelesen."));
+$("build").addEventListener("click",()=>{
+  if(HALT){ctrlOutput("BUILD pausiert — HALT ist aktiv.");return;}
+  ctrlOutput("BUILD: Demo-Kette 729 → 243 → 81 → 27 → 9 → 3 → 1 berechnet.");
+});
+$("save").addEventListener("click",()=>{
+  const snapshot={savedAt:new Date().toISOString(),halt:HALT,um:UM_PATH[umIndex],ctrlLog};
+  const ok=download(new Blob([JSON.stringify(snapshot,null,2)],{type:"application/json"}),"ncos-stand.json");
+  ctrlOutput(ok?"SAVE: JSON-Datei wurde zum Download angeboten.":"SAVE: Download konnte nicht gestartet werden.");
+});
+$("lerAsk").addEventListener("click",()=>{
+  $("lerOut").textContent="CTRL.LER: INDEX ist die Raumliste. INDEX UM läuft eine Zahlenfolge ab. CTRL führt lokale Demo-Aktionen aus. SCOUT liest, BUILD rechnet, SAVE lädt einen JSON-Schnappschuss herunter. HALT pausiert Abläufe.";
+});
+
+/* Global logs */
+function seek(message){
+  seekLog.push(`${new Date().toLocaleTimeString("de-DE")} | ${message}`);
+  $("seekLog").textContent=seekLog.slice(-200).join("\n")+"\nHALT = "+(HALT?"ZIEL · blockiert":"AUS");
+}
+$("seekButton").addEventListener("click",()=>seek("INDEX gelesen"));
+function runtimeLog(message){writeMain(message);seek(message);}
+
+/* WAS BIN ICH? */
+const ITEMS=[
+{id:"0 PUNKT",h:["Ich habe keine Ausdehnung.","Ich bin der Anfang vor der Linie.","Ohne mich gibt es keinen Ort."],q:{z:1,g:0,o:1,b:0,m:0,l:0}},
+{id:"3 LINIE",h:["Ich verbinde 2 Punkte.","Ich habe Richtung, aber keine Fläche.","Ich bin der erste Strich."],q:{z:1,g:0,o:0,b:1,m:0,l:0}},
+{id:"9 RICHTUNG",h:["Ich zeige wohin.","Ich bin 3 × 3.","Ich bin Kompass, nicht Weg."],q:{z:1,g:0,o:0,b:1,m:0,l:0}},
+{id:"21 RUN",h:["Ich bin ein Lauf, kein Ort.","Ich habe 21 Schritte.","Ein Laufmaß aus dieser Demo."],q:{z:1,g:0,o:0,b:1,m:0,l:1}},
+{id:"27 GATE",h:["Ich bin ein Tor.","Durch mich geht es von 9 zu 81.","Ich bin 3 hoch 3."],q:{z:1,g:0,o:1,b:0,m:0,l:0}},
+{id:"81 RAUM",h:["Ich bin 9 × 9.","Ich bin Maß, nie Summe.","In mir wohnen 81 Felder."],q:{z:1,g:1,o:1,b:0,m:0,l:0}},
+{id:"99 MITTE",h:["Nah an der Mitte, nicht die Mitte.","Ich bin ein Systembegriff.","Ich halte das Feld zusammen."],q:{z:1,g:1,o:1,b:0,m:1,l:0}},
+{id:"243 ANALYSE",h:["Ich zerlege.","Ich bin 3 hoch 5.","Ohne mich bleibt es eine Behauptung."],q:{z:1,g:1,o:0,b:0,m:0,l:0}},
+{id:"333 WÜRDE",h:["Ich bin kein Befehl.","Ich bleibe, auch wenn alles läuft.","Würde, nicht Macht."],q:{z:1,g:1,o:0,b:0,m:1,l:1}},
+{id:"729 MEMORY",h:["Ich erinnere.","Ich bin 3 hoch 6.","Anker, nicht Leben."],q:{z:1,g:1,o:0,b:0,m:0,l:0}},
+{id:"999 DU",h:["Ich bin nicht das System.","Ich bin das Gegenüber.","Ohne dich kein Gespräch."],q:{z:1,g:1,o:0,b:0,m:1,l:1}},
+{id:"HALT ZIEL",h:["Ich blockiere, ich lösche nicht.","Ich bin Ziel, nicht Ende.","Wenn ich komme, bleibt alles stehen."],q:{z:0,g:0,o:0,b:0,m:1,l:1}},
+{id:"MOVE",h:["Ich bin ein Schritt.","Ich überschreibe nie die Quelle.","Ich werde hier als Ablauf visualisiert."],q:{z:0,g:0,o:0,b:1,m:0,l:1}},
+{id:"ZEUGE",h:["Ich zeichne ein Ereignis auf.","Ein Eintrag garantiert nicht automatisch Wahrheit.","Ohne Daten gibt es keinen Eintrag."],q:{z:0,g:0,o:0,b:0,m:0,l:0}},
+{id:"EL BURRO",h:["Ich trage, ich entscheide nicht.","Ich unterstütze eine Aufgabe.","Diener, nicht Bestimmer."],q:{z:0,g:0,o:0,b:1,m:0,l:1}},
+{id:"MC FLY 81",h:["Ich verbinde 9, 3, 81 und 729.","Warp, nicht Weg.","81 ist mein Maß."],q:{z:0,g:1,o:0,b:1,m:0,l:1}},
+{id:"RIDVAN",h:["Ich bin pilot, level 6.","Carrier NOAH, WELCOME.","Eine Figur in dieser Demo."],q:{z:0,g:1,o:0,b:1,m:1,l:1}},
+{id:"RAWATOR",h:["Ich gebe dem Modell einen Namen.","Es gibt eine lokale 81-Frame-Demo.","Meine Werte sind illustrative Beispieldaten."],q:{z:0,g:1,o:0,b:0,m:0,l:1}}
+];
+const QUESTIONS=[["z","Bin ich eine Zahl?"],["g","Bin ich groß (81+)?"],["o","Bin ich ein Ort / Feld?"],["b","Bin ich Bewegung / Lauf?"],["m","Bin ich Mitte / Haltung?"],["l","Bin ich Leben / lebendig?"]];
+function gameLog(text){$("gameLog").textContent+=text+"\n";$("gameLog").scrollTop=$("gameLog").scrollHeight;}
+function gameUpdate(){
+  $("fill").style.width=Math.max(0,(21-gameSteps)/21*100)+"%";
+  $("score").textContent=gameScore;$("wins").textContent=gameWins;$("rounds").textContent=gameRounds;
+}
+function newGameRound(){
+  gameSecret=ITEMS[Math.floor(Math.random()*ITEMS.length)];
+  gameSteps=0;gameHints=0;gameOver=false;gameGuesses=0;
+  $("mask").textContent=gameSecret.id.replace(/[^\s]/g,"?");
+  $("result").textContent="";$("hints").replaceChildren();$("guess").value="";$("gameLog").textContent="";
+  $("roundInfo").textContent=`RUNDE ${gameRounds+1} · ${ITEMS.length} Möglichkeiten · maximal 21 Schritte`;
+  $("qs").innerHTML=QUESTIONS.map(([key,label])=>`<button type="button" data-q="${key}">${esc(label)}</button>`).join("");
+  $("qs").querySelectorAll("button").forEach(button=>button.addEventListener("click",()=>{
+    if(gameOver||HALT||button.classList.contains("used"))return;
+    gameSteps++;gameScore=Math.max(0,gameScore-3);
+    const yes=Boolean(gameSecret.q[button.dataset.q]);
+    button.classList.add("used");if(!yes)button.classList.add("no");
+    gameLog(`FRAGE: ${button.textContent} → ${yes?"JA":"NEIN"}`);gameUpdate();
+  }));
+  gameLog("NEUE RUNDE — Ich bin etwas aus NC.OS.");
+  gameUpdate();
+}
+$("hintBtn").addEventListener("click",()=>{
+  if(HALT||gameOver||gameHints>=gameSecret.h.length)return;
+  gameSteps++;gameScore=Math.max(0,gameScore-3);
+  const box=document.createElement("div");box.className="card";
+  const strong=document.createElement("b");strong.textContent=`HINWEIS ${gameHints+1}: `;
+  box.append(strong,document.createTextNode(gameSecret.h[gameHints]));
+  $("hints").appendChild(box);gameHints++;gameUpdate();
+});
+$("guessBtn").addEventListener("click",()=>{
+  if(HALT||gameOver)return;
+  const answer=$("guess").value.trim().toUpperCase();if(!answer)return;
+  gameSteps++;gameGuesses++;
+  if(answer===gameSecret.id){
+    const bonus=gameGuesses===1&&gameSteps===1?27:0;
+    gameScore+=bonus;gameWins++;gameRounds++;gameOver=true;
+    $("mask").textContent=gameSecret.id;$("result").textContent=`RICHTIG. Gesucht war ${gameSecret.id}. +${bonus}.`;
+    gameLog(`GERATEN: ${answer} → RICHTIG.`);
+  }else{
+    gameScore=Math.max(0,gameScore-9);$("result").textContent=`FALSCH: ${answer} ist es nicht. −9.`;
+    gameLog(`GERATEN: ${answer} → FALSCH.`);
+  }
+  gameUpdate();
+});
+$("giveUp").addEventListener("click",()=>{
+  if(HALT||gameOver)return;
+  gameOver=true;gameRounds++;$("mask").textContent=gameSecret.id;
+  $("result").textContent=`AUFGEDECKT: ${gameSecret.id}.`;gameLog(`AUFGEGEBEN → ${gameSecret.id}`);gameUpdate();
+});
+$("nextBtn").addEventListener("click",()=>{
+  if(HALT)return;
+  if(!gameOver)gameRounds++;newGameRound();
+});
+$("guess").addEventListener("keydown",event=>{if(event.key==="Enter")$("guessBtn").click();});
+newGameRound();
+
+/* RAWATOR illustrative demo */
+const MOLECULES={water:{name:"Wasser",formula:"H₂O",value:.92},oxygen:{name:"Sauerstoff",formula:"O₂",value:.88},co2:{name:"Kohlenstoffdioxid",formula:"CO₂",value:.81}};
+let rawData=null;
+$("rawInit").addEventListener("click",()=>{
+  const vital=(MOLECULES.water.value+MOLECULES.oxygen.value+MOLECULES.co2.value)/3;
+  rawData={
+    status:"lokale Demo aktiv",demoVital:vital,
+    hologram:Array.from({length:81},(_,i)=>({id:`RAW-${i+1}`})),
+    anime:Array.from({length:81},(_,i)=>({id:`ANIME-${i+1}`,frame:`RAW-${i+1}`,demoVital:vital*(.7+Math.random()*.6)})),
+    shuffle:Array.from({length:81},(_,i)=>({step:i+1,move:["↻","↺","↑","↓","←","→","↗","↘","↖","↙"][i%10],frame:`RAW-${i+1}`,demoVital:vital*(.8+Math.random()*.4)}))
+  };
+  $("vital").textContent=vital.toFixed(3);
+  $("mol").textContent=`CO₂ ${MOLECULES.co2.value} · H₂O ${MOLECULES.water.value} · O₂ ${MOLECULES.oxygen.value}`;
+  $("holoCount").textContent="81 · 81 · 81";
+  $("rawOut").textContent=JSON.stringify({name:"RAWATOR · lokale Demo",status:rawData.status,demoVital:+vital.toFixed(3),frames:81},null,2);
+  $("molOut").textContent=JSON.stringify(Object.values(MOLECULES),null,2);
+  $("shuffleOut").textContent=rawData.shuffle.slice(0,21).map(item=>`${String(item.step).padStart(2,"0")} ${item.move} ${item.frame} demo ${item.demoVital.toFixed(2)}`).join("\n");
+});
+$("rawProof").addEventListener("click",()=>{
+  if(!rawData)$("rawInit").click();
+  $("rawOut").textContent=JSON.stringify({title:"81-FRAME-DEMO",total:rawData.anime.length,aboveDemoThreshold:rawData.anime.filter(item=>item.demoVital>.5).length,frames:rawData.anime.slice(0,9)},null,2);
+});
+$("rawReset").addEventListener("click",()=>{
+  rawData=null;$("vital").textContent="—";$("mol").textContent="—";$("holoCount").textContent="—";
+  $("rawOut").textContent="RAWATOR bereit. INIT drücken.";$("molOut").textContent="";$("shuffleOut").textContent="";
+});
+
+/* Runtime visuals */
+const RUNTIME_ORDER=["·","N","NW","NE","W","E","SW","SE","S"];
+const RUNTIME_PARENT={"·":null,N:"·",NW:"N",NE:"NW",W:"NE",E:"W",SW:"E",SE:"SW",S:"SE"};
+let runtimeTick=0,cylinderRotation=0,cylinderCursor=0,cylinderRunning=true,cylinderAnchor=null;
+const CYLINDER=RUNTIME_ORDER.map(()=>Array(9).fill(0));
+function runtimeStates(){
+  const states={};
+  RUNTIME_ORDER.forEach((key,index)=>{
+    const ready=((runtimeTick+index*7)%6)!==0,parent=RUNTIME_PARENT[key];
+    states[key]={ok:parent===null?ready:Boolean(states[parent]?.ok&&ready)};
+  });
+  return states;
+}
+function drawRuntimeGraph(canvas,label){
+  const ctx=canvas?.getContext("2d");if(!ctx)return;
+  const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,states=runtimeStates(),positions={};
+  ctx.clearRect(0,0,w,h);
+  RUNTIME_ORDER.forEach((key,index)=>{
+    const angle=index/RUNTIME_ORDER.length*Math.PI*2-Math.PI/2,r=Math.min(w,h)*.3+(index%3)*8;
+    positions[key]={x:cx+Math.cos(angle)*r,y:cy+Math.sin(angle)*r};
+  });
+  RUNTIME_ORDER.forEach(key=>{
+    const parent=RUNTIME_PARENT[key];if(!parent)return;
+    ctx.strokeStyle="#34404a";ctx.beginPath();ctx.moveTo(positions[parent].x,positions[parent].y);ctx.lineTo(positions[key].x,positions[key].y);ctx.stroke();
+  });
+  RUNTIME_ORDER.forEach(key=>{
+    const p=positions[key];ctx.fillStyle=states[key].ok?"#00ff88":"#ff3b30";ctx.beginPath();ctx.arc(p.x,p.y,8,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#ddd";ctx.font="11px monospace";ctx.fillText(key,p.x+10,p.y+3);
+  });
+  ctx.fillStyle="#ffd700";ctx.beginPath();ctx.arc(cx,cy,12,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#000";ctx.font="bold 9px monospace";ctx.fillText(label,cx-7,cy+3);
+}
+function drawRuntime(){
+  const states=runtimeStates(),all=RUNTIME_ORDER.every(key=>states[key].ok);
+  drawRuntimeGraph($("c99"),"99");drawRuntimeGraph($("graph"),"99");
+  $("out99").textContent=`Rt(x)=Rt(parent) ∧ R(x)\nL-Vektor ${RUNTIME_ORDER.map(key=>states[key].ok?"⊤":"⊥").join(" ∧ ")}\nHANDOFF ${all?"⊤ → ZIEL":"⊥ → verweigert (Demo)"}\nAlle Zustände in dieser Grafik sind lokal erzeugte Demo-Werte.`;
+  const canvas=$("gears"),ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);
+  RUNTIME_ORDER.forEach((key,index)=>{
+    const x=35+index*(canvas.width-70)/8,y=canvas.height/2;
+    ctx.strokeStyle=states[key].ok?"#00ff88":"#ff3b30";ctx.beginPath();ctx.arc(x,y,15,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle=states[key].ok?"#00ff88":"#888";ctx.font="bold 10px monospace";ctx.textAlign="center";ctx.fillText(key,x,y+3);
+  });
+  $("gearTxt").textContent=`DEMO-Zustände: ${RUNTIME_ORDER.filter(key=>!states[key].ok).join(", ")||"alle aktiv"} · Struktur 1-2-3-2-1`;
+  $("fn").textContent=`f(x)=${RUNTIME_ORDER.map(key=>states[key].ok?"⊤":"⊥").join("")} · keine Hardwaremessung`;
+  drawCylinder();
+}
+function drawCylinder(){
+  const canvas=$("zyl"),ctx=canvas.getContext("2d");ctx.clearRect(0,0,canvas.width,canvas.height);
+  const cw=canvas.width/9;
+  for(let column=0;column<9;column++){
+    const layer=(column+cylinderRotation)%9,x=column*cw+7,w=cw-14;
+    ctx.strokeStyle="#29433a";ctx.strokeRect(x,10,w,canvas.height-42);
+    for(let cell=0;cell<9;cell++){
+      const cx=x+w/6+(cell%3)*w/3,cy=34+Math.floor(cell/3)*40,value=CYLINDER[layer][cell];
+      ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=value===2?"#ffd700":value?"#00ff88":"#263142";ctx.fill();
+    }
+    ctx.fillStyle="#ddd";ctx.font="bold 11px monospace";ctx.textAlign="center";ctx.fillText(RUNTIME_ORDER[layer],x+w/2,canvas.height-14);
+  }
+  $("zTxt").textContent=`Markiert ${CYLINDER.flat().filter(Boolean).length}/81 · Drehung ${cylinderRotation}/9 · Anker ${cylinderAnchor||"—"}`;
+}
+$("zRun").addEventListener("click",()=>{cylinderRunning=!cylinderRunning;$("zRun").textContent=cylinderRunning?"⏸ STOP":"▶ RUN";});
+$("zMove").addEventListener("click",()=>{cylinderRotation=(cylinderRotation+1)%9;drawCylinder();});
+$("zUnmove").addEventListener("click",()=>{cylinderRotation=(cylinderRotation+8)%9;drawCylinder();});
+$("zUse").addEventListener("click",()=>{cylinderAnchor=cylinderAnchor?null:RUNTIME_ORDER[(cylinderRotation+Math.floor(cylinderCursor/9))%9];drawCylinder();});
+setInterval(()=>{
+  runtimeTick++;
+  if(cylinderRunning){
+    const row=Math.floor(cylinderCursor/9),column=cylinderCursor%9;
+    CYLINDER[row][column]=runtimeStates()[RUNTIME_ORDER[row]].ok?(column===4?2:1):0;
+    cylinderCursor=(cylinderCursor+1)%81;
+  }
+  if($("runtime").classList.contains("active"))drawRuntime();
+},500);
+
+/* Cube demo */
+const CUBE_FACES={
+  STABIL:["ANKER A01","AXI.API","393","C9 MB","C81 BRG","EYEMEM","STABIL","TEAM","A01+"],
+  UNFORM:["9","99","999","DASH","BOOM-IDX","DUP-SK","q9","GEO-LOST","UNWILL"],
+  FORMER:["81-PLAN","3^9^81","VULKAN","FORMER","DRUCK","LAVA","MASSN","TETRA","81x"],
+  ANGRIFF:["ATTACK.RUN","run.tmp","start.vec","ATK","MATT","DEF>","FALSCH+","ANGRIFF","VOR"],
+  NIRWANA:["FREEBOOTE","BIO-MAL","GENESIS","NIRWANA","VOID","MAL","BOOTE","FREE","0-SPACE"],
+  CACHE:["GPU-V2","FINAL-CALL","BORG W","CACHE","WURM","HOLE","GPU","CALL","V2"]
+};
+const CUBE_STEPS=[["Ausgang","Demo-Ausgangswerte."],["Abweichung","Beschriftungen verändert."],["Prüfen","Abweichungen geprüft."],["Stabilisieren","Annäherung ans Ziel."],["Brücke","Demo-Zwischenzustand."],["Ziel","Ursprüngliche Werte wiederhergestellt."]];
+let cubeMode="form",cubeStep=0,cubeTimer=null,cubeAngle=0,cubeDragging=false,cubeStartX=0;
+$("modes").innerHTML=[["form","FORM"],["unform","UNFORM"],["falsch","FALSCH FORM"],["sequencer","SEQUENCER"]].map(([mode,label])=>`<button type="button" data-cube="${mode}">${label}</button>`).join("");
+$("steps").innerHTML=CUBE_STEPS.map(([title,text],i)=>`<div class="step" data-step="${i}"><b>${i+1} · ${esc(title)}</b><div class="mut">${esc(text)}</div></div>`).join("");
+function drawCube(){
+  const canvas=$("cubeCanvas"),ctx=canvas.getContext("2d"),cx=canvas.width/2,cy=canvas.height/2;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const faces=Object.keys(CUBE_FACES),display=cubeMode==="unform"?[...faces].reverse():faces;
+  const radius=115,angle=cubeAngle*Math.PI/180;
+  display.forEach((name,index)=>{
+    const a=angle+index/6*Math.PI*2;
+    const x=cx+Math.cos(a)*radius,y=cy+Math.sin(a)*radius*.55;
+    ctx.fillStyle=cubeMode==="falsch"&&index%2?"#351615":"#0c1712";
+    ctx.strokeStyle=cubeMode==="falsch"&&index%2?"#ff3b30":"#00ff88";
+    ctx.fillRect(x-62,y-42,124,84);ctx.strokeRect(x-62,y-42,124,84);
+    ctx.fillStyle="#00ff88";ctx.font="bold 11px monospace";ctx.textAlign="center";ctx.fillText(name,x,y-25);
+    ctx.fillStyle="#ddd";ctx.font="9px monospace";ctx.fillText(CUBE_FACES[name][4],x,y+3);
+    ctx.fillText(`Face ${index+1}`,x,y+25);
+  });
+  $("cubeHint").textContent=`DEMO · ${cubeMode.toUpperCase()} · ziehen zum Drehen`;
+  $("cubeState").textContent=cubeMode==="sequencer"?`SEQUENCER · ${cubeStep}/5 · ${CUBE_STEPS[Math.min(cubeStep,5)][1]}`:`${cubeMode.toUpperCase()} · lokale Visualisierung`;
+  $("cubeFill").style.width=cubeMode==="form"?"100%":cubeMode==="unform"?"15%":cubeMode==="falsch"?"60%":`${Math.min(100,cubeStep*20)}%`;
+  document.querySelectorAll("[data-cube]").forEach(button=>button.classList.toggle("on",button.dataset.cube===cubeMode));
+  document.querySelectorAll("[data-step]").forEach(step=>step.classList.toggle("on",cubeMode==="sequencer"&&Number(step.dataset.step)===cubeStep));
+}
+function stopCube(){if(cubeTimer)clearTimeout(cubeTimer);cubeTimer=null;}
+function stepCube(){
+  if(cubeMode!=="sequencer")return;
+  if(cubeStep>=5)return;
+  cubeTimer=setTimeout(()=>{cubeStep++;drawCube();stepCube();},750);
+}
+$("modes").addEventListener("click",event=>{
+  const button=event.target.closest("[data-cube]");if(!button)return;
+  stopCube();cubeMode=button.dataset.cube;cubeStep=0;
+  if(cubeMode==="sequencer")stepCube();
+  drawCube();
+});
+$("startSeq").addEventListener("click",()=>{stopCube();cubeMode="sequencer";cubeStep=0;drawCube();stepCube();});
+$("cubeCanvas").addEventListener("pointerdown",event=>{cubeDragging=true;cubeStartX=event.clientX;$("cubeCanvas").setPointerCapture(event.pointerId);});
+$("cubeCanvas").addEventListener("pointermove",event=>{if(!cubeDragging)return;cubeAngle+=(event.clientX-cubeStartX)*.5;cubeStartX=event.clientX;drawCube();});
+["pointerup","pointercancel","lostpointercapture"].forEach(name=>$("cubeCanvas").addEventListener(name,()=>cubeDragging=false));
+$("pulseBtn").addEventListener("click",()=>{
+  const mana=.95+Math.random()*.1,aura=3*(.85+Math.random()*.15),kraft=.9+Math.random()*.3;
+  $("axiomOut").textContent=JSON.stringify({mana:+mana.toFixed(4),aura:+aura.toFixed(4),kraft:+kraft.toFixed(4),demoVital:+((mana+aura+kraft)/3).toFixed(4),note:"Illustrative Demo"},null,2);
+});
+$("keioOut").textContent=JSON.stringify({id:"KEIO-△",type:"triangle",origin:0,vector:{a:{x:0,y:1,z:0},b:{x:-1,y:-1,z:0},c:{x:1,y:-1,z:0}},orbit:3,fraction:"1/3",note:"Demo-Daten"},null,2);
+drawCube();
+
+/* NC grid and mock events */
+$("ncClear").addEventListener("click",()=>{
+  document.querySelectorAll("#gridNC .cell.on").forEach(cell=>cell.classList.remove("on"));
+  $("ncOut").textContent="NC: Markierungen gelöscht.";
+});
+$("ncCount").addEventListener("click",()=>{
+  $("ncOut").textContent=`NC: ${document.querySelectorAll("#gridNC .cell.on").length} von 81 Feldern markiert · Feld 41 ist fest.`;
+});
+const MOCK_EVENTS=Array.from({length:24},(_,i)=>{
+  const tx=142-i,type=["BOOT","UPDATE","HALT","RECOVERY"][i%4];
+  return{tx,type,hash:`nc_${(tx*7919).toString(16).padStart(12,"0")}`,time:new Date(Date.now()-i*60000).toISOString()};
+});
+function filteredEvents(){
+  const query=$("ncSearch").value.trim().toLowerCase(),type=$("ncFilter").value;
+  return MOCK_EVENTS.filter(item=>(!type||item.type===type)&&`${item.tx} ${item.type} ${item.hash}`.toLowerCase().includes(query));
+}
+function renderEvents(){
+  const events=filteredEvents();$("ncStatus").textContent=`${events.length} lokale Mock-Einträge`;
+  $("ncEvents").textContent=events.map(item=>`TX ${item.tx} · ${item.type} · ${item.hash}`).join("\n")||"Keine Treffer.";
+}
+$("ncSearch").addEventListener("input",renderEvents);$("ncFilter").addEventListener("change",renderEvents);
+$("ncJson").addEventListener("click",()=>download(new Blob([JSON.stringify({source:"local-demo",events:filteredEvents()},null,2)],{type:"application/json"}),"nc-mock-events.json"));
+$("ncCsv").addEventListener("click",()=>{
+  const csv="\uFEFFtx;type;hash;time\r\n"+filteredEvents().map(item=>[item.tx,item.type,item.hash,item.time].join(";")).join("\r\n");
+  download(new Blob([csv],{type:"text/csv;charset=utf-8"}),"nc-mock-events.csv");
+});
+renderEvents();
+
+/* Downloads */
+function download(blob,name){
+  let url;
+  try{
+    url=URL.createObjectURL(blob);
+    const link=document.createElement("a");link.href=url;link.download=name;link.click();
+    return true;
+  }catch(error){console.error(error);return false;}
+  finally{if(url)setTimeout(()=>URL.revokeObjectURL(url),1000);}
+}
+
+/* Local NETZ */
+let NETZ={nodes:{},links:[]};
+try{
+  const stored=JSON.parse(localStorage.getItem("ncos-netz-v1")||"null");
+  if(stored&&stored.nodes&&Array.isArray(stored.links))NETZ=stored;
+}catch{NETZ={nodes:{},links:[]};}
+function saveNetz(){try{localStorage.setItem("ncos-netz-v1",JSON.stringify(NETZ));}catch(error){console.warn("NETZ-Speichern fehlgeschlagen",error);}}
+function nextCanvasId(){
+  let number=1,id;
+  do{id=`CANVAS-${String(number++).padStart(4,"0")}`;}while(Object.hasOwn(NETZ.nodes,id));
+  return id;
+}
+function renderNetz(){
+  const ids=Object.keys(NETZ.nodes);
+  $("netzAll").textContent=ids.length
+    ?ids.map(id=>`${id} · ${NETZ.nodes[id].title||"ohne Titel"} · ${NETZ.links.filter(link=>link.from===id||link.to===id).length} Links`).join("\n")+"\n\nLINKS:\n"+(NETZ.links.map(link=>`${link.from} → ${link.to}`).join("\n")||"keine")
+    :"Noch kein Canvas.";
+  const current=$("netzId").value.trim().toUpperCase()||ids.at(-1)||"";
+  const links=NETZ.links.filter(link=>link.from===current||link.to===current);
+  $("netzOut").textContent=!current?"Noch keine Verweise.":links.length?links.map(link=>`${link.from} → ${link.to}`).join("\n"):"Für diesen Canvas gibt es keine Verweise.";
+}
+$("netzAdd").addEventListener("click",()=>{
+  const id=$("netzId").value.trim().toUpperCase()||nextCanvasId();
+  if(Object.hasOwn(NETZ.nodes,id)){alert(`${id} existiert bereits; nichts wurde überschrieben.`);return;}
+  const previous=Object.keys(NETZ.nodes);
+  NETZ.nodes[id]={title:$("netzTitel").value.trim()||"ohne Titel",createdAt:new Date().toISOString()};
+  if(previous.length)NETZ.links.push({from:previous.at(-1),to:id,auto:true});
+  saveNetz();$("netzId").value=id;$("netzTitel").value="";renderNetz();
+});
+$("netzLink").addEventListener("click",()=>{
+  const from=$("netzFrom").value.trim().toUpperCase(),to=$("netzTo").value.trim().toUpperCase();
+  if(!from||!to){alert("VON und NACH ausfüllen.");return;}
+  if(!Object.hasOwn(NETZ.nodes,from)||!Object.hasOwn(NETZ.nodes,to)){alert("Beide IDs müssen existieren.");return;}
+  if(NETZ.links.some(link=>link.from===from&&link.to===to)){alert("Der Link existiert bereits.");return;}
+  NETZ.links.push({from,to,auto:false});saveNetz();renderNetz();
+});
+$("netzClear").addEventListener("click",()=>{
+  if(prompt("Lokales Netz wirklich löschen? Tippe JA:")==="JA"){NETZ={nodes:{},links:[]};saveNetz();renderNetz();}
+});
+$("netzId").addEventListener("input",renderNetz);renderNetz();
+
+/* MOVE Dashboard */
+const moveCanvas=$("moveCanvas"),moveCtx=moveCanvas.getContext("2d");
+const MOVE_NODES=[
+  {id:"WORK3",x:120,y:180,state:"READY"},{id:"WORK9",x:310,y:180,state:"READY"},
+  {id:"WORK81",x:500,y:180,state:"READY"},{id:"WORK243",x:690,y:180,state:"READY"},
+  {id:"WORK729",x:880,y:180,state:"READY"},{id:"WORK9BACK",x:1070,y:180,state:"READY"}
+];
+const MOVE_MAP=Object.fromEntries(MOVE_NODES.map(node=>[node.id,node]));
+const MOVE_LINKS=[["WORK3","WORK9"],["WORK9","WORK81"],["WORK81","WORK243"],["WORK243","WORK729"],["WORK729","WORK9BACK"]];
+const MOVE_COLORS={READY:"#666",MOVING:"#00ccff",COMPLETE:"#00ff66",ERROR:"#ff3333",RETRY:"#ff88aa"};
+let movePackets=[],moveFocusId=null,moveScale=1,moveX=0,moveY=0,moveHalted=false,moveLogText="",moveToken=0;
+function moveLog(message){
+  const line=`[${new Date().toLocaleTimeString("de-DE")}] ${message}`;
+  moveLogText=line+"\n"+moveLogText;
+  $("moveLog").textContent=moveLogText;$("moveLogInline").textContent=moveLogText;
+}
+function renderMoveScene(ctx,width,height,transform){
+  ctx.clearRect(0,0,width,height);ctx.save();ctx.translate(transform.x,transform.y);ctx.scale(transform.scale,transform.scale);
+  ctx.font="12px monospace";ctx.textAlign="center";
+  MOVE_LINKS.forEach(([from,to])=>{const a=MOVE_MAP[from],b=MOVE_MAP[to];ctx.strokeStyle="#333";ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();});
+  for(const packet of movePackets){
+    packet.progress=Math.min(1,packet.progress+packet.speed);
+    packet.x=packet.sx+(packet.tx-packet.sx)*packet.progress;packet.y=packet.sy+(packet.ty-packet.sy)*packet.progress;
+    ctx.fillStyle="#00ffff";ctx.beginPath();ctx.arc(packet.x,packet.y,7,0,Math.PI*2);ctx.fill();
+  }
+  movePackets=movePackets.filter(packet=>packet.progress<1);
+  MOVE_NODES.forEach(node=>{
+    ctx.fillStyle=MOVE_COLORS[node.state]||"#666";ctx.beginPath();ctx.arc(node.x,node.y,29,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#fff";ctx.stroke();ctx.fillStyle="#fff";ctx.fillText(node.id,node.x,node.y+47);ctx.fillText(node.state,node.x,node.y-39);
+    if(moveFocusId===node.id){ctx.strokeStyle="#ffd700";ctx.lineWidth=3;ctx.beginPath();ctx.arc(node.x,node.y,41,0,Math.PI*2);ctx.stroke();ctx.lineWidth=1;}
+  });
+  ctx.restore();
+}
+function drawMovePreview(){
+  const canvas=$("movePreview"),ctx=canvas.getContext("2d"),scale=Math.min(canvas.width/1200,canvas.height/320);
+  renderMoveScene(ctx,canvas.width,canvas.height,{x:(canvas.width-1200*scale)/2,y:(canvas.height-320*scale)/2,scale});
+}
+function resizeMove(){
+  const ratio=window.devicePixelRatio||1;
+  moveCanvas.width=Math.round(innerWidth*ratio);moveCanvas.height=Math.round(innerHeight*ratio);
+  moveCtx.setTransform(ratio,0,0,ratio,0,0);
+}
+function drawMoveFull(){renderMoveScene(moveCtx,innerWidth,innerHeight,{x:moveX,y:moveY,scale:moveScale});}
+function newPacket(from,to){
+  const a=MOVE_MAP[from],b=MOVE_MAP[to];movePackets.push({sx:a.x,sy:a.y,tx:b.x,ty:b.y,x:a.x,y:a.y,progress:0,speed:.018});
+}
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function moveFlow(){
+  const token=++moveToken;moveHalted=false;
+  for(let i=0;i<MOVE_NODES.length;i++){
+    if(moveHalted||token!==moveToken){moveLog("HALT = ZIEL");return;}
+    const node=MOVE_NODES[i];node.state="MOVING";moveLog(node.id+" MOVING");
+    if(i<MOVE_NODES.length-1)newPacket(node.id,MOVE_NODES[i+1].id);
+    await delay(650);
+    if(moveHalted||token!==moveToken){moveLog("HALT = ZIEL");return;}
+    node.state="COMPLETE";
+  }
+  moveLog("MOVE COMPLETE");
+}
+async function moveErrorFlow(){
+  const token=++moveToken;moveHalted=false;const node=MOVE_MAP.WORK243;
+  node.state="ERROR";moveLog("WORK243 ERROR");await delay(600);
+  for(let i=1;i<=3;i++){
+    if(moveHalted||token!==moveToken){moveLog("HALT = ZIEL");return;}
+    node.state="RETRY";moveLog("RETRY #"+i);await delay(350);
+    if(moveHalted||token!==moveToken){moveLog("HALT = ZIEL");return;}
+    node.state="MOVING";await delay(350);
+  }
+  node.state="COMPLETE";moveLog("RECOVERED");
+}
+function haltMove(){moveHalted=true;moveToken++;moveLog("HALT geklickt — HALT = ZIEL");}
+function saveMove(){download(new Blob([moveLogText],{type:"text/plain;charset=utf-8"}),"MOVE-LOG.txt");}
+function setMoveFocus(node){
+  moveFocusId=node?.id||null;
+  const html=node?`FOKUS: ${esc(node.id)}<br>STATE: ${esc(node.state)}<br>TAP leer = Fokus löschen`:"FOKUS: —<br>TAP Modul = Fokus";
+  $("moveFocus").innerHTML=html;$("moveFocusInline").textContent=node?`FOKUS: ${node.id} · ${node.state}`:"FOKUS: —";
+}
+function openMove(){resizeMove();$("moveCanvas").classList.add("open");$("moveUi").classList.add("open");$("moveFocus").classList.add("open");$("moveLog").classList.add("open");$("moveClose").classList.add("open");}
+function closeMove(){["moveCanvas","moveUi","moveFocus","moveLog","moveClose"].forEach(id=>$(id).classList.remove("open"));}
+["moveStart","moveStartFull"].forEach(id=>$(id).addEventListener("click",moveFlow));
+["moveError","moveErrorFull"].forEach(id=>$(id).addEventListener("click",moveErrorFlow));
+["moveHalt","moveHaltFull"].forEach(id=>$(id).addEventListener("click",haltMove));
+["moveSave","moveSaveFull"].forEach(id=>$(id).addEventListener("click",saveMove));
+$("moveFull").addEventListener("click",openMove);$("moveClose").addEventListener("click",closeMove);
+let pointers=new Map(),pinchDistance=0,panStart=null;
+function moveWorld(x,y){return{x:(x-moveX)/moveScale,y:(y-moveY)/moveScale};}
+moveCanvas.addEventListener("pointerdown",event=>{
+  moveCanvas.setPointerCapture(event.pointerId);pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  if(pointers.size===1)panStart={x:event.clientX,y:event.clientY,ox:moveX,oy:moveY};
+});
+moveCanvas.addEventListener("pointermove",event=>{
+  if(!pointers.has(event.pointerId))return;
+  pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  if(pointers.size===1&&panStart){moveX=panStart.ox+event.clientX-panStart.x;moveY=panStart.oy+event.clientY-panStart.y;}
+  if(pointers.size===2){
+    const points=[...pointers.values()],distance=Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y);
+    if(pinchDistance)moveScale=Math.max(.35,Math.min(3,moveScale*distance/pinchDistance));
+    pinchDistance=distance;
+  }
+});
+function pointerEnd(event){
+  const point=pointers.get(event.pointerId);pointers.delete(event.pointerId);
+  if(pointers.size<2)pinchDistance=0;
+  if(!point)return;
+  const world=moveWorld(point.x,point.y),node=MOVE_NODES.find(item=>Math.hypot(world.x-item.x,world.y-item.y)<40);
+  if(node)setMoveFocus(node);else if(!pointers.size)setMoveFocus(null);
+}
+moveCanvas.addEventListener("pointerup",pointerEnd);moveCanvas.addEventListener("pointercancel",pointerEnd);
+moveCanvas.addEventListener("wheel",event=>{
+  event.preventDefault();const before=moveWorld(event.clientX,event.clientY);
+  moveScale=Math.max(.35,Math.min(3,moveScale*(event.deltaY<0?1.1:.9)));
+  moveX=event.clientX-before.x*moveScale;moveY=event.clientY-before.y*moveScale;
+},{passive:false});
+window.addEventListener("resize",()=>{resizeMove();drawMovePreview();});
+function animateMove(){
+  if($("moveCanvas").classList.contains("open"))drawMoveFull();
+  if($("move").classList.contains("active"))drawMovePreview();
+  requestAnimationFrame(animateMove);
+}
+moveLog("MOVE Dashboard bereit — HALT, Fokus, Pan und Zoom verfügbar.");
+animateMove();
+
+/* TOOLATOR kernel visual and boot log */
+const SLOTS=[
+[2,.02],[3,.05],[5,.11],[7,.18],[11,.27],[13,.33],[17,.41],[19,.44],[23,.52],
+[29,.61],[31,.64],[37,.71],[41,.76],[43,.79],[47,.83],[53,.89],[59,.94],[61,.97]
+];
+const PROTOCOL=[["01","02","03","04"],["05","06","07","08"],["09","01","03","04"]];
+const OPERATORS={"01":"AN","02":"SC","03":"NV","04":"ST","05":"SG","06":"HX","07":"MX","08":"IQ","09":"AL"};
+let toolZoom=4;
+$("javaCode").textContent=`public class ToolatorKernel {
+  static final int AXIS_MAIN=12, AXIS_EICH=1, AXIS_GEN=1;
+  static final int AXIS_TOTAL=14;
+  public Axis rowColToAxis(int row,int col,double spacing,
+                           int cols,int rows) {
+    col=Math.min(col,cols); row=Math.min(row,rows);
+    double x=(col-1)*spacing, y=(row-1)*spacing;
+    int index=(row-1)*cols+col;
+    double angle=index*360.0/(rows*cols);
+    return new Axis(row,col,x,y,index,angle);
+  }
+  public double armRadius(double dev,double base) {
+    return base*(1.0-dev*0.88)*Math.exp(-dev*0.15);
+  }
+  public double closureAngle() { return 360.0; }
+}`;
+$("jsCode").textContent=`// toolator-bios.mjs · reine lokale Demo-Funktionen
+export const SUBGRIDS={
+  "3x4":{rows:3,cols:4},
+  "3x5":{rows:3,cols:5},
+  "3x6":{rows:3,cols:6}
+};
+export const PROTOCOL_3x4=${JSON.stringify(PROTOCOL)};
+export const OPERATORS=${JSON.stringify(OPERATORS)};
+export const ZOOM=[4,16,64,128];
+export const AXES={main:12,eich:1,gen:1,total:14};
+export function rowColToAxis(row,col,spacing,cols,rows) {
+  col=Math.min(col,cols); row=Math.min(row,rows);
+  const x=(col-1)*spacing, y=(row-1)*spacing;
+  const index=(row-1)*cols+col;
+  return {row,col,x,y,index,angle:index*360/(rows*cols)};
+}
+export function armRadius(dev,base=100) {
+  return base*(1-dev*.88)*Math.exp(-dev*.15);
+}`;
+function drawToolator(){
+  const canvas=$("toolCanvas"),ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#00ff41";ctx.font="11px monospace";
+  ctx.fillText("3×3 ROTATION · 360°",12,18);
+  const cx=150,cy=145,radius=67;
+  ctx.strokeStyle="rgba(0,255,65,.2)";
+  [radius,radius*.66,radius*.33].forEach(r=>{ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();});
+  for(let i=0;i<9;i++){
+    const angle=(i*40-90)*Math.PI/180,r=radius*(.42+(i%3)*.18),x=cx+Math.cos(angle)*r,y=cy+Math.sin(angle)*r;
+    ctx.fillStyle=`rgba(0,255,65,${.2+SLOTS[i][1]})`;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#aaffaa";ctx.fillText(String(SLOTS[i][0]),x+5,y+3);
+  }
+  const px=340,py=58,size=42;ctx.fillStyle="#00ff41";ctx.fillText("PROTOCOL 3×4",px,22);
+  PROTOCOL.forEach((row,r)=>row.forEach((code,c)=>{
+    const x=px+c*size,y=py+r*size;ctx.strokeStyle="#31523c";ctx.strokeRect(x,y,size,size);
+    ctx.fillStyle="rgba(0,255,65,.18)";ctx.fillRect(x+1,y+1,size-2,size-2);
+    ctx.fillStyle="#aaffaa";ctx.font="10px monospace";ctx.fillText(code,x+8,y+17);ctx.fillText(OPERATORS[code],x+8,y+32);
+  }));
+  const gx=560,gy=55;ctx.fillStyle="#00ff41";ctx.font="11px monospace";ctx.fillText("PROJECTION GRID · 39 DEMO-ZELLEN",gx,22);
+  for(let i=0;i<39;i++){
+    const x=gx+(i%13)*22,y=gy+Math.floor(i/13)*25;
+    ctx.strokeStyle="rgba(0,255,65,.4)";ctx.strokeRect(x,y,18,19);
+    if(i<SLOTS.length){ctx.fillStyle="#aaffaa";ctx.font="8px monospace";ctx.fillText(String(SLOTS[i][0]),x+3,y+12);}
+  }
+  ctx.fillStyle="#5f5";ctx.font="10px monospace";ctx.fillText(`ZOOM ${toolZoom}× · Visualisierung`,gx,gy+92);
+}
+document.querySelectorAll(".zoomBtn").forEach(button=>button.addEventListener("click",()=>{
+  toolZoom=Number(button.dataset.zoom);$("zoomLabel").textContent=toolZoom+"×";
+  document.querySelectorAll(".zoomBtn").forEach(item=>item.classList.toggle("on",item===button));
+  $("zoomMsg").textContent=`Lokale Zoom-Demo: ${toolZoom}×. Keine externe Auflösung wird verändert.`;
+  drawToolator();
+}));
+$("boot").addEventListener("click",()=>{
+  if(HALT){$("toolLog").textContent+="\n[BIOS] BOOT pausiert — HALT ist aktiv.";return;}
+  const lines=[
+    `[BIOS] TOOLATOR BIOS POST @ ${new Date().toISOString()}`,
+    "[BIOS] AXIS CHECK · MAIN 12 · EICH 1 · GEN 1 · TOTAL 14",
+    "[KERNEL] Subgrids 3×4 · 3×5 · 3×6 geladen (Demo)",
+    "[KERNEL] 18 illustrative Slot-Werte geladen",
+    "[OS] Protocol 3×4 geladen",
+    `[OS] Zoom-Demo: ${toolZoom}×`,
+    "[KERNEL] Demo-Berechnung: row=2 col=5 spacing=16 cols=6 rows=3",
+    "[KERNEL] x=64 y=16 index=11 angle=220°",
+    "[OS] Lokale Visualisierung bereit · keine Hardwaremessung"
+  ];
+  $("toolLog").textContent=lines.join("\n");$("toolStatus").textContent="● RUNNING";$("toolStatus").classList.add("on");
+  $("bootState").textContent="RUNNING";drawToolator();
+});
+drawToolator();
+
+/* ROOT */
+function rootCalculate(){
+  $("rootOut").textContent=[
+    "ROOT JA",
+    "01 H · 02 B · 03 T",
+    "04 Q · 05 D · 06 F — 180° gedreht (Notiz)",
+    "6 = Man.n · 9 = Mann · 6+9 = Man.n",
+    "3e = 3×3 · 9e = 3e gepackt · 81 → 9 → 3",
+    "720° = Z iki2li · in ni · nu ni",
+    "° $ % in einer Datei · 999 99 9 99 999",
+    "HALT = ZIEL"
+  ].join("\n");
+  seek("ROOT gerechnet");
+}
+$("rootCalc").addEventListener("click",rootCalculate);
+rootCalculate();
+
+/* TOOLOMAT calculations */
+const weatherFields=[["atom",.5],["wasser",.7],["co2",.42],["sauer",.8],["blitz",.3],["donner",.3],["wolke",.5],["atmo",.6]];
+$("weatherInputs").innerHTML=weatherFields.map(([id,value])=>`<label>${id.toUpperCase()}<input id="${id}" type="number" value="${value}" step=".01"></label>`).join("");
+function numberValue(id){const value=Number($(id).value);return Number.isFinite(value)?value:0;}
+function cacheFor(total){return total<99?{value:27,name:"GATE"}:total<243?{value:243,name:"ANALYSE"}:total<729?{value:729,name:"MEMORY"}:{value:999,name:"DU"};}
+$("laufBtn").addEventListener("click",()=>{
+  if(HALT)return;
+  const a=numberValue("raum"),b=numberValue("linie"),c=numberValue("richtung"),sum=a+b+c,result=cacheFor(sum);
+  $("o1").textContent=`LAUF · DEMO\n81=${a} · 3=${b} · 9=${c}\nSUMME=${sum} · CACHE=${result.value} ${result.name}\nEYE=sehen · BRAIN=halten · CORE=prüfen · CROWN=vereinigen\nHALT=ZIEL`;
+  seek("TOOLOMAT LAUF");
+});
+$("cyclBtn").addEventListener("click",()=>{
+  if(HALT)return;const value=numberValue("m");
+  $("o2").textContent=`CYC.L · DEMO\nM=${value}\nPLUS=+${value} · MINUS=${-value} · BETRAG=${Math.abs(value)}`;
+  seek("TOOLOMAT CYC.L");
+});
+$("weatherBtn").addEventListener("click",()=>{
+  if(HALT)return;
+  const values=weatherFields.map(([id])=>numberValue(id)),gate=numberValue("gate");
+  const sum=values.reduce((total,value)=>total+value,0),omega=sum*gate;
+  $("o3").textContent=`WETTER · DEMO\nSUMME=${sum.toFixed(4)} · GATE=${gate}\nOMEGA=SUMME × GATE=${omega.toFixed(4)}\nOMEGA × 19683=${(omega*19683).toFixed(2)}\nKeine realen Wetterdaten.`;
+  seek("TOOLOMAT WETTER");
+});
+
+/* PQ demo */
+let PQ=[
+  {H:34,B:4,T:62,open:true},
+  {H:41,B:6,T:55,open:true},
+  {H:38,B:5,T:71,open:false}
+];
+function renderPQ(){
+  $("pqRows").innerHTML=PQ.map((item,index)=>`<div class="card">
+    <b>LIVE ${index+1}</b>
+    <div class="grid4">
+      <label>H<input data-pq="${index}" data-field="H" type="number" value="${item.H}"></label>
+      <label>B<input data-pq="${index}" data-field="B" type="number" value="${item.B}"></label>
+      <label>T<input data-pq="${index}" data-field="T" type="number" value="${item.T}"></label>
+      <button type="button" data-eye="${index}" class="${item.open?"primary":""}">${item.open?"OPEN":"CLOSE"}</button>
+    </div>
+  </div>`).join("");
+}
+$("pqRows").addEventListener("input",event=>{
+  const input=event.target.closest("[data-pq]");if(!input)return;
+  PQ[Number(input.dataset.pq)][input.dataset.field]=Number(input.value)||0;
+});
+$("pqRows").addEventListener("click",event=>{
+  const button=event.target.closest("[data-eye]");if(!button)return;
+  const item=PQ[Number(button.dataset.eye)];item.open=!item.open;renderPQ();
+});
+function median(values){return [...values].sort((a,b)=>a-b)[Math.floor(values.length/2)];}
+$("pqCalc").addEventListener("click",()=>{
+  if(HALT)return;
+  const h=median(PQ.map(item=>item.H)),b=median(PQ.map(item=>item.B)),t=median(PQ.map(item=>item.T));
+  const spreads=PQ.map(item=>((item.H-h)**2+(item.B-b)**2+(item.T-t)**2)/3);
+  const fairness=Math.max(0,Math.min(100,Math.round(100-spreads.reduce((a,v)=>a+v,0)/PQ.length*1.5)));
+  const open=PQ.filter(item=>item.open).length,bonus=open===3?1:open===2?.8:open===1?.5:.2;
+  const level=Math.floor(h/81*50+b/9*30+t/100*20+fairness/100*10);
+  const skill=Math.floor(level*(fairness/100)*bonus*2.5+level*.3);
+  $("pqOut").textContent=`PQ 3× · DEMO\nMEDIAN H=${h} · B=${b} · T=${t}\nFAIRNESS=${fairness}% · OPEN=${open}/3 · BONUS=${bonus}\nLVL=${level} · SKILL=${skill}\nROOT ${fairness>60&&level>10?"JA · DEMO-FREIGABE":"NEIN · wartet"}\nPQ je LIVE: ${PQ.map(item=>(item.H*(item.B/9)*(item.T/100)).toFixed(2)).join(" · ")}`;
+  seek("PQ 3× Demo gerechnet");
+});
+renderPQ();
+
+/* PIPELINE */
+document.querySelectorAll("[data-pipe]").forEach(button=>button.addEventListener("click",()=>{
+  if(HALT)return;
+  let level=Math.max(0,numberValue("ebene"));
+  const average=(numberValue("der")+numberValue("die")+numberValue("das"))/3;
+  if(button.dataset.pipe==="add"||button.dataset.pipe==="more")level++;
+  if(button.dataset.pipe==="wunder"){level=40;$("der").value=40;}
+  level=Math.min(40,level);$("ebene").value=level;
+  $("pipeOut").textContent=`PIPELINE · DEMO\nAktion: ${button.dataset.pipe.toUpperCase()}\nB=(DER+DIE+DAS)/3 = ${average.toFixed(3)}\nL=${average===1?0:1}\nEbene=${level} · HOME 40\n${average===1?"HALT=ZIEL":"HALT=OFFEN"}`;
+  seek("PIPELINE "+button.dataset.pipe);
+}));
+
+/* VER */
+const VER_DATA=[
+  ["Bild 1 · INDEX.HTML","14 von 15","Diamant + CO₂ + H₂O + Mainboard 729"],
+  ["Bild 2 · DREI FENSTER","9 · 18 · 27 · 3×729=756","Regel + HTML + JS = KIND"],
+  ["Bild 3 · NANO-WÜRFEL","HÄ 0.50 · ÄH 0.50","Q1 · Q2 · Q3 · Q4 · 0,777"]
+];
+$("verShow").addEventListener("click",()=>{
+  $("verOut").replaceChildren();
+  VER_DATA.forEach(([title,value,kernel])=>{
+    const pre=document.createElement("pre");pre.textContent=`${title}\nWert: ${value}\nKern: ${kernel}`;$("verOut").appendChild(pre);
+  });
+  seek("VER 3 Fenster gezeigt");
+});
+
+/* DOMINO */
+const DOMINO_STONES=[[6,6],[5,3],[4,4],[2,6],[1,5],[0,3]];
+let dominoCount=0,bauerPosition=0;
+$("dominoBtn").addEventListener("click",()=>{
+  if(HALT)return;
+  const stone=DOMINO_STONES[dominoCount%DOMINO_STONES.length];dominoCount++;
+  $("domOut").textContent=`DOMINO · DEMO-ZUG ${dominoCount}\nStein [${stone[0]}|${stone[1]}]\n81er: 3/81 aktiv · Seed 1·3·6\nLokal protokolliert; nichts gelöscht.`;
+  seek(`DOMINO Stein ${stone[0]}|${stone[1]}`);
+});
+$("bauerBtn").addEventListener("click",()=>{
+  if(HALT){$("domOut").textContent="BAUER pausiert — HALT = ZIEL";return;}
+  bauerPosition++;
+  $("domOut").textContent=`BAUER + GATE · DEMO\nSchritt ${bauerPosition} · Gate PASS\nSEEK: Schritt protokolliert.`;
+  seek("BAUER Schritt "+bauerPosition);
+});
+
+/* Initial state */
+showPage(location.hash.slice(1)||"index");
+</script>
+</body>
+</html>
