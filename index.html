@@ -1,557 +1,858 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#080b12">
-<title>MOVE ROOT · WORK81</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#04070e">
+<title>NC.OS · SLIM · ZOOM-EXPLORER</title>
+
 <style>
-:root{
-  color-scheme:dark;
-  --bg:#080b12;
-  --panel:#111827;
-  --panel-2:#0c1220;
-  --border:#293449;
-  --text:#e7edf5;
-  --muted:#91a0b5;
-  --gold:#ffcc44;
-  --green:#7ce0a8;
-  --red:#ff647c;
-  --blue:#6bc8ff;
-}
 *{box-sizing:border-box}
-html,body{min-height:100%;margin:0}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font:14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
-  padding:16px;
-}
-button{font:inherit}
-.app{width:min(1100px,100%);margin:0 auto}
-header{margin-bottom:14px}
-h1{margin:0;color:var(--gold);font-size:clamp(18px,4vw,25px);letter-spacing:1px}
-.subtitle{margin:5px 0 0;color:var(--muted);font-size:12px}
-.panel{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px;
-  margin:10px 0;
-}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap}
-button{
-  min-height:48px;
-  padding:10px 15px;
-  border:1px solid var(--border);
-  border-radius:9px;
-  background:#182235;
-  color:var(--text);
-  cursor:pointer;
-  touch-action:manipulation;
-}
-button:hover{border-color:var(--gold)}
-button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-button.primary{background:var(--gold);color:#111;font-weight:800;border-color:var(--gold)}
-button.active{border-color:var(--green);color:var(--green)}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.stat{padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--panel-2)}
-.stat span{display:block;color:var(--muted);font-size:11px}
-.stat b{display:block;margin-top:3px;font-size:15px;overflow-wrap:anywhere}
-.workspace{position:relative;overflow:hidden;padding:0}
-.workspace-head{
-  display:flex;justify-content:space-between;gap:12px;align-items:center;
-  padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:11px
-}
-#map{
-  display:block;width:100%;height:min(62vh,560px);min-height:300px;
-  background:
-    radial-gradient(ellipse at center,rgba(43,62,92,.25),transparent 70%),
-    #080d17;
-  touch-action:none;
-  cursor:grab;
-}
-#map.dragging{cursor:grabbing}
-.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:11px;padding:9px 12px}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
-.green{background:var(--green)}.gold{background:var(--gold)}.red{background:var(--red)}
-.event-log{max-height:150px;overflow:auto}
-.event-log p{margin:4px 0;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
-.event-log p:first-child{color:var(--green)}
-/* Fokuspanel: normales Panel am Desktop, Bottom Sheet auf Mobilgeräten */
-#focusPanel{
-  position:fixed;
-  z-index:5;
-  left:16px;right:16px;bottom:16px;
-  width:min(420px,calc(100% - 32px));
-  margin-left:auto;
-  padding:14px;
-  background:rgba(17,24,39,.97);
-  border:1px solid var(--gold);
-  border-radius:14px;
-  box-shadow:0 12px 40px #0009;
-  transform:translateY(calc(100% + 24px));
-  transition:transform .2s ease;
-  padding-bottom:max(14px,env(safe-area-inset-bottom));
-}
-#focusPanel.open{transform:translateY(0)}
-.focus-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.focus-title{color:var(--gold);font-size:16px;font-weight:800}
-.focus-close{min-width:48px;padding:8px}
-.focus-state{margin:8px 0;color:var(--muted);font-size:12px}
-.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-.metric{background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:8px;min-width:0}
-.metric span{display:block;color:var(--muted);font-size:10px}
-.metric b{display:block;margin-top:3px;overflow-wrap:anywhere}
-.hint{color:var(--muted);font-size:11px}
-@media(min-width:768px){
-  #focusPanel{
-    position:relative;left:auto;right:auto;bottom:auto;
-    width:auto;margin:10px 0 0;
-    transform:none;display:none;
-  }
-  #focusPanel.open{display:block}
-}
-@media(max-width:600px){
-  body{padding:10px}
-  .toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-  .toolbar button{width:100%}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  #map{height:55vh;min-height:280px}
-  .workspace-head{align-items:flex-start;flex-direction:column;gap:3px}
-  .metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+:root{color-scheme:dark}
+body{margin:0;background:#000;color:#d8ffd8;font-family:monospace}
+header{padding:10px 12px;border-bottom:1px solid #1e5a1e}
+h1{font-size:20px;margin:0}
+.pill{display:inline-block;border:1px solid #1e5a1e;border-radius:99px;padding:5px 8px;font-size:11px;margin:2px}
+.pill.on{background:#0f0;color:#000;font-weight:800}
+.card{background:#070b07;border:1px solid #1e5a1e;border-radius:12px;padding:12px;margin:12px}
+.btn{min-height:44px;border:1px solid #0f0;background:#001800;color:#eaffea;border-radius:9px;padding:10px 8px;font-weight:700;cursor:pointer;width:100%;font:inherit}
+.btn.g{background:transparent}
+.btn.r{border-color:#f33;background:#220505}
+.btn.y{border-color:#fd0;background:#221f00}
+.grid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:10px}
+.cell{aspect-ratio:1;border:1px solid #1e5a1e;background:#050805;color:#9fe39f;font-size:11px;border-radius:4px;cursor:pointer}
+.cell.sel{background:#0f0;color:#000;font-weight:900}
+.cell.follow{box-shadow:inset 0 0 0 1px #0f0;color:#fff}
+.cell.home{border-color:#fd0}
+.field{width:100%;background:#000;border:1px solid #1e5a1e;color:#d8ffd8;border-radius:9px;padding:10px;min-height:44px;font:inherit}
+textarea.field{resize:vertical}
+.small{font-size:12px;color:#7fb87f}
+.big{font-size:32px;font-weight:800}
+.bar{height:14px;background:#061006;border:1px solid #1e5a1e;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:#0f0}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.row>*{flex:1;min-width:0}
+nav{position:sticky;bottom:0;background:#020502;border-top:1px solid #1e5a1e;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;padding:6px;z-index:5}
+nav button{background:transparent;color:#a8d8a8;border:0;border-radius:9px;min-height:52px;font-size:10px;cursor:pointer}
+nav button.on{background:#0f0;color:#000;font-weight:900}
+.hide{display:none!important}
+input[type=range]{width:100%;accent-color:#0f0}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #5fc8ff;outline-offset:2px}
+#zoomExplorer{display:block;width:100%;height:auto;max-height:70vh;background:#081018;border:1px solid #1e5a1e;border-radius:12px}
+.zoom-edge{stroke:#4ade80;stroke-width:3;fill:none}
+.zoom-node{fill:#111827;stroke:#4ade80;stroke-width:2;cursor:pointer}
+.zoom-node:focus{stroke:#f59e0b;stroke-width:5;outline:none}
+.zoom-label{fill:#e6edf7;font:22px monospace;text-anchor:middle;pointer-events:none}
+.zoom-sub{fill:#9ca3af;font:14px monospace;text-anchor:middle;pointer-events:none}
+.zoom-center{fill:#f59e0b;font:18px monospace;text-anchor:middle;pointer-events:none}
+.zoom-runner{fill:#4ade80}
+@media(max-width:480px){
+  header{padding:10px}
+  .card{margin:9px;padding:10px}
+  .small{font-size:11px}
+  nav button{font-size:9px}
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <h1>MOVE ROOT · WORK81</h1>
-    <p class="subtitle">Module auswählen · ziehen zum Verschieben · Pinch zum Zoomen · Doppeltipp auf freie Fläche zum Zurücksetzen</p>
-  </header>
 
-  <section class="panel toolbar" aria-label="Steuerung">
-    <button id="startBtn" class="primary" type="button">START</button>
-    <button id="pauseBtn" type="button">PAUSE</button>
-    <button id="resetBtn" type="button">RESET VIEW</button>
-    <button id="burstBtn" type="button">BURST</button>
-  </section>
+<header>
+  <h1>NC.OS · SLIM</h1>
+  <div class="small">VOY.EUR.EN · 9 → 81 → 9 · HOME 40 · ANKER A01 · SEED S01 · D4</div>
+  <div id="top"></div>
+  <button class="btn" id="haltBtn" style="margin-top:8px">HALT AUS</button>
+</header>
 
-  <section class="panel stats" aria-label="Systemstatus">
-    <div class="stat"><span>STATUS</span><b id="statusValue">READY</b></div>
-    <div class="stat"><span>MODULE</span><b id="moduleCount">0</b></div>
-    <div class="stat"><span>ZOOM</span><b id="zoomValue">100%</b></div>
-    <div class="stat"><span>FOKUS</span><b id="focusValue">—</b></div>
-  </section>
-
-  <section class="panel workspace">
-    <div class="workspace-head">
-      <strong>MODULE MAP</strong>
-      <span id="gestureStatus" role="status" aria-live="polite">Bereit</span>
+<main>
+  <!-- MATRIX -->
+  <section id="tab-matrix">
+    <div class="card">
+      <b>VOY.EUR.EN MOVE</b>
+      <div class="big">9 → 81 → 9</div>
+      <p class="small">Tippe START, dann einen Folgeschritt. Pfad: <b id="path" style="color:#fff"></b></p>
+      <div class="row" id="starts"></div>
+      <div class="grid" id="grid"></div>
+      <div class="small" id="cellInfo" style="margin-top:8px"></div>
     </div>
-    <canvas id="map" aria-label="Interaktive Modulkarte"></canvas>
-    <div class="legend">
-      <span><i class="dot green"></i>READY</span>
-      <span><i class="dot gold"></i>MOVING</span>
-      <span><i class="dot red"></i>HALT</span>
+
+    <div class="card">
+      <b>9 FOLGESCHRITTE · 3×3</b>
+      <div class="row" id="follow"></div>
+      <div class="small" id="moves"></div>
+      <div class="row">
+        <button class="btn g" id="rootBtn">↩ ROOT / HOME 40</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <b>AUA · KERNACHSE</b>
+      <div class="big" id="auaScore"></div>
+      <div class="small" id="auaDetail"></div>
+      <div class="row">
+        <button class="btn" data-aua="hit">ERKANNT +1</button>
+        <button class="btn" data-aua="block">BLOCK +1</button>
+      </div>
+      <div class="row">
+        <button class="btn" data-aua="save">GESICHERT +1</button>
+        <button class="btn" data-aua="tmp">TMP +1</button>
+      </div>
+      <button class="btn" data-aua="resolved" style="margin-top:6px">GELÖST +1</button>
+      <p class="small">AUA = Folge → Lernen → Kalibrieren → Wiederholen vermeiden. Nicht Bestrafung.</p>
+    </div>
+
+    <div class="card">
+      <b>ORG / REORG</b> <span class="small" id="orgStatus"></span>
+      <div class="small" id="orgDetail"></div>
+      <div id="orgPills" style="margin-top:8px"></div>
+      <div id="niPills"></div>
+      <div class="row">
+        <button class="btn" id="orgBtn">ORG SAMMELN · 9</button>
+        <button class="btn" id="niBtn">NI BILDEN · 4</button>
+      </div>
+      <div class="row">
+        <button class="btn" id="zeBtn">ZE · RUF 9 GEISTER</button>
+        <button class="btn" id="reorgBtn">REORG · NEU ORDNEN</button>
+      </div>
+      <button class="btn g" id="orgReset" style="margin-top:6px">ORG-RESET · BOARD LEEREN</button>
+    </div>
+
+    <div class="card">
+      <b>CTRL.LER</b>
+      <div id="ctrlPills"></div>
+      <button class="btn g" id="ctrlBtn" style="margin-top:8px">CTRL: NÄCHSTER SCHRITT →</button>
+      <p class="small">Kein GEBAUT, kein Fake-READY: Ergebnis zählt erst nach echter Prüfung.</p>
     </div>
   </section>
 
-  <section id="focusPanel" aria-label="Modulfokus" aria-hidden="true">
-    <div class="focus-top">
-      <div class="focus-title" id="focusTitle">Keine Auswahl</div>
-      <button id="closeFocus" class="focus-close" type="button" aria-label="Fokus schließen">×</button>
-    </div>
-    <p class="focus-state" id="focusState">Tippe ein Modul an, um Details zu sehen.</p>
-    <div class="metrics">
-      <div class="metric"><span>STATE</span><b id="metricState">—</b></div>
-      <div class="metric"><span>PACKETS</span><b id="metricPackets">—</b></div>
-      <div class="metric"><span>ERRORS</span><b id="metricErrors">—</b></div>
+  <!-- SVG ZOOM EXPLORER -->
+  <section id="tab-explorer" class="hide">
+    <div class="card">
+      <b>ZOOM · ZO.OM · Z.O.O.M</b>
+      <p class="small">Dreiecksbahn · sehen · trennen · zerlegen · bewegen</p>
+
+      <svg id="zoomExplorer" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 600 520" role="img"
+           aria-labelledby="zoomTitle zoomDesc">
+        <title id="zoomTitle">Zoom-Explorer</title>
+        <desc id="zoomDesc">Ein animierter Punkt bewegt sich zwischen drei Zoom-Knoten in Dreiecksform.</desc>
+
+        <rect width="600" height="520" fill="#081018"/>
+
+        <path class="zoom-edge"
+          d="M300 80 L120 380 L480 380 Z"/>
+
+        <g class="zoom-node-group" data-node="ZOOM" role="button" tabindex="0"
+           aria-label="ZOOM, sehen">
+          <circle class="zoom-node" cx="300" cy="80" r="55"/>
+          <text class="zoom-label" x="300" y="75">ZOOM</text>
+          <text class="zoom-sub" x="300" y="98">sehen</text>
+        </g>
+
+        <g class="zoom-node-group" data-node="ZO.OM" role="button" tabindex="0"
+           aria-label="ZO.OM, trennen">
+          <circle class="zoom-node" cx="120" cy="380" r="55"/>
+          <text class="zoom-label" x="120" y="375">ZO.OM</text>
+          <text class="zoom-sub" x="120" y="398">trennen</text>
+        </g>
+
+        <g class="zoom-node-group" data-node="Z.O.O.M" role="button" tabindex="0"
+           aria-label="Z.O.O.M, zerlegen">
+          <circle class="zoom-node" cx="480" cy="380" r="55"/>
+          <text class="zoom-label" x="480" y="375">Z.O.O.M</text>
+          <text class="zoom-sub" x="480" y="398">zerlegen</text>
+        </g>
+
+        <text class="zoom-center" x="300" y="260">ZOOMEND</text>
+        <text class="zoom-center" x="300" y="285">bewegen</text>
+
+        <circle class="zoom-runner" r="10" aria-hidden="true">
+          <animateMotion dur="6s" repeatCount="indefinite"
+            path="M300 80 L120 380 L480 380 L300 80"/>
+        </circle>
+      </svg>
+
+      <p class="small" id="zoomStatus" role="status" aria-live="polite">
+        Bereit · Wähle einen Knoten aus.
+      </p>
+      <div class="row">
+        <button class="btn g" id="zoomRestart">ANIMATION NEU STARTEN</button>
+      </div>
     </div>
   </section>
 
-  <section class="panel">
-    <strong>EVENT LOG</strong>
-    <div id="eventLog" class="event-log" role="log" aria-live="polite"></div>
+  <!-- EDITOR -->
+  <section id="tab-editor" class="hide">
+    <div class="card">
+      <b id="edTitle">EDITOR</b>
+      <div class="small" id="edMeta"></div>
+      <label class="small">Titel</label>
+      <input class="field" id="edT">
+      <label class="small">Text</label>
+      <textarea class="field" id="edX" style="min-height:140px"></textarea>
+      <div class="row">
+        <button class="btn" id="saveBtn">SPEICHERN</button>
+        <button class="btn g" id="clearBtn">EINGABE LEEREN</button>
+      </div>
+      <div class="small" id="savedCount"></div>
+    </div>
+    <div class="card">
+      <b>GESPEICHERTE ZELLEN</b>
+      <div id="savedList"></div>
+    </div>
   </section>
 
-  <p class="hint">Gesten: 1 Finger tippt auf ein Modul = Fokus; 1 Finger zieht = Pan; 2 Finger bewegen sich = Pinch-Zoom; kurzer 2-Finger-Tap auf Modul = Zentrieren; Doppeltipp auf freie Fläche = Zoom-Reset.</p>
-</div>
+  <!-- BEWERTUNG -->
+  <section id="tab-bewertung" class="hide">
+    <div class="card">
+      <b>RANG + BEWERTUNG</b>
+      <div class="big" id="rang"></div>
+      <div class="small" id="rangDetail"></div>
+      <div class="bar"><i id="rangBar"></i></div>
+      <div class="small" id="rangNext"></div>
+      <div id="rangPills"></div>
+    </div>
+
+    <div class="card">
+      <b>XP PRO ACHSE</b>
+      <div class="small">LEVEL = floor(XP/27)+1 · +9 XP pro Tipp</div>
+      <div id="xpList"></div>
+      <div class="small" id="skillLine"></div>
+      <label class="small" id="eloLabel"></label>
+      <input type="range" min="100" max="3000" step="10" id="elo">
+      <div class="row">
+        <button class="btn g" data-elo="100">ELO 100</button>
+        <button class="btn g" data-elo="1400">ELO 1400</button>
+        <button class="btn g" data-elo="3000">ELO 3000</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <b>9×9 KALIBRIERUNG</b>
+      <div id="calibList"></div>
+      <div class="big" id="cube" style="margin-top:10px"></div>
+      <div class="small" id="cubeDetail"></div>
+    </div>
+
+    <div class="card">
+      <b>SCHACH-BEWERTUNG</b>
+      <div id="chessList"></div>
+      <div class="small" id="chessSum"></div>
+    </div>
+
+    <div class="card">
+      <b>MODERATION · AUDIT, NICHT WORT-BANN</b>
+      <p class="small">Wort allein entscheidet nicht. Wort + Kontext + Häufigkeit + Zeitfenster = Bewertung.</p>
+      <input class="field" id="modCtx" placeholder="Zitat + Situation + Zeitfenster …">
+      <div class="small" id="modCounts"></div>
+      <div class="row">
+        <button class="btn y" data-mod="warnings">WARNUNG +1</button>
+        <button class="btn" data-mod="reviews">PRÜFUNG +1</button>
+      </div>
+      <div class="row">
+        <button class="btn r" data-mod="blocks">SPERRE +1</button>
+        <button class="btn r" data-mod="severe">SCHWERER VERSTOSS +1</button>
+      </div>
+      <p class="small">Beispiel: „Angriff auf den König“ (Schach) ≠ „Ich greife dich an“ (Drohung).</p>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section id="tab-log" class="hide">
+    <div class="card">
+      <b>AUDIT-TESTS · ECHTE PASS / FAIL</b>
+      <div class="small" id="auditHead">Noch nicht gelaufen</div>
+      <button class="btn" id="auditBtn" style="margin-top:8px">AUDIT JETZT LAUFEN LASSEN</button>
+      <div id="auditList"></div>
+    </div>
+    <div class="card">
+      <b>LOG · ALLE AKTIONEN</b>
+      <div id="logList"></div>
+      <button class="btn g" id="logBtn" style="margin-top:8px">LOG AKTUALISIEREN</button>
+    </div>
+  </section>
+
+  <!-- ZEUGUNG -->
+  <section id="tab-zeugung" class="hide">
+    <div class="card">
+      <b>ZEUGUNG · NEUES KIND</b>
+      <p class="small">Erstellt lokal einen HTML-Download. Kein Server-Aufruf.</p>
+      <label class="small">Regel</label>
+      <textarea class="field" id="z1">9 → 81 → 9 · Regel: 3 Dreiergruppen je Ebene, Gleichstand bleibt stehen</textarea>
+      <label class="small">HTML-Inhalt</label>
+      <textarea class="field" id="z2">&lt;h2&gt;Hallo aus der Zeugung&lt;/h2&gt;&lt;p&gt;Dieses Kind wurde in NC.OS gezeugt.&lt;/p&gt;</textarea>
+      <label class="small">JS</label>
+      <textarea class="field" id="z3">console.log('NC.OS Kind läuft');</textarea>
+      <button class="btn" id="kindBtn" style="margin-top:8px">ZEUGUNG · HTML HERUNTERLADEN</button>
+    </div>
+
+    <div class="card">
+      <b>IMPORT / EXPORT</b>
+      <p class="small">Persistenz: localStorage in dieser Datei.</p>
+      <label class="small">JSON importieren</label>
+      <input type="file" id="loadFile" accept=".json,application/json" style="width:100%;margin-top:6px">
+      <div class="row">
+        <button class="btn" id="expJson">EXPORT JSON</button>
+        <button class="btn" id="expHtml">EXPORT HTML</button>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:#f33">
+      <b>RESET · NUR EXPLIZIT</b>
+      <p class="small">Zweimal tippen zur Bestätigung.</p>
+      <button class="btn r" id="resetBtn">RESET · ZWEIMAL TIPPEN</button>
+      <button class="btn g hide" id="resetCancel" style="margin-top:6px">ABBRECHEN</button>
+    </div>
+  </section>
+</main>
+
+<nav id="nav" aria-label="Hauptnavigation"></nav>
 
 <script>
 "use strict";
 
-const canvas = document.getElementById("map");
-const ctx = canvas.getContext("2d");
-const statusValue = document.getElementById("statusValue");
-const zoomValue = document.getElementById("zoomValue");
-const focusValue = document.getElementById("focusValue");
-const gestureStatus = document.getElementById("gestureStatus");
-const focusPanel = document.getElementById("focusPanel");
-const eventLog = document.getElementById("eventLog");
-
-const nodes = [
-  {id:"WORK9",     x:170, y:150, state:"READY",  packets:0,  errors:0},
-  {id:"WORK81",    x:400, y:150, state:"MOVING", packets:14, errors:0},
-  {id:"WORK9BACK", x:630, y:150, state:"READY",  packets:0,  errors:0},
-  {id:"MOVE FLOW", x:285, y:350, state:"READY",  packets:3,  errors:0},
-  {id:"ROOT",      x:515, y:350, state:"HALT",   packets:0,  errors:0}
+const KR=["PUSH","PULL","SHIFT","FLOW","BREAK","SPIN","RISE","DROP","ROOT"];
+const RI=["EDITport","IMport","EXport","ID"];
+const JL=["Klarheit","Sicherheit","Lernbarkeit","Verantwortung","Stabilität","Praxis","Theorie","Audit","AUA"];
+const SR=["AUFTRAG","PRÜFEN","FREIGEBEN","AUSFÜHREN","ERGEBNIS"];
+const FM=[-10,-9,-8,-1,0,1,8,9,10];
+const RANGES=[
+  {n:"ANFÄNGER",min:0,max:8},
+  {n:"LERNEND",min:9,max:26},
+  {n:"FORTGESCHRITTEN",min:27,max:80},
+  {n:"EXPERTE",min:81,max:242},
+  {n:"VETERAN",min:243,max:479},
+  {n:"MEISTER",min:480,max:728},
+  {n:"ARCHITEKT",min:729,max:999999}
 ];
 
-document.getElementById("moduleCount").textContent = String(nodes.length);
-
-let scale = 1;
-let offsetX = 0;
-let offsetY = 0;
-let selectedModule = null;
-let running = false;
-let pointers = new Map();
-let gesture = null;
-let lastEmptyTap = 0;
-let animationFrame = 0;
-
-function logEvent(type, detail){
-  const line = document.createElement("p");
-  line.textContent = `[${new Date().toLocaleTimeString("de-DE")}] ${type} · ${detail}`;
-  eventLog.prepend(line);
-  while(eventLog.children.length > 30) eventLog.lastElementChild.remove();
-}
-
-function setStatus(value){
-  statusValue.textContent = value;
-}
-
-function resizeCanvas(){
-  const rect = canvas.getBoundingClientRect();
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  canvas.width = Math.round(rect.width * dpr);
-  canvas.height = Math.round(rect.height * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  draw();
-}
-
-function canvasPoint(clientX, clientY){
-  const rect = canvas.getBoundingClientRect();
-  return {x:clientX - rect.left, y:clientY - rect.top};
-}
-
-function screenToWorld(point){
+function fresh(){
+  const calib={};
+  JL.forEach(k=>calib[k]=0);
   return {
-    x:(point.x - offsetX) / scale,
-    y:(point.y - offsetY) / scale
+    xp:{Technik:0,Kreativ:0,Zusammenarbeit:0},
+    elo:1200,
+    aua:{hit:0,block:0,save:0,tmp:0,resolved:0},
+    moderation:{warnings:0,reviews:0,blocks:0,severe:0},
+    calib,
+    chess:{clarity:0,balance:0,mobility:0,learning:0},
+    org:{collected:[],niches:[],geister:0,reorg:0},
+    canvas:{},
+    selectedCell:40,
+    path:["ROOT"],
+    halted:false,
+    nextId:419,
+    log:["NC.OS SLIM geladen · 9 → 81 → 9 · HOME 40"],
+    moves:[],
+    moveCount:0,
+    ctrl:0,
+    explorerNode:""
   };
 }
 
-function getNodeAt(point){
-  const world = screenToWorld(point);
-  return nodes.find(node => Math.hypot(world.x - node.x, world.y - node.y) <= 43) || null;
+let S;
+try{
+  S=JSON.parse(localStorage.getItem("ncos_slim")||"null")||fresh();
+}catch(e){
+  S=fresh();
 }
 
-function centerOnNode(node){
-  const rect = canvas.getBoundingClientRect();
-  offsetX = rect.width / 2 - node.x * scale;
-  offsetY = rect.height / 2 - node.y * scale;
-  selectNode(node);
-  draw();
-  logEvent("VIEW", `${node.id} zentriert`);
+let tab="matrix";
+let audit=null;
+let confirmReset=false;
+
+const $=id=>document.getElementById(id);
+const time=()=>new Date().toLocaleTimeString("de-DE");
+
+function save(){
+  try{localStorage.setItem("ncos_slim",JSON.stringify(S));}
+  catch(e){console.warn("localStorage nicht verfügbar",e);}
 }
 
-function resetView(){
-  scale = 1;
-  offsetX = 0;
-  offsetY = 0;
-  zoomValue.textContent = "100%";
-  draw();
-  gestureStatus.textContent = "Ansicht zurückgesetzt";
-  logEvent("VIEW", "Zoom und Position zurückgesetzt");
+function log(message){
+  S.log=[...S.log,time()+" · "+message].slice(-120);
+  save();
+  render();
 }
 
-function selectNode(node){
-  selectedModule = node ? node.id : null;
-  focusValue.textContent = selectedModule || "—";
+function lvl(xp){return Math.floor(Math.max(0,xp)/27)+1;}
+function rankName(score){
+  for(const r of RANGES) if(score>=r.min&&score<=r.max) return r.n;
+  return "ARCHITEKT";
+}
+function follow(){
+  return FM.map(d=>(S.selectedCell+d+81)%81);
+}
+function dl(name,content,type){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function esc(value){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+}
+function setText(id,value){$(id).textContent=value;}
 
-  if(!node){
-    focusPanel.classList.remove("open");
-    focusPanel.setAttribute("aria-hidden", "true");
-    document.getElementById("focusTitle").textContent = "Keine Auswahl";
-    document.getElementById("focusState").textContent = "Tippe ein Modul an, um Details zu sehen.";
-    document.getElementById("metricState").textContent = "—";
-    document.getElementById("metricPackets").textContent = "—";
-    document.getElementById("metricErrors").textContent = "—";
-    draw();
+function render(){
+  const skill=["Technik","Kreativ","Zusammenarbeit"].reduce((a,k)=>a+lvl(S.xp[k]),0);
+  const evo=Object.values(S.xp).reduce((a,b)=>a+b,0);
+  const score=evo+skill+Math.floor(S.elo/100);
+  const rang=rankName(score);
+  const range=RANGES.find(r=>score>=r.min&&score<=r.max)||RANGES[0];
+  const learning=S.aua.hit+S.aua.save;
+  const aua=learning+S.aua.resolved-S.moderation.warnings;
+
+  $("top").innerHTML=
+    `<span class="pill">SKILL ${skill}</span>`+
+    `<span class="pill">EVO ${evo}</span>`+
+    `<span class="pill">ELO ${S.elo}</span>`+
+    `<span class="pill">MOVES ${S.moveCount}</span>`+
+    `<span class="pill">${S.halted?"HALT = ZIEL":"HALT AUS"}</span>`;
+
+  $("haltBtn").textContent=S.halted?"HALT = ZIEL":"HALT AUS";
+  $("haltBtn").style.background=S.halted?"#0f0":"#220505";
+  $("haltBtn").style.color=S.halted?"#000":"#ffd9d6";
+
+  setText("path",S.path.join(" · "));
+
+  const starts=$("starts");
+  starts.replaceChildren();
+  for(let i=0;i<9;i++){
+    const b=document.createElement("button");
+    b.className="btn g";
+    b.style.flex="1";
+    b.innerHTML=`START ${i+1}<br><span style="font-size:11px">Zelle ${i}</span>`;
+    b.onclick=()=>{
+      S.selectedCell=i;
+      S.path=["ROOT"];
+      log(`MATRIX · Start ${i} gewählt`);
+    };
+    starts.appendChild(b);
+  }
+
+  const f=follow();
+  const grid=$("grid");
+  grid.replaceChildren();
+  for(let i=0;i<81;i++){
+    const b=document.createElement("button");
+    b.className="cell"+(S.selectedCell===i?" sel":"")+(f.includes(i)?" follow":"")+(i===40?" home":"");
+    b.textContent=i;
+    b.setAttribute("aria-label",`Zelle ${i}${i===40?", HOME":""}`);
+    b.onclick=()=>{
+      S.selectedCell=i;
+      S.path=["ROOT"];
+      log(`MATRIX · Zelle ${i} gewählt`);
+    };
+    grid.appendChild(b);
+  }
+
+  const current=S.canvas[String(S.selectedCell)];
+  $("cellInfo").innerHTML=current
+    ?`<b>Zelle ${S.selectedCell} · ${esc(current.title||"(ohne Titel)")}</b><br>${esc(current.text||"")}`
+    :"";
+
+  const followBox=$("follow");
+  followBox.replaceChildren();
+  f.forEach((cell,i)=>{
+    const b=document.createElement("button");
+    b.className="btn";
+    b.style.flex="1";
+    b.innerHTML=`F${i+1}<br><span style="font-weight:400;font-size:11px">→ Zelle ${cell}</span>`;
+    b.onclick=()=>{
+      const from=S.selectedCell;
+      const path=S.path.length>=7
+        ?[...S.path.slice(0,6),String(cell%3+1)]
+        :[...S.path,String(cell%3+1)];
+      S.selectedCell=cell;
+      S.path=path;
+      S.moves=[...S.moves,{from,to:cell,at:time()}].slice(-100);
+      S.moveCount++;
+      log(`MOVE · ${from} → ${cell} · Pfad ${path.join(".")}`);
+    };
+    followBox.appendChild(b);
+  });
+
+  $("moves").innerHTML="Move-Historie (neueste 6):<br>"+
+    (S.moves.length
+      ?S.moves.slice(-6).reverse().map(m=>`· ${esc(m.at)} · ${m.from} → ${m.to}`).join("<br>")
+      :"Noch kein Move.");
+
+  setText("auaScore","AUA SCORE "+aua);
+  setText("auaDetail",`Learn = Hit + Save = ${learning} · Gelöst ${S.aua.resolved} · Warnungen ${S.moderation.warnings} · Status: ${aua>20?"AUA-STABIL":aua>=0?"LERNEND · STABILISIERT SICH":"PRÜFEN · KORRIGIEREN"}`);
+
+  const orgOk=S.org.collected.length===9&&S.org.niches.length===4&&S.org.geister===81;
+  setText("orgStatus",orgOk?"GRÜN · ROOT · Ursprung":(S.org.collected.length||S.org.niches.length||S.org.geister)?"GELB · FLOW · Durchlauf":"ROT · BLOCK · noch nichts gesammelt");
+  setText("orgDetail",`ORG: ${S.org.collected.length}/9 · NI: ${S.org.niches.length}/4 · ZE: ${S.org.geister}/81 · REORG: ${S.org.reorg}`);
+  $("orgPills").innerHTML=KR.map(k=>`<span class="pill ${S.org.collected.includes(k)?"on":""}">${k}</span>`).join("");
+  $("niPills").innerHTML=RI.map(k=>`<span class="pill ${S.org.niches.includes(k)?"on":""}">${k}</span>`).join("");
+  $("ctrlPills").innerHTML=SR.map((x,i)=>`<span class="pill ${S.ctrl===i?"on":""}">${i+1} ${x}</span>`).join("");
+  $("ctrlBtn").textContent=`CTRL: NÄCHSTER SCHRITT → ${SR[(S.ctrl+1)%5]}`;
+
+  const editorTitle=$("edTitle");
+  editorTitle.textContent=`EDITOR · ZELLE #${S.selectedCell}`;
+  setText("edMeta",`Canvas-ID: #${419+S.selectedCell} · Pfad ${S.path.join(".")} · ALT bleibt, NEU ist ADD.`);
+  if(document.activeElement!==$("edT")) $("edT").value=current?.title||"";
+  if(document.activeElement!==$("edX")) $("edX").value=current?.text||"";
+  setText("savedCount",`Gespeicherte Zellen: ${Object.keys(S.canvas).length} · nextId: ${S.nextId}`);
+
+  const savedList=$("savedList");
+  savedList.replaceChildren();
+  if(!Object.keys(S.canvas).length){
+    const p=document.createElement("p");
+    p.className="small";
+    p.textContent="Noch keine Zelle gespeichert.";
+    savedList.appendChild(p);
+  }
+  Object.entries(S.canvas).sort((a,b)=>+a[0]-+b[0]).forEach(([key,value])=>{
+    const b=document.createElement("button");
+    b.className="btn g";
+    b.style.textAlign="left";
+    b.style.marginTop="6px";
+    b.innerHTML=`<b>Zelle #${key} · ${esc(value.title||"(ohne Titel)")}</b><br><span class="small">${esc((value.text||"").slice(0,120))}</span>`;
+    b.onclick=()=>{S.selectedCell=+key;show("editor");};
+    savedList.appendChild(b);
+  });
+
+  setText("rang",rang);
+  setText("rangDetail",`Score = EVO ${evo} + SKILL ${skill} + ELO/100 ${Math.floor(S.elo/100)} = ${score} · Bereich ${range.min}–${range.max>=999999?"∞":range.max}`);
+  const rangPercent=range.max>=999999?100:Math.max(0,Math.min(100,(score-range.min)/Math.max(1,range.max-range.min+1)*100));
+  $("rangBar").style.width=rangPercent+"%";
+  setText("rangNext",`${Math.round(rangPercent)}% im aktuellen Rang · Nächster Rang ab ${range.max>=999999?"—":range.max+1}`);
+  $("rangPills").innerHTML=RANGES.map(r=>`<span class="pill ${r.n===rang?"on":""}">${r.n} ${r.min}–${r.max>=999999?"∞":r.max}</span>`).join("");
+
+  const xpList=$("xpList");
+  xpList.replaceChildren();
+  ["Technik","Kreativ","Zusammenarbeit"].forEach(k=>{
+    const row=document.createElement("div");
+    row.className="row";
+    row.innerHTML=`<div style="flex:1"><b>${k}</b><div class="small">XP ${S.xp[k]} · LEVEL ${lvl(S.xp[k])}</div></div><div class="bar" style="flex:2"><i style="width:${Math.min(100,S.xp[k]%27/27*100)}%"></i></div>`;
+    const b=document.createElement("button");
+    b.className="btn";
+    b.style.width="84px";
+    b.textContent="+9 XP";
+    b.onclick=()=>{S.xp[k]+=9;log(`XP · ${k} +9`);};
+    row.appendChild(b);
+    xpList.appendChild(row);
+  });
+
+  setText("skillLine",`SKILL = Summe Level = ${skill} · EVO = Summe XP = ${evo}`);
+  setText("eloLabel",`ELO · ${S.elo} (100–3000)`);
+  if(document.activeElement!==$("elo")) $("elo").value=S.elo;
+
+  const calibList=$("calibList");
+  calibList.replaceChildren();
+  JL.forEach(k=>{
+    const row=document.createElement("div");
+    row.className="row";
+    row.innerHTML=`<span style="flex:1"><b>${k}</b> · ${S.calib[k]}</span><div class="bar" style="flex:1"><i style="width:${S.calib[k]/9*100}%"></i></div>`;
+    for(const [symbol,delta] of [["−",-1],["+",1]]){
+      const b=document.createElement("button");
+      b.className="btn "+(delta<0?"g":"");
+      b.style.width="44px";
+      b.textContent=symbol;
+      b.onclick=()=>{
+        S.calib[k]=Math.max(0,Math.min(9,S.calib[k]+delta));
+        log(`KALIBRIERUNG · ${k} = ${S.calib[k]}`);
+      };
+      row.appendChild(b);
+    }
+    calibList.appendChild(row);
+  });
+
+  const eu=lvl(S.xp.Technik),nu=lvl(S.xp.Kreativ),tu=lvl(S.xp.Zusammenarbeit);
+  const cube=eu*nu*tu;
+  setText("cube",cube+" / 125");
+  setText("cubeDetail",`Theorie ${eu} × Praxis ${nu} × Stabilität ${tu}`);
+
+  const chessList=$("chessList");
+  chessList.replaceChildren();
+  let chessSum=0;
+  Object.entries(S.chess).forEach(([key,value])=>{
+    chessSum+=value;
+    const label={clarity:"Clarity",balance:"Balance",mobility:"Mobility",learning:"Learning"}[key];
+    const row=document.createElement("div");
+    row.className="row";
+    row.innerHTML=`<span style="flex:1"><b>${label}</b> · ${value}</span><div class="bar" style="flex:1"><i style="width:${value/9*100}%"></i></div>`;
+    for(const [symbol,delta] of [["−",-1],["+",1]]){
+      const b=document.createElement("button");
+      b.className="btn "+(delta<0?"g":"");
+      b.style.width="44px";
+      b.textContent=symbol;
+      b.onclick=()=>{
+        S.chess[key]=Math.max(0,Math.min(9,S.chess[key]+delta));
+        log(`SCHACH · ${key} = ${S.chess[key]}`);
+      };
+      row.appendChild(b);
+    }
+    chessList.appendChild(row);
+  });
+  setText("chessSum",`Summe = ${chessSum} / 36 · Bewertungsskala 0–9.`);
+
+  setText("modCounts",`WARNUNGEN: ${S.moderation.warnings} · PRÜFUNGEN: ${S.moderation.reviews} · SPERREN: ${S.moderation.blocks} · SCHWERE: ${S.moderation.severe}`);
+  setText("auditHead",audit?`${audit.filter(a=>a.ok).length}/${audit.length} PASS`:"Noch nicht gelaufen");
+
+  const auditList=$("auditList");
+  auditList.replaceChildren();
+  if(audit){
+    audit.forEach(a=>{
+      const row=document.createElement("div");
+      row.className="small";
+      row.style.cssText="display:flex;justify-content:space-between;gap:8px;border:1px solid #1e5a1e;border-radius:8px;padding:8px 9px;margin-top:5px";
+      const label=document.createElement("span");
+      label.textContent=a.label;
+      const result=document.createElement("span");
+      result.style.color=a.ok?"#0f0":"#f33";
+      result.textContent=(a.ok?"PASS":"FAIL")+" · "+a.detail;
+      row.append(label,result);
+      auditList.appendChild(row);
+    });
+  }
+
+  $("logList").innerHTML=S.log.slice().reverse().map(entry=>`<div class="small" style="border-bottom:1px solid #0f1f0f;padding-bottom:5px;margin-top:5px">${esc(entry)}</div>`).join("");
+
+  const tabs=[
+    ["matrix","◼","Matrix"],
+    ["explorer","△","Explorer"],
+    ["editor","✎","Editor"],
+    ["bewertung","★","Bewertung"],
+    ["log","☰","Log"],
+    ["zeugung","⚙","Zeugung"]
+  ];
+  const nav=$("nav");
+  nav.replaceChildren();
+  tabs.forEach(([id,icon,label])=>{
+    const b=document.createElement("button");
+    b.className=tab===id?"on":"";
+    b.innerHTML=`<span style="display:block;font-size:16px">${icon}</span>${label}`;
+    b.onclick=()=>show(id);
+    nav.appendChild(b);
+  });
+}
+
+function show(id){
+  tab=id;
+  document.querySelectorAll("main>section").forEach(section=>section.classList.add("hide"));
+  $("tab-"+id).classList.remove("hide");
+  render();
+}
+
+$("haltBtn").onclick=()=>{
+  S.halted=!S.halted;
+  log(`HALT · ${S.halted?"ZIEL":"AUS"}`);
+};
+
+$("rootBtn").onclick=()=>{
+  S.path=["ROOT"];
+  S.selectedCell=40;
+  log("BREADCRUMB → ROOT");
+};
+
+$("ctrlBtn").onclick=()=>{
+  const old=S.ctrl;
+  S.ctrl=(S.ctrl+1)%5;
+  let extra="";
+  if(S.ctrl===1){
+    const result=runAudit();
+    extra=` · AUDIT ${result.filter(x=>x.ok).length}/${result.length}`;
+  }
+  log(`CTRL · ${SR[old]} → ${SR[S.ctrl]}${extra}`);
+};
+
+document.querySelectorAll("[data-aua]").forEach(button=>{
+  button.onclick=()=>{
+    const key=button.dataset.aua;
+    S.aua[key]++;
+    log(`AUA · ${key} +1`);
+  };
+});
+
+$("orgBtn").onclick=()=>{S.org.collected=[...KR];log("ORG · 9/9 Stationen gesammelt");};
+$("niBtn").onclick=()=>{S.org.niches=[...RI];log("NI · 4 Nischen gebildet");};
+$("zeBtn").onclick=()=>{S.org.geister=81;log("ZE · 81 Geister gerufen");};
+$("reorgBtn").onclick=()=>{
+  const list=S.org.collected;
+  S.org.collected=list.length?list.slice(1).concat(list[0]):[...KR];
+  S.org.reorg++;
+  log(`REORG · Runde ${S.org.reorg} · ALT bleibt, NEU ist ADD`);
+};
+$("orgReset").onclick=()=>{
+  S.org={collected:[],niches:[],geister:0,reorg:0};
+  log("ORG · RESET · Board geleert");
+};
+
+$("saveBtn").onclick=()=>{
+  S.canvas[String(S.selectedCell)]={
+    title:$("edT").value.slice(0,120),
+    text:$("edX").value.slice(0,2000)
+  };
+  S.nextId=Math.max(S.nextId,420+S.selectedCell);
+  log(`EDITOR · Zelle ${S.selectedCell} gespeichert`);
+};
+
+$("clearBtn").onclick=()=>{
+  $("edT").value="";
+  $("edX").value="";
+  log(`EDITOR · Eingabefelder für Zelle ${S.selectedCell} geleert`);
+};
+
+$("elo").oninput=event=>{
+  S.elo=Number(event.target.value);
+  save();
+  render();
+};
+
+document.querySelectorAll("[data-elo]").forEach(button=>{
+  button.onclick=()=>{
+    S.elo=Number(button.dataset.elo);
+    log(`ELO · ${S.elo}`);
+  };
+});
+
+document.querySelectorAll("[data-mod]").forEach(button=>{
+  button.onclick=()=>{
+    const key=button.dataset.mod;
+    S.moderation[key]++;
+    const context=$("modCtx").value.trim()||"(kein Kontext eingetragen)";
+    $("modCtx").value="";
+    log(`MODERATION · ${key} +1 · Kontext: ${context}`);
+  };
+});
+
+function runAudit(){
+  const skill=["Technik","Kreativ","Zusammenarbeit"].reduce((a,k)=>a+lvl(S.xp[k]),0);
+  const evo=Object.values(S.xp).reduce((a,b)=>a+b,0);
+  const score=evo+skill+Math.floor(S.elo/100);
+  const f=follow();
+  const cube=lvl(S.xp.Technik)*lvl(S.xp.Kreativ)*lvl(S.xp.Zusammenarbeit);
+  const learning=S.aua.hit+S.aua.save;
+  const aua=learning+S.aua.resolved-S.moderation.warnings;
+
+  audit=[
+    {label:"Rangtitel vorhanden",ok:!!rankName(score),detail:`Rang ${rankName(score)}`},
+    {label:"Skill niemals negativ",ok:skill>=0,detail:`Skill ${skill}`},
+    {label:"EVO niemals negativ",ok:evo>=0,detail:`EVO ${evo}`},
+    {label:"ELO im Bereich",ok:S.elo>=100&&S.elo<=3000,detail:`ELO ${S.elo}`},
+    {label:"Grid = 81 Zellen",ok=$("grid").children.length===81,detail:"9×9 = 81"},
+    {label:"Folgeschritte = 9",ok:f.length===9,detail:`${f.length} Folgeschritte`},
+    {label:"Kalibrierung 0–9",ok:JL.every(k=>S.calib[k]>=0&&S.calib[k]<=9),detail:"9 Felder geprüft"},
+    {label:"Schach-Bewertung 0–9",ok:Object.values(S.chess).every(v=>v>=0&&v<=9),detail:"4 Werte geprüft"},
+    {label:"9×9×9 im Bereich 1–125",ok:cube>=1&&cube<=125,detail:`${cube}`},
+    {label:"Pfad gültig",ok:S.path[0]==="ROOT"&&S.path.slice(1).every(x=>["1","2","3"].includes(x)),detail:S.path.join(".")},
+    {label:"nextId gültig",ok:Number.isSafeInteger(S.nextId)&&S.nextId>0,detail:`${S.nextId}`},
+    {label:"AUA-Score konsistent",ok:aua===learning+S.aua.resolved-S.moderation.warnings,detail:`Score ${aua}`},
+    {label:"ORG-Stationen höchstens 9",ok:S.org.collected.length<=9,detail:`${S.org.collected.length}/9`},
+    {label:"HALT-Status lesbar",ok:typeof S.halted==="boolean",detail:S.halted?"HALT = ZIEL":"HALT AUS"}
+  ];
+  return audit;
+}
+
+$("auditBtn").onclick=()=>{
+  const result=runAudit();
+  const passed=result.filter(item=>item.ok).length;
+  log(`AUDIT · ${passed}/${result.length} PASS`);
+};
+$("logBtn").onclick=()=>log("LOG · Ansicht aktualisiert");
+
+$("kindBtn").onclick=()=>{
+  const rule=$("z1").value;
+  const content=$("z2").value;
+  const js=$("z3").value.replace(/<\/script/gi,"<\\/script");
+  const output=`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NC.OS Kind</title></head><body style="background:#000;color:#00ff00;font-family:monospace;padding:16px"><h1>NC.OS · Kind</h1><p><b>Regel:</b> ${esc(rule)}</p><div>${content}</div><script>${js}<\/script></body></html>`;
+  dl("ncos-kind.html",output,"text/html");
+  log("ZEUGUNG · ncos-kind.html heruntergeladen");
+};
+
+$("expJson").onclick=()=>{
+  dl("ncos-export.json",JSON.stringify(S,null,2),"application/json");
+  log("EXPORT · JSON heruntergeladen");
+};
+
+$("expHtml").onclick=()=>{
+  const output=`<!doctype html><html lang="de"><head><meta charset="utf-8"><title>NC.OS Export</title></head><body style="background:#000;color:#0f0;font-family:monospace;padding:16px"><h1>NC.OS · Export</h1><pre>${esc(JSON.stringify(S,null,2))}</pre></body></html>`;
+  dl("ncos-export.html",output,"text/html");
+  log("EXPORT · HTML heruntergeladen");
+};
+
+$("loadFile").onchange=async event=>{
+  const file=event.target.files?.[0];
+  event.target.value="";
+  if(!file)return;
+  try{
+    const data=JSON.parse(await file.text());
+    if(!data||typeof data!=="object"||Array.isArray(data)) throw new Error("Ungültiges JSON");
+    S={...fresh(),...data};
+    save();
+    log("IMPORT · JSON übernommen");
+  }catch(error){
+    log("IMPORT · FEHLER · Zustand unverändert");
+  }
+};
+
+$("resetBtn").onclick=()=>{
+  if(!confirmReset){
+    confirmReset=true;
+    $("resetBtn").textContent="WIRKLICH? NOCHMAL TIPPEN";
+    $("resetCancel").classList.remove("hide");
     return;
   }
+  S=fresh();
+  S.log=[time()+" · RESET · Neu gestartet"];
+  confirmReset=false;
+  save();
+  show("matrix");
+};
 
-  document.getElementById("focusTitle").textContent = node.id;
-  document.getElementById("focusState").textContent = "Modul ausgewählt";
-  document.getElementById("metricState").textContent = node.state;
-  document.getElementById("metricPackets").textContent = String(node.packets);
-  document.getElementById("metricErrors").textContent = String(node.errors);
-  focusPanel.classList.add("open");
-  focusPanel.setAttribute("aria-hidden", "false");
-  draw();
-  logEvent("FOCUS", node.id);
-}
+$("resetCancel").onclick=()=>{
+  confirmReset=false;
+  $("resetBtn").textContent="RESET · ZWEIMAL TIPPEN";
+  $("resetCancel").classList.add("hide");
+};
 
-function drawNode(node){
-  const colors = {READY:"#7ce0a8", MOVING:"#ffcc44", HALT:"#ff647c"};
-  const color = colors[node.state] || "#6bc8ff";
+/* SVG Explorer */
+const zoomSvg=$("zoomExplorer");
+const zoomStatus=$("zoomStatus");
 
-  ctx.beginPath();
-  ctx.arc(node.x, node.y, 33, 0, Math.PI * 2);
-  ctx.fillStyle = "#111827";
-  ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.arc(node.x, node.y, 6, 0, Math.PI * 2);
-  ctx.fillStyle = color;
-  ctx.fill();
-
-  ctx.textAlign = "center";
-  ctx.textBaseline = "top";
-  ctx.font = "12px ui-monospace, monospace";
-  ctx.fillStyle = "#e7edf5";
-  ctx.fillText(node.id, node.x, node.y + 42);
-
-  if(node.id === selectedModule){
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, 44, 0, Math.PI * 2);
-    ctx.strokeStyle = "#ffcc44";
-    ctx.lineWidth = 3;
-    ctx.shadowColor = "#ffcc44";
-    ctx.shadowBlur = 14;
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, 50, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(255,255,255,.75)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
-}
-
-function draw(){
-  const rect = canvas.getBoundingClientRect();
-  ctx.clearRect(0, 0, rect.width, rect.height);
-
-  ctx.save();
-  ctx.translate(offsetX, offsetY);
-  ctx.scale(scale, scale);
-
-  ctx.strokeStyle = "rgba(145,160,181,.12)";
-  ctx.lineWidth = 1;
-  for(let x=0; x<800; x+=40){
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 520); ctx.stroke();
-  }
-  for(let y=0; y<520; y+=40){
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(800, y); ctx.stroke();
-  }
-
-  ctx.strokeStyle = "rgba(107,200,255,.38)";
-  ctx.lineWidth = 2;
-  [[0,1],[1,2],[0,3],[3,4],[4,2]].forEach(([a,b]) => {
-    ctx.beginPath();
-    ctx.moveTo(nodes[a].x, nodes[a].y);
-    ctx.lineTo(nodes[b].x, nodes[b].y);
-    ctx.stroke();
+function selectZoomNode(group){
+  const name=group.dataset.node;
+  S.explorerNode=name;
+  zoomSvg.querySelectorAll(".zoom-node").forEach(node=>{
+    node.setAttribute("stroke",node.parentElement===group?"#f59e0b":"#4ade80");
+    node.setAttribute("stroke-width",node.parentElement===group?"5":"2");
   });
-
-  nodes.forEach(drawNode);
-  ctx.restore();
-
-  zoomValue.textContent = `${Math.round(scale * 100)}%`;
+  zoomStatus.textContent=`Ausgewählt: ${name} · ${group.getAttribute("aria-label").split(", ")[1]}`;
+  save();
 }
 
-function midpoint(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
-function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
-
-canvas.addEventListener("pointerdown", event => {
-  event.preventDefault();
-  canvas.setPointerCapture(event.pointerId);
-
-  const point = canvasPoint(event.clientX, event.clientY);
-  pointers.set(event.pointerId, {point, start:point, moved:false});
-
-  if(pointers.size === 1){
-    const node = getNodeAt(point);
-    gesture = {
-      type:node ? "candidate-node" : "pan",
-      node,
-      start:point,
-      last:point,
-      moved:false,
-      startedAt:performance.now()
-    };
-    canvas.classList.add("dragging");
-  }else if(pointers.size === 2){
-    const current = [...pointers.values()].map(p => p.point);
-    gesture = {
-      type:"two-pointer",
-      startDistance:distance(current[0],current[1]),
-      startMidpoint:midpoint(current[0],current[1]),
-      lastMidpoint:midpoint(current[0],current[1]),
-      startScale:scale,
-      startOffsetX:offsetX,
-      startOffsetY:offsetY,
-      moved:false,
-      startedAt:performance.now(),
-      node:getNodeAt(midpoint(current[0],current[1]))
-    };
-    canvas.classList.remove("dragging");
-  }
-});
-
-canvas.addEventListener("pointermove", event => {
-  if(!pointers.has(event.pointerId)) return;
-
-  const point = canvasPoint(event.clientX, event.clientY);
-  const pointer = pointers.get(event.pointerId);
-  pointer.point = point;
-
-  if(gesture && distance(point, pointer.start) > 7){
-    pointer.moved = true;
-    gesture.moved = true;
-  }
-
-  if(pointers.size === 1 && gesture && gesture.type === "pan" && gesture.moved){
-    offsetX += point.x - gesture.last.x;
-    offsetY += point.y - gesture.last.y;
-    gesture.last = point;
-    draw();
-  }
-
-  if(pointers.size === 2 && gesture && gesture.type === "two-pointer"){
-    const points = [...pointers.values()].map(p => p.point);
-    const mid = midpoint(points[0],points[1]);
-    const dist = distance(points[0],points[1]);
-
-    if(Math.abs(dist - gesture.startDistance) > 4 ||
-       distance(mid,gesture.startMidpoint) > 7){
-      gesture.moved = true;
-    }
-
-    if(gesture.moved){
-      const nextScale = Math.max(.5,Math.min(3.5,
-        gesture.startScale * (dist / Math.max(1,gesture.startDistance))
-      ));
-      const worldX = (gesture.startMidpoint.x - gesture.startOffsetX) / gesture.startScale;
-      const worldY = (gesture.startMidpoint.y - gesture.startOffsetY) / gesture.startScale;
-
-      scale = nextScale;
-      offsetX = mid.x - worldX * nextScale;
-      offsetY = mid.y - worldY * nextScale;
-      gesture.lastMidpoint = mid;
-      draw();
-    }
-  }
-});
-
-function finishPointer(event, cancelled=false){
-  const pointer = pointers.get(event.pointerId);
-  if(!pointer) return;
-
-  const pointerCountAtEnd = pointers.size;
-  const currentGesture = gesture;
-  const point = canvasPoint(event.clientX,event.clientY);
-  pointers.delete(event.pointerId);
-
-  if(!cancelled && currentGesture){
-    if(pointerCountAtEnd === 1){
-      const moved = currentGesture.moved || pointer.moved;
-      if(!moved){
-        const node = getNodeAt(point);
-        if(node){
-          selectNode(node);
-        }else{
-          selectNode(null);
-          const now = performance.now();
-          if(now - lastEmptyTap < 320){
-            resetView();
-            lastEmptyTap = 0;
-          }else{
-            lastEmptyTap = now;
-            gestureStatus.textContent = "Freie Fläche";
-          }
-        }
-      }else{
-        gestureStatus.textContent = "Ansicht verschoben";
-      }
-    }else if(pointerCountAtEnd === 2 &&
-             currentGesture.type === "two-pointer" &&
-             !currentGesture.moved){
-      const node = currentGesture.node || getNodeAt(point);
-      if(node){
-        centerOnNode(node);
-        gestureStatus.textContent = `${node.id} zentriert`;
-      }else{
-        gestureStatus.textContent = "Zwei-Finger-Tap: kein Modul";
-      }
-    }
-  }
-
-  if(pointers.size === 0){
-    gesture = null;
-    canvas.classList.remove("dragging");
-  }else if(pointers.size === 1){
-    const remaining = [...pointers.values()][0];
-    gesture = {
-      type:"pan",
-      start:remaining.point,
-      last:remaining.point,
-      moved:true
-    };
-  }
-}
-
-canvas.addEventListener("pointerup", event => finishPointer(event));
-canvas.addEventListener("pointercancel", event => finishPointer(event,true));
-canvas.addEventListener("lostpointercapture", event => {
-  if(pointers.has(event.pointerId)) finishPointer(event,true);
-});
-
-document.getElementById("closeFocus").addEventListener("click", () => selectNode(null));
-
-document.getElementById("resetBtn").addEventListener("click", resetView);
-
-document.getElementById("startBtn").addEventListener("click", () => {
-  running = true;
-  setStatus("RUNNING");
-  document.getElementById("startBtn").classList.add("active");
-  logEvent("SYSTEM","START");
-});
-
-document.getElementById("pauseBtn").addEventListener("click", () => {
-  running = false;
-  setStatus("PAUSED");
-  document.getElementById("startBtn").classList.remove("active");
-  logEvent("SYSTEM","PAUSE");
-});
-
-document.getElementById("burstBtn").addEventListener("click", () => {
-  nodes.forEach(node => {
-    if(node.state !== "HALT"){
-      node.packets += 1;
-      if(node.id === "WORK81") node.state = "MOVING";
+zoomSvg.querySelectorAll(".zoom-node-group").forEach(group=>{
+  group.addEventListener("click",()=>selectZoomNode(group));
+  group.addEventListener("keydown",event=>{
+    if(event.key==="Enter"||event.key===" "){
+      event.preventDefault();
+      selectZoomNode(group);
     }
   });
-  if(selectedModule){
-    const node = nodes.find(n => n.id === selectedModule);
-    if(node) selectNode(node);
-  }
-  draw();
-  logEvent("BURST","Paket an aktive Module gesendet");
 });
 
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-logEvent("SYSTEM","MOVE ROOT bereit");
+$("zoomRestart").onclick=()=>{
+  const animation=zoomSvg.querySelector("animateMotion");
+  if(animation&&typeof animation.beginElement==="function") animation.beginElement();
+  zoomStatus.textContent="Animation neu gestartet · Dreiecksbahn läuft.";
+};
+
+if(S.explorerNode){
+  const savedGroup=[...zoomSvg.querySelectorAll(".zoom-node-group")]
+    .find(group=>group.dataset.node===S.explorerNode);
+  if(savedGroup) selectZoomNode(savedGroup);
+}
+
+render();
 </script>
 </body>
-</html> ist deins besser oder seins
+</html>
